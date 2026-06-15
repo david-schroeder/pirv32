@@ -214,7 +214,7 @@ module fpga_top (
         .pmod_c
     );
 
-    project_core core_i (
+    nanosoc_core core_i (
         .clk_i (clk),
         .rst_ni(sys_rst_n),
         .io_i  (boardio_b2f),
