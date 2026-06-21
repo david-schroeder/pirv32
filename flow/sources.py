@@ -20,7 +20,7 @@ class Sources(Block):
         r = Result()
 
         design_srcs_pkg = []
-        for d in ["fpga"]:
+        for d in ["fpga", "pirv32"]:
             design_srcs_pkg += [x for x in self.src_dir.glob(f"rtl/{d}/pkg/*.sv")]
         design_srcs = []
         design_srcs += [x for x in self.src_dir.glob("rtl/*/*.sv")]
