@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: SHL-2.1
+// SPDX-FileCopyrightText: David Schröder 2026
+
 module pirv32_shifter
     import pirv32_pkg::*;
 (
