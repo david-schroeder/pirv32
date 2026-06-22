@@ -16,6 +16,12 @@ module pirv32_decoder
     output mem_op_e     mem_op_o,
     output branch_e     branch_o,
 
+    output csr_e        csr_sel_o,
+    output csr_op_e     csr_op_o,
+    output logic        csr_we_o,
+    output logic        csr_re_o,
+    output logic        csr_opsrc_o,
+
     output logic        is_jump_o,
     output logic        is_branch_o,
 
@@ -42,6 +48,13 @@ module pirv32_decoder
 
     assign is_jump_o = opcode == 7'b1101111 || opcode == 7'b1100111;
     assign is_branch_o = opcode == 7'b1100011;
+
+    logic is_csr_op;
+    assign is_csr_op = opcode == 7'b1110011 && funct3 != 3'b000;
+    assign csr_sel_o = csr_e'(instr_i[31:20]);
+    assign csr_opsrc_o = instr_i[14];
+    assign csr_re_o = is_csr_op && (csr_op_o != CSRRW || rd_adr_o != '0);
+    assign csr_we_o = is_csr_op && (csr_op_o == CSRRW || rs1_adr_o != '0);
 
     always_comb begin
         unique casez ({opcode, funct3})
@@ -77,6 +90,7 @@ module pirv32_decoder
             7'b0000011: reg_we_o = '1; // Loads
             7'b0?10?11: reg_we_o = '1; // Arithmetic operations, U-type instrs
             7'b110?111: reg_we_o = '1; // JAL, JALR
+            7'b1110011: reg_we_o = funct3 != '0; // CSR
             default: reg_we_o = '0;
         endcase
 
@@ -120,6 +134,9 @@ module pirv32_decoder
             {7'b0?10011, 3'b?01}: wb_src_o = SHIFTER;
             {7'b1101111, 3'b???},
             {7'b1100111, 3'b000}: wb_src_o = SEQ_PC;
+            {7'b1110011, 3'b1??}, // Any opcode=SYSTEM && funct3 != 0
+            {7'b1110011, 3'b?1?},
+            {7'b1110011, 3'b??1}: wb_src_o = CSR;
             default: wb_src_o = ALU;
         endcase
 
@@ -130,6 +147,12 @@ module pirv32_decoder
             3'b110: branch_o = BLTU;
             3'b111: branch_o = BGEU;
             default: branch_o = BEQ;
+        endcase
+
+        unique case (funct3[1:0])
+            2'b10: csr_op_o = CSRRS;
+            2'b11: csr_op_o = CSRRC;
+            default: csr_op_o = CSRRW;
         endcase
 
     end

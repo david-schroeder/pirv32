@@ -12,6 +12,8 @@ module pirv32_core
     output logic [31:0] rs1_o
 );
 
+    // IF stage
+
     logic [31:0] pc;
     logic [31:0] pc_seq;
     logic [31:0] pc_jump;
@@ -20,15 +22,25 @@ module pirv32_core
 
     assign pc_seq = pc + 4;
 
+    // ID stage
+
     logic [ 4:0] ra1;
     logic [ 4:0] ra2;
     logic [ 4:0] rd;
     logic [31:0] rs1;
     logic [31:0] rs2;
     logic [31:0] imm;
+    logic        csr_read_en;
+    csr_e        csr_sel;
+    csr_op_e     csr_op;
+    logic        csr_op_src;
+    logic [31:0] csr_operand;
+    logic [31:0] csr_rdata;
 
     assign rs1_o = rs1;
+    assign csr_operand = csr_op_src ? {27'h0, ra1} : rs1;
 
+    // ALU + ex stage
     logic [31:0] alu_a;
     logic [31:0] alu_b;
     alu_src1_e   alu_src1;
@@ -51,12 +63,14 @@ module pirv32_core
     logic [31:0] alu_res;
     logic [31:0] shiftout;
     logic [31:0] load_data;
+    logic        csr_write_en;
 
     always_comb begin
         unique case (wb_src)
             SHIFTER: wb_data = shiftout;
             DTIM   : wb_data = load_data;
             SEQ_PC : wb_data = pc_seq;
+            CSR    : wb_data = csr_rdata;
             default: wb_data = alu_res;
         endcase
 
@@ -111,6 +125,11 @@ module pirv32_core
         .shift_op_o (shift_op),
         .mem_op_o   (dtim_op),
         .branch_o   (branch_type),
+        .csr_sel_o  (csr_sel),
+        .csr_op_o   (csr_op),
+        .csr_we_o   (csr_write_en),
+        .csr_re_o   (csr_read_en),
+        .csr_opsrc_o(csr_op_src),
         .is_jump_o  (is_jump),
         .is_branch_o(is_branch),
         .imm_o      (imm),
@@ -128,6 +147,17 @@ module pirv32_core
         .waddr_i (rd),
         .wen_i   (wb_we),
         .wdata_i (wb_data)
+    );
+
+    pirv32_csrs csrfile_i (
+        .clk_i,
+        .rst_ni,
+        .read_en_i (csr_read_en),
+        .write_en_i(csr_write_en),
+        .csr_sel_i (csr_sel),
+        .op_i      (csr_op),
+        .operand_i (csr_operand),
+        .rdata_o   (csr_rdata)
     );
 
     pirv32_alu alu_i (

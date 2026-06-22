@@ -79,8 +79,14 @@ _start:
     li  x31,0
 
     // Initialize various stack pointers, settings / CSRs etc. here
+    la t0, _irq_stack_top
+    csrrw t0, mscratch, t0
+
+    csrsi mstatus, 8 // global interrupt enable
 
     jal main
+
+    csrci mstatus, 8 // global interrupt disable
 
 _exit:
     // Set flags / communicate with host system here

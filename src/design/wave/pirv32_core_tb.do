@@ -582,6 +582,14 @@ radix define riscv_csrs {
 }
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider CPU
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mstatus_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mscratch_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mip_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mie_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mtvec_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mtval_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcause_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mepc_q
 add wave -noupdate -label Regs /pirv32_core_tb/DUT/regfile_i/mem
 add wave -noupdate -label DTIM /pirv32_core_tb/DUT/dtim_i/mem
 add wave -noupdate /pirv32_core_tb/DUT/clk_i
@@ -633,4 +641,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {326728745 fs} {346832925 fs}
+WaveRestoreZoom {1000901029 fs} {1021005209 fs}

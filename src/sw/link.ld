@@ -26,5 +26,6 @@ SECTIONS
   /DISCARD/ : { *(.eh_frame*) }
 
   /* Adjust for your software system */
-  _main_stack_top = 0x00003FFC;
+  _main_stack_top = 0x000037FC;
+  _irq_stack_top = 0x00003FFC;
 }
