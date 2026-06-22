@@ -31,16 +31,14 @@ module pirv32_core
 
     logic [31:0] alu_a;
     logic [31:0] alu_b;
-    logic        alu_src1;
-    logic        alu_src2;
+    alu_src1_e   alu_src1;
+    alu_src2_e   alu_src2;
     alu_op_e     alu_op;
     shift_op_e   shift_op;
     logic        is_jump;
     logic        is_branch;
     branch_e     branch_type;
     logic        branch_decision;
-    assign alu_a = alu_src1 ? pc : rs1;
-    assign alu_b = alu_src2 ? imm : rs2;
 
     // DTIM
     mem_op_e dtim_op;
@@ -60,6 +58,17 @@ module pirv32_core
             DTIM   : wb_data = load_data;
             SEQ_PC : wb_data = pc_seq;
             default: wb_data = alu_res;
+        endcase
+
+        unique case (alu_src1)
+            RS1 : alu_a = rs1;
+            PC  : alu_a = pc;
+            ZERO: alu_a = '0;
+        endcase
+
+        unique case (alu_src2)
+            RS2: alu_b = rs2;
+            IMM: alu_b = imm;
         endcase
     end
 

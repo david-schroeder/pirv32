@@ -20,8 +20,8 @@ module pirv32_decoder
     output logic        is_branch_o,
 
     output logic [31:0] imm_o,
-    output logic        alu_src1_o,
-    output logic        alu_src2_o,
+    output alu_src1_e   alu_src1_o,
+    output alu_src2_e   alu_src2_o,
 
     output wb_src_e     wb_src_o
 );
@@ -91,17 +91,18 @@ module pirv32_decoder
         endcase
 
         unique case (opcode)
-            7'b0010111: alu_src1_o = '1;
-            7'b1101111: alu_src1_o = '1;
-            default: alu_src1_o = '0;
+            7'b0010111, // AUIPC
+            7'b1101111: alu_src1_o = PC; // JAL
+            7'b0110111: alu_src1_o = ZERO; // LUI
+            default: alu_src1_o = RS1;
         endcase
 
         unique case (instr_type)
             I_TYPE,
             S_TYPE,
             U_TYPE,
-            J_TYPE: alu_src2_o = '1;
-            default: alu_src2_o = '0;
+            J_TYPE: alu_src2_o = IMM;
+            default: alu_src2_o = RS2;
         endcase
 
         unique case (instr_type)

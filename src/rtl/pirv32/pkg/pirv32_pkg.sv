@@ -11,6 +11,17 @@ package pirv32_pkg;
     } alu_op_e;
 
     typedef enum logic [1:0] {
+        RS1,
+        PC,
+        ZERO
+    } alu_src1_e;
+
+    typedef enum logic [0:0] {
+        RS2,
+        IMM
+    } alu_src2_e;
+
+    typedef enum logic [1:0] {
         SLL,
         SRL,
         SRA

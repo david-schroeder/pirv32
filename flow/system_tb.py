@@ -29,6 +29,7 @@ class SystemTb(Block):
         if simulator == 'questasim':
             sim = questasim.simulate
             wave_do = [
+                self.design_dir / f"wave/riscv.radix.do",
                 self.design_dir / f"wave/{self.name}.do",
             ]
         elif simulator == 'xsim':
