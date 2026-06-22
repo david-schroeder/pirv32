@@ -40,6 +40,7 @@ flow['fpga_top'] = FpgaTop(dependency_map={'srcs':'srcs'})
 # -----------
 
 module_tbs = [
+    "pirv32_core_tb"
 ]
 
 for name in module_tbs:

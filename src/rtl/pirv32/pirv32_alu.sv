@@ -8,13 +8,14 @@ module pirv32_alu
     input  logic [31:0] b_i,
     input  alu_op_e     op_i,
     output logic [31:0] res_o,
-    output logic        lt_o,
-    output logic        ltu_o,
-    output logic        zero_o
+    input  branch_e     branch_i,
+    output logic        take_branch_o
 );
 
-    assign lt_o  = $signed(a_i) < $signed(b_i);
-    assign ltu_o = a_i < b_i;
+    logic lt, ltu, zero;
+    assign lt  = $signed(a_i) < $signed(b_i);
+    assign ltu = a_i < b_i;
+    assign zero = res_o == '0;
 
     always_comb begin
         unique case (op_i)
@@ -23,11 +24,19 @@ module pirv32_alu
             XOR : res_o = a_i ^ b_i;
             OR  : res_o = a_i | b_i;
             AND : res_o = a_i & b_i;
-            SLT : res_o = {31'h0, lt_o};
-            SLTU: res_o = {31'h0, ltu_o};
+            SLT : res_o = {31'h0, lt};
+            SLTU: res_o = {31'h0, ltu};
+        endcase
+
+        unique case (branch_i)
+            BEQ : take_branch_o = zero;
+            BNE : take_branch_o = ~zero;
+            BLT : take_branch_o = lt;
+            BGE : take_branch_o = ~lt;
+            BLTU: take_branch_o = ltu;
+            BGEU: take_branch_o = ~ltu;
+            default: take_branch_o = '0;
         endcase
     end
-
-    assign zero_o = res_o == '0;
 
 endmodule

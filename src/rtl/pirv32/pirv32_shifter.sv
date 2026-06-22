@@ -17,7 +17,7 @@ module pirv32_shifter
         for (genvar i = 1; i < 6; i++) begin : gen_shifter_stages
             localparam int SHIFT = 2**(i-1);
             always_comb begin
-                unique casex ({shamt_i[i-1], op_i})
+                unique casez ({shamt_i[i-1], op_i})
                     {1'b1, SLL}: begin
                         shifter_stages[i] = {shifter_stages[i-1][31-SHIFT:0], {SHIFT{1'b0}}};
                     end
@@ -33,6 +33,7 @@ module pirv32_shifter
                     {1'b0, SLL},
                     {1'b0, SRL},
                     {1'b0, SRA}: shifter_stages[i] = shifter_stages[i-1];
+                    default: ;
                 endcase
             end
         end : gen_shifter_stages

@@ -27,4 +27,29 @@ package pirv32_pkg;
         SW
     } mem_op_e;
 
+    typedef enum logic [2:0] {
+        R_TYPE,
+        I_TYPE,
+        S_TYPE,
+        B_TYPE,
+        U_TYPE,
+        J_TYPE
+    } instr_type_e;
+
+    typedef enum logic [1:0] {
+        ALU,
+        SHIFTER,
+        DTIM,
+        SEQ_PC
+    } wb_src_e;
+
+    typedef enum logic [2:0] {
+        BEQ,
+        BNE,
+        BLT,
+        BGE,
+        BLTU,
+        BGEU
+    } branch_e;
+
 endpackage

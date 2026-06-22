@@ -10,7 +10,7 @@ from .elf2mem import elf2mem
 command = 'ls'
 shutil.which(command) is not None
 
-cfg_arch = "rv32imc_zicsr"
+cfg_arch = "rv32im_zicsr"
 cfg_abi  = "ilp32"
 
 def find_toolchain_prefix():

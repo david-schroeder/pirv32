@@ -82,14 +82,14 @@ module pirv32_dtim
             {LHU, 2'b01},
             {LH , 2'b11},
             {LHU, 2'b11},
-            {LW , 2'h01},
-            {LW , 2'h10},
-            {LW , 2'h11},
-            {SH , 2'h01},
-            {SH , 2'h11},
-            {SW , 2'h01},
-            {SW , 2'h10},
-            {SW , 2'h11}: misaligned_o = '1;
+            {LW , 2'b01},
+            {LW , 2'b10},
+            {LW , 2'b11},
+            {SH , 2'b01},
+            {SH , 2'b11},
+            {SW , 2'b01},
+            {SW , 2'b10},
+            {SW , 2'b11}: misaligned_o = '1;
             default: misaligned_o = '0;
         endcase
     end
