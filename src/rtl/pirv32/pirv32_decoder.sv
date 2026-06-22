@@ -69,6 +69,7 @@ module pirv32_decoder
             {7'b0?10011, 3'b100}: alu_op_o = XOR;
             {7'b0?10011, 3'b110}: alu_op_o = OR;
             {7'b0?10011, 3'b111}: alu_op_o = AND;
+            {7'b1100011, 3'b???}: alu_op_o = SUB;
             default: alu_op_o = ADD;
         endcase
 
@@ -92,7 +93,6 @@ module pirv32_decoder
         unique case (opcode)
             7'b0010111: alu_src1_o = '1;
             7'b1101111: alu_src1_o = '1;
-            7'b1100011: alu_src1_o = '1;
             default: alu_src1_o = '0;
         endcase
 

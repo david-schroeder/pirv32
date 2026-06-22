@@ -75,15 +75,20 @@ module pirv32_core
 
     always_comb begin
         pc_d = pc_seq;
-        if (is_jump || is_branch && branch_decision) begin
+        if (is_jump) begin
             pc_d = pc_jump;
+        end
+        if (is_branch && branch_decision) begin
+            pc_d = pc + imm;
         end
     end
 
     pirv32_itim #(
-        .LOG_SIZE(12)
+        .LOG_SIZE(14)
     ) itim_i (
-        .address_i(pc),
+        .clk_i,
+        .rst_ni,
+        .address_i(pc_d),
         .instr_o  (instr)
     );
 

@@ -13,7 +13,7 @@ class FpgaTop(Block):
     Top-level FPGA design
     """
 
-    name = "pirv32_core"
+    name = "fpga_top"
     part = "xc7a200tsbg484-1"
 
     def setup(self):

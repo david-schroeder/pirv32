@@ -5,6 +5,9 @@
 #include <stdio.h>
 
 int main(void) {
-    printf("Hello!\n");
+    volatile int i = 0;
+    for (int k = 0; k < 10; k++) {
+        i += k;
+    }
     return 0;
 }

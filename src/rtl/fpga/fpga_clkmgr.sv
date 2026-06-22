@@ -16,7 +16,7 @@ module fpga_clkmgr (
     .CLKFBOUT_MULT_F   (10.0), // fVCO = 1GHz 
     .CLKFBOUT_PHASE    (0.0),
     .CLKIN1_PERIOD     (10.0), // Input clock period in ns
-    .CLKOUT0_DIVIDE_F  (10.0), // clkout0 = fVCO / 10 = 100 MHz
+    .CLKOUT0_DIVIDE_F  (20.0), // clkout0 = fVCO / 10 = 100 MHz
     .CLKOUT1_DIVIDE    (20), 
     .CLKOUT2_DIVIDE    (20),
     .CLKOUT3_DIVIDE    (20),

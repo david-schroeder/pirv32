@@ -2,6 +2,7 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider CPU
 add wave -noupdate -label Regs /pirv32_core_tb/DUT/regfile_i/mem
+add wave -noupdate -label DTIM /pirv32_core_tb/DUT/dtim_i/mem
 add wave -noupdate /pirv32_core_tb/DUT/clk_i
 add wave -noupdate /pirv32_core_tb/DUT/rst_ni
 add wave -noupdate /pirv32_core_tb/DUT/rs1_o
@@ -35,7 +36,7 @@ add wave -noupdate /pirv32_core_tb/DUT/alu_res
 add wave -noupdate /pirv32_core_tb/DUT/shiftout
 add wave -noupdate /pirv32_core_tb/DUT/load_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {10984013 fs} 0}
+WaveRestoreCursors {{Cursor 1} {366085473 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 216
 configure wave -valuecolwidth 100
@@ -51,4 +52,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {3682475 fs} {63983111 fs}
+WaveRestoreZoom {332896992 fs} {351576373 fs}

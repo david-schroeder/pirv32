@@ -10,27 +10,22 @@ module nanosoc_core (
     output top_pkg::fpga2board_t io_o
 );
 
-    logic [ 7:0] led_q;
-    // 5 updates / sec -> 20M cycles / update
-    logic [24:0] counter_q;
+    logic [31:0] data;
 
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            led_q     <= 8'b11000000;
-            counter_q <= 25'd19999999;
-        end else begin
-            if (counter_q == '0) begin
-                led_q     <= {led_q[0], led_q[7:1]};
-                counter_q <= 25'd19999999;
-            end else begin
-                counter_q <= counter_q - 1;
-            end
-        end
-    end
+    pirv32_core core_i (
+        .clk_i,
+        .rst_ni,
+        .rs1_o(data)
+    );
 
     always_comb begin
         io_o = '{default: '0};
-        io_o.led = led_q;
+        unique case (io_i.switch[1:0])
+            2'b00: io_o.led = data[ 7: 0];
+            2'b01: io_o.led = data[15: 8];
+            2'b10: io_o.led = data[23:16];
+            2'b11: io_o.led = data[31:24];
+        endcase
     end
 
 endmodule
