@@ -37,7 +37,7 @@ module pirv32_controller
             dtim_misaligned_i && ~dtim_store: begin
                 csr_cause_o = LOAD_ADDR_MISALIGNED;
             end
-            default: ;
+            default: csr_cause_o = exc_cause_e'('0);
         endcase
     end
 

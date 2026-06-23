@@ -30,10 +30,7 @@ module pirv32_shifter
                             shifter_stages[i-1][31:SHIFT]
                         };
                     end
-                    {1'b0, SLL},
-                    {1'b0, SRL},
-                    {1'b0, SRA}: shifter_stages[i] = shifter_stages[i-1];
-                    default: ;
+                    default: shifter_stages[i] = shifter_stages[i-1];
                 endcase
             end
         end : gen_shifter_stages
