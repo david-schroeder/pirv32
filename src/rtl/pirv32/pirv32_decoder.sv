@@ -24,6 +24,9 @@ module pirv32_decoder
 
     output logic        is_jump_o,
     output logic        is_branch_o,
+    output logic        is_ecall_o,
+    output logic        is_ebreak_o,
+    output logic        is_mret_o,
 
     output logic [31:0] imm_o,
     output alu_src1_e   alu_src1_o,
@@ -48,6 +51,9 @@ module pirv32_decoder
 
     assign is_jump_o = opcode == 7'b1101111 || opcode == 7'b1100111;
     assign is_branch_o = opcode == 7'b1100011;
+    assign is_ecall_o = instr_i == 32'h00000073;
+    assign is_ebreak_o = instr_i == 32'h00100073;
+    assign is_mret_o = instr_i == 32'h30200073;
 
     logic is_csr_op;
     assign is_csr_op = opcode == 7'b1110011 && funct3 != 3'b000;

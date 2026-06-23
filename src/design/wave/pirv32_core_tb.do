@@ -614,6 +614,10 @@ add wave -noupdate /pirv32_core_tb/DUT/alu_op
 add wave -noupdate /pirv32_core_tb/DUT/shift_op
 add wave -noupdate /pirv32_core_tb/DUT/is_jump
 add wave -noupdate /pirv32_core_tb/DUT/is_branch
+add wave -noupdate /pirv32_core_tb/DUT/is_ecall
+add wave -noupdate /pirv32_core_tb/DUT/is_ebreak
+add wave -noupdate /pirv32_core_tb/DUT/is_exception
+add wave -noupdate /pirv32_core_tb/DUT/exc_cause
 add wave -noupdate /pirv32_core_tb/DUT/branch_type
 add wave -noupdate /pirv32_core_tb/DUT/branch_decision
 add wave -noupdate /pirv32_core_tb/DUT/dtim_op
@@ -625,9 +629,9 @@ add wave -noupdate /pirv32_core_tb/DUT/alu_res
 add wave -noupdate /pirv32_core_tb/DUT/shiftout
 add wave -noupdate /pirv32_core_tb/DUT/load_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {384142542 fs} 0}
+WaveRestoreCursors {{Cursor 1} {365973943 fs} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 216
+configure wave -namecolwidth 245
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -641,4 +645,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {1000901029 fs} {1021005209 fs}
+WaveRestoreZoom {339048263 fs} {439348058 fs}

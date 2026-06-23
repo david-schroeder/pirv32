@@ -9,12 +9,20 @@ module pirv32_csrs
     input  logic clk_i,
     input  logic rst_ni,
 
+    // Software interface
     input  logic        read_en_i,
     input  logic        write_en_i,
     input  csr_e        csr_sel_i,
     input  csr_op_e     op_i,
     input  logic [31:0] operand_i,
-    output logic [31:0] rdata_o
+    output logic [31:0] rdata_o,
+
+    input  logic        exc_save_i,
+    input  exc_cause_e  exc_cause_i,
+    input  logic [31:0] pc_id_i,
+    input  logic [31:0] dtim_addr_i,
+    output mtvec_t      mtvec_o,
+    output logic [31:0] mepc_o
 );
 
     mstatus_t    mstatus_d,  mstatus_q;
@@ -25,6 +33,9 @@ module pirv32_csrs
     logic [31:1] mepc_d,     mepc_q;
     mcause_t     mcause_d,   mcause_q;
     logic [31:0] mtval_d,    mtval_q;
+
+    assign mtvec_o = mtvec_q;
+    assign mepc_o = {mepc_q, 1'b0};
 
     logic [31:0] csr_wdata;
     always_comb begin
@@ -56,12 +67,23 @@ module pirv32_csrs
                 MIP: mip_d = csr_wdata;
                 MTVEC: mtvec_d = '{base: csr_wdata[31:2], mode: csr_wdata[0]};
                 MSCRATCH: mscratch_d = csr_wdata;
-                MEPC: mepc_d = csr_wdata;
+                MEPC: mepc_d = csr_wdata[31:1];
                 MCAUSE: mcause_d = '{
                     interrupt: csr_wdata[31],
                     cause: exc_cause_e'(csr_wdata[4:0])
                 };
                 MTVAL: mtval_d = csr_wdata;
+            endcase
+        end
+
+        // TODO: update mstatus on trap
+        if (exc_save_i) begin
+            mepc_d = pc_id_i[31:1];
+            mcause_d = '{interrupt: '0, cause: exc_cause_i};
+            unique case (exc_cause_i)
+                LOAD_ADDR_MISALIGNED: mtval_d = dtim_addr_i;
+                STORE_ADDR_MISALIGNED: mtval_d = dtim_addr_i;
+                default: mtval_d = '0;
             endcase
         end
     end

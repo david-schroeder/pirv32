@@ -17,6 +17,7 @@ module pirv32_core
     logic [31:0] pc;
     logic [31:0] pc_seq;
     logic [31:0] pc_jump;
+    logic [31:0] pc_exc;
     logic [31:0] pc_d;
     logic [31:0] instr;
 
@@ -36,6 +37,16 @@ module pirv32_core
     logic        csr_op_src;
     logic [31:0] csr_operand;
     logic [31:0] csr_rdata;
+    mtvec_t      mtvec;
+    logic [31:0] mepc;
+    alu_op_e     alu_op;
+    shift_op_e   shift_op;
+    logic        is_jump;
+    logic        is_branch;
+    logic        is_ecall;
+    logic        is_ebreak;
+    logic        is_mret;
+    branch_e     branch_type;
 
     assign rs1_o = rs1;
     assign csr_operand = csr_op_src ? {27'h0, ra1} : rs1;
@@ -45,11 +56,6 @@ module pirv32_core
     logic [31:0] alu_b;
     alu_src1_e   alu_src1;
     alu_src2_e   alu_src2;
-    alu_op_e     alu_op;
-    shift_op_e   shift_op;
-    logic        is_jump;
-    logic        is_branch;
-    branch_e     branch_type;
     logic        branch_decision;
 
     // DTIM
@@ -64,6 +70,10 @@ module pirv32_core
     logic [31:0] shiftout;
     logic [31:0] load_data;
     logic        csr_write_en;
+
+    // Exceptions
+    logic        is_exception;
+    exc_cause_e  exc_cause;
 
     always_comb begin
         unique case (wb_src)
@@ -104,6 +114,12 @@ module pirv32_core
         if (is_branch && branch_decision) begin
             pc_d = pc + imm;
         end
+        if (is_mret) begin
+            pc_d = mepc;
+        end
+        if (is_exception) begin
+            pc_d = pc_exc;
+        end
     end
 
     pirv32_itim #(
@@ -132,10 +148,24 @@ module pirv32_core
         .csr_opsrc_o(csr_op_src),
         .is_jump_o  (is_jump),
         .is_branch_o(is_branch),
+        .is_ecall_o (is_ecall),
+        .is_ebreak_o(is_ebreak),
+        .is_mret_o  (is_mret),
         .imm_o      (imm),
         .alu_src1_o (alu_src1),
         .alu_src2_o (alu_src2),
         .wb_src_o   (wb_src)
+    );
+
+    pirv32_controller controller_i (
+        .ecall_i          (is_ecall),
+        .ebreak_i         (is_ebreak),
+        .dtim_misaligned_i(dtim_misaligned),
+        .dtim_op_i        (dtim_op),
+        .mtvec_i          (mtvec),
+        .pc_exc_o         (pc_exc),
+        .is_exception_o   (is_exception),
+        .csr_cause_o      (exc_cause)
     );
 
     pirv32_regfile regfile_i (
@@ -152,12 +182,19 @@ module pirv32_core
     pirv32_csrs csrfile_i (
         .clk_i,
         .rst_ni,
-        .read_en_i (csr_read_en),
-        .write_en_i(csr_write_en),
-        .csr_sel_i (csr_sel),
-        .op_i      (csr_op),
-        .operand_i (csr_operand),
-        .rdata_o   (csr_rdata)
+        .read_en_i  (csr_read_en),
+        .write_en_i (csr_write_en),
+        .csr_sel_i  (csr_sel),
+        .op_i       (csr_op),
+        .operand_i  (csr_operand),
+        .rdata_o    (csr_rdata),
+
+        .exc_save_i (is_exception),
+        .exc_cause_i(exc_cause),
+        .pc_id_i    (pc),
+        .dtim_addr_i(alu_res),
+        .mtvec_o    (mtvec),
+        .mepc_o     (mepc)
     );
 
     pirv32_alu alu_i (

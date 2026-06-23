@@ -7,7 +7,7 @@
     // IVT
     .option norvc
     .org 0
-    nop             //  0
+    j trap_handler  //  0
     nop             //  1
     nop             //  2
     nop             //  3
@@ -84,12 +84,28 @@ _start:
 
     csrsi mstatus, 8 // global interrupt enable
 
+    ecall
+
     jal main
 
     csrci mstatus, 8 // global interrupt disable
 
 _exit:
     // Set flags / communicate with host system here
+    ebreak
+
+trap_handler:
+    csrrw sp, mscratch, sp
+    sw t0, -4(sp)
+
+    // skip excepting instruction
+    csrr t0, mepc
+    addi t0, t0, 4
+    csrw mepc, t0
+
+    lw t0, -4(sp)
+    csrrw sp, mscratch, sp
+    mret
 
 irq_error:
 end_loop:
