@@ -19,8 +19,11 @@ module pirv32_csrs
 
     input  logic        exc_save_i,
     input  exc_cause_e  exc_cause_i,
-    input  logic [31:0] pc_id_i,
+    input  logic [31:0] pc_i,
+    input  logic [31:0] next_pc_i,
     input  logic [31:0] dtim_addr_i,
+    input  logic        interrupt_i,
+    input  logic [ 4:0] interrupt_id_i,
     output mtvec_t      mtvec_o,
     output logic [31:0] mepc_o
 );
@@ -76,15 +79,28 @@ module pirv32_csrs
             endcase
         end
 
-        // TODO: update mstatus on trap
         if (exc_save_i) begin
-            mepc_d = pc_id_i[31:1];
+            mepc_d = pc_i[31:1];
             mcause_d = '{interrupt: '0, cause: exc_cause_i};
             unique case (exc_cause_i)
                 LOAD_ADDR_MISALIGNED: mtval_d = dtim_addr_i;
                 STORE_ADDR_MISALIGNED: mtval_d = dtim_addr_i;
                 default: mtval_d = '0;
             endcase
+            mstatus_d = '{
+                mpp: M_MODE,
+                mpie: mstatus_q.mie,
+                mie: '0
+            };
+        end else if (interrupt_i) begin
+            mepc_d = next_pc_i[31:1];
+            mcause_d = '{interrupt: '1, cause: exc_cause_e'(interrupt_id_i)};
+            mtval_d = '0;
+            mstatus_d = '{
+                mpp: M_MODE,
+                mpie: mstatus_q.mie,
+                mie: '0
+            };
         end
     end
 

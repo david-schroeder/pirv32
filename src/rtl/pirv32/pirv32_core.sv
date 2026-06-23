@@ -175,26 +175,29 @@ module pirv32_core
         .raddr2_i(ra2),
         .rdata2_o(rs2),
         .waddr_i (rd),
-        .wen_i   (wb_we),
+        .wen_i   (wb_we & !is_exception),
         .wdata_i (wb_data)
     );
 
     pirv32_csrs csrfile_i (
         .clk_i,
         .rst_ni,
-        .read_en_i  (csr_read_en),
-        .write_en_i (csr_write_en),
-        .csr_sel_i  (csr_sel),
-        .op_i       (csr_op),
-        .operand_i  (csr_operand),
-        .rdata_o    (csr_rdata),
+        .read_en_i     (csr_read_en),
+        .write_en_i    (csr_write_en),
+        .csr_sel_i     (csr_sel),
+        .op_i          (csr_op),
+        .operand_i     (csr_operand),
+        .rdata_o       (csr_rdata),
 
-        .exc_save_i (is_exception),
-        .exc_cause_i(exc_cause),
-        .pc_id_i    (pc),
-        .dtim_addr_i(alu_res),
-        .mtvec_o    (mtvec),
-        .mepc_o     (mepc)
+        .exc_save_i    (is_exception),
+        .exc_cause_i   (exc_cause),
+        .pc_i          (pc),
+        .next_pc_i     (pc_d),
+        .dtim_addr_i   (alu_res),
+        .interrupt_i   ('0),
+        .interrupt_id_i('0),
+        .mtvec_o       (mtvec),
+        .mepc_o        (mepc)
     );
 
     pirv32_alu alu_i (
