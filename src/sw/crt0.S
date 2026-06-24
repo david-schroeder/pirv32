@@ -17,8 +17,8 @@
     nop             //  7
     nop             //  8
     nop             //  9
-    nop             // 10
-    nop             // 11
+    j irq_error     // 10
+    j ext_handler   // 11
     nop             // 12
     nop             // 13
     nop             // 14
@@ -84,6 +84,11 @@ _start:
 
     csrsi mstatus, 8 // global interrupt enable
 
+    li t0, 2048
+    csrw mie, t0 // enable machine external interrupt
+
+    csrsi mtvec, 1 // enabled vectored interrupts
+
     ecall
 
     jal main
@@ -111,3 +116,7 @@ trap_handler:
 irq_error:
 end_loop:
     j end_loop
+
+ext_handler:
+    csrw mip, zero
+    mret

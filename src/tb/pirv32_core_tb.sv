@@ -13,20 +13,34 @@ module pirv32_core_tb ();
         #5000;
     end
 
+    logic [31:0] ints;
+    logic        ext_int;
+    assign ints = {20'h0, ext_int, 11'h0};
+
     pirv32_core DUT (
-        .clk_i (clk),
-        .rst_ni(rst_n),
-        .rs1_o ()
+        .clk_i       (clk),
+        .rst_ni      (rst_n),
+        .interrupts_i(ints),
+        .rs1_o       ()
     );
 
     initial begin
         rst_n <= '0;
+        ext_int <= '0;
         @(posedge clk);
         @(posedge clk);
         rst_n <= '1;
         @(posedge clk);
 
-        for (int i = 0; i < 100; i++) @(posedge clk);
+        for (int i = 0; i < 50; i++) @(posedge clk);
+
+        ext_int <= '1;
+
+        for (int i = 0; i < 10; i++) @(posedge clk);
+
+        ext_int <= '0;
+
+        for (int i = 0; i < 90; i++) @(posedge clk);
 
         $finish;
     end

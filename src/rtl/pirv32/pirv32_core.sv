@@ -9,6 +9,7 @@ module pirv32_core
     input  logic clk_i,
     input  logic rst_ni,
 
+    input  logic [31:0] interrupts_i,
     output logic [31:0] rs1_o
 );
 
@@ -17,7 +18,7 @@ module pirv32_core
     logic [31:0] pc;
     logic [31:0] pc_seq;
     logic [31:0] pc_jump;
-    logic [31:0] pc_exc;
+    logic [31:0] pc_trap;
     logic [31:0] pc_d;
     logic [31:0] instr;
 
@@ -37,8 +38,6 @@ module pirv32_core
     logic        csr_op_src;
     logic [31:0] csr_operand;
     logic [31:0] csr_rdata;
-    mtvec_t      mtvec;
-    logic [31:0] mepc;
     alu_op_e     alu_op;
     shift_op_e   shift_op;
     logic        is_jump;
@@ -50,6 +49,13 @@ module pirv32_core
 
     assign rs1_o = rs1;
     assign csr_operand = csr_op_src ? {27'h0, ra1} : rs1;
+
+    // CSR readouts
+    mstatus_t    mstatus;
+    logic [31:0] mie;
+    logic [31:0] mip;
+    mtvec_t      mtvec;
+    logic [31:0] mepc;
 
     // ALU + ex stage
     logic [31:0] alu_a;
@@ -71,9 +77,11 @@ module pirv32_core
     logic [31:0] load_data;
     logic        csr_write_en;
 
-    // Exceptions
-    logic        is_exception;
-    exc_cause_e  exc_cause;
+    // Traps
+    logic        trap;
+    mcause_t     trap_cause;
+    logic [31:0] trap_val;
+    logic [31:0] trap_epc;
 
     always_comb begin
         unique case (wb_src)
@@ -117,8 +125,8 @@ module pirv32_core
         if (is_mret) begin
             pc_d = mepc;
         end
-        if (is_exception) begin
-            pc_d = pc_exc;
+        if (trap) begin
+            pc_d = pc_trap;
         end
     end
 
@@ -157,15 +165,24 @@ module pirv32_core
         .wb_src_o   (wb_src)
     );
 
-    pirv32_controller controller_i (
+    pirv32_trap trap_i (
+        .ext_ints_i       (interrupts_i),
+        .pc_i             (pc),
+        .next_pc_i        (pc_d),
+        .mstatus_i        (mstatus),
+        .mie_i            (mie),
+        .mip_i            (mip),
+        .mtvec_i          (mtvec),
         .ecall_i          (is_ecall),
         .ebreak_i         (is_ebreak),
         .dtim_misaligned_i(dtim_misaligned),
         .dtim_op_i        (dtim_op),
-        .mtvec_i          (mtvec),
-        .pc_exc_o         (pc_exc),
-        .is_exception_o   (is_exception),
-        .csr_cause_o      (exc_cause)
+        .dtim_addr_i      (alu_res),
+        .trap_o           (trap),
+        .cause_o          (trap_cause),
+        .trap_pc_o        (pc_trap),
+        .trap_val_o       (trap_val),
+        .epc_o            (trap_epc)
     );
 
     pirv32_regfile regfile_i (
@@ -175,7 +192,7 @@ module pirv32_core
         .raddr2_i(ra2),
         .rdata2_o(rs2),
         .waddr_i (rd),
-        .wen_i   (wb_we & !is_exception),
+        .wen_i   (wb_we & (!trap || trap_cause.interrupt)),
         .wdata_i (wb_data)
     );
 
@@ -189,14 +206,16 @@ module pirv32_core
         .operand_i     (csr_operand),
         .rdata_o       (csr_rdata),
 
-        .exc_save_i    (is_exception),
-        .exc_cause_i   (exc_cause),
-        .pc_i          (pc),
-        .next_pc_i     (pc_d),
-        .dtim_addr_i   (alu_res),
-        .interrupt_i   ('0),
-        .interrupt_id_i('0),
+        .ext_ints_i    (interrupts_i),
+        .trap_i        (trap),
+        .trap_cause_i  (trap_cause),
+        .trap_val_i    (trap_val),
+        .epc_i         (trap_epc),
         .mret_i        (is_mret),
+
+        .mstatus_o     (mstatus),
+        .mie_o         (mie),
+        .mip_o         (mip),
         .mtvec_o       (mtvec),
         .mepc_o        (mepc)
     );

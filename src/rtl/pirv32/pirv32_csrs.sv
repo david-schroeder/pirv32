@@ -18,14 +18,17 @@ module pirv32_csrs
     output logic [31:0] rdata_o,
 
     // Trap management
-    input  logic        exc_save_i,
-    input  exc_cause_e  exc_cause_i,
-    input  logic [31:0] pc_i,
-    input  logic [31:0] next_pc_i,
-    input  logic [31:0] dtim_addr_i,
-    input  logic        interrupt_i,
-    input  logic [ 4:0] interrupt_id_i,
+    input  logic [31:0] ext_ints_i,
+    input  logic        trap_i,
+    input  mcause_t     trap_cause_i,
+    input  logic [31:0] trap_val_i,
+    input  logic [31:0] epc_i,
     input  logic        mret_i,
+
+    // Direct CSR outputs
+    output mstatus_t    mstatus_o,
+    output logic [31:0] mie_o,
+    output logic [31:0] mip_o,
     output mtvec_t      mtvec_o,
     output logic [31:0] mepc_o
 );
@@ -39,8 +42,11 @@ module pirv32_csrs
     mcause_t     mcause_d,   mcause_q;
     logic [31:0] mtval_d,    mtval_q;
 
-    assign mtvec_o = mtvec_q;
-    assign mepc_o = {mepc_q, 1'b0};
+    assign mstatus_o = mstatus_q;
+    assign mie_o     = mie_q;
+    assign mip_o     = mip_q;
+    assign mtvec_o   = mtvec_q;
+    assign mepc_o    = {mepc_q, 1'b0};
 
     logic [31:0] csr_wdata;
     always_comb begin
@@ -55,7 +61,7 @@ module pirv32_csrs
         mstatus_d  = mstatus_q;
         mtvec_d    = mtvec_q;
         mie_d      = mie_q;
-        mip_d      = mip_q;
+        mip_d      = mip_q | ext_ints_i;
         mscratch_d = mscratch_q;
         mepc_d     = mepc_q;
         mcause_d   = mcause_q;
@@ -81,23 +87,10 @@ module pirv32_csrs
             endcase
         end
 
-        if (exc_save_i) begin
-            mepc_d = pc_i[31:1];
-            mcause_d = '{interrupt: '0, cause: exc_cause_i};
-            unique case (exc_cause_i)
-                LOAD_ADDR_MISALIGNED: mtval_d = dtim_addr_i;
-                STORE_ADDR_MISALIGNED: mtval_d = dtim_addr_i;
-                default: mtval_d = '0;
-            endcase
-            mstatus_d = '{
-                mpp: M_MODE,
-                mpie: mstatus_q.mie,
-                mie: '0
-            };
-        end else if (interrupt_i) begin
-            mepc_d = next_pc_i[31:1];
-            mcause_d = '{interrupt: '1, cause: exc_cause_e'(interrupt_id_i)};
-            mtval_d = '0;
+        if (trap_i) begin
+            mepc_d = epc_i[31:1];
+            mcause_d = trap_cause_i;
+            mtval_d = trap_val_i;
             mstatus_d = '{
                 mpp: M_MODE,
                 mpie: mstatus_q.mie,

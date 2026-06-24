@@ -582,6 +582,15 @@ radix define riscv_csrs {
 }
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider CPU
+add wave -noupdate /pirv32_core_tb/DUT/interrupts_i
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/trap_o
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/pending_ints
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/valid_ints
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/interrupt
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/exception
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/mtvec_i
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/trap_pc_o
+add wave -noupdate /pirv32_core_tb/DUT/trap_i/cause_o
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mstatus_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mscratch_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mip_q
@@ -616,8 +625,6 @@ add wave -noupdate /pirv32_core_tb/DUT/is_jump
 add wave -noupdate /pirv32_core_tb/DUT/is_branch
 add wave -noupdate /pirv32_core_tb/DUT/is_ecall
 add wave -noupdate /pirv32_core_tb/DUT/is_ebreak
-add wave -noupdate /pirv32_core_tb/DUT/is_exception
-add wave -noupdate /pirv32_core_tb/DUT/exc_cause
 add wave -noupdate /pirv32_core_tb/DUT/branch_type
 add wave -noupdate /pirv32_core_tb/DUT/branch_decision
 add wave -noupdate /pirv32_core_tb/DUT/dtim_op
@@ -629,7 +636,7 @@ add wave -noupdate /pirv32_core_tb/DUT/alu_res
 add wave -noupdate /pirv32_core_tb/DUT/shiftout
 add wave -noupdate /pirv32_core_tb/DUT/load_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {365973943 fs} 0}
+WaveRestoreCursors {{Cursor 1} {526291605 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 245
 configure wave -valuecolwidth 100
@@ -645,4 +652,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {339048263 fs} {439348058 fs}
+WaveRestoreZoom {406830212 fs} {433601078 fs}
