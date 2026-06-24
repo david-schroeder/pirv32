@@ -30,7 +30,10 @@ module pirv32_csrs
     output logic [31:0] mie_o,
     output logic [31:0] mip_o,
     output mtvec_t      mtvec_o,
-    output logic [31:0] mepc_o
+    output logic [31:0] mepc_o,
+
+    // Performance counters
+    input  logic        commit_i // whether to increment mcycle
 );
 
     mstatus_t    mstatus_d,  mstatus_q;
@@ -41,6 +44,8 @@ module pirv32_csrs
     logic [31:1] mepc_d,     mepc_q;
     mcause_t     mcause_d,   mcause_q;
     logic [31:0] mtval_d,    mtval_q;
+    logic [63:0] mcycle_d,   mcycle_q;
+    logic [63:0] minstret_d, minstret_q;
 
     assign mstatus_o = mstatus_q;
     assign mie_o     = mie_q;
@@ -66,6 +71,8 @@ module pirv32_csrs
         mepc_d     = mepc_q;
         mcause_d   = mcause_q;
         mtval_d    = mtval_q;
+        mcycle_d   = mcycle_q + 1;
+        minstret_d = minstret_q + commit_i;
 
         if (write_en_i) begin
             unique case (csr_sel_i)
@@ -84,6 +91,10 @@ module pirv32_csrs
                     cause: exc_cause_e'(csr_wdata[4:0])
                 };
                 MTVAL: mtval_d = csr_wdata;
+                MCYCLE: mcycle_d[31:0] = csr_wdata;
+                MCYCLEH: mcycle_d[63:32] = csr_wdata;
+                MINSTRET: minstret_d[31:0] = csr_wdata;
+                MINSTRETH: minstret_d[63:32] = csr_wdata;
             endcase
         end
 
@@ -115,6 +126,8 @@ module pirv32_csrs
             mepc_q     <= '0;
             mcause_q   <= INSN_ADDR_MISALIGNED;
             mtval_q    <= '0;
+            mcycle_q   <= '0;
+            minstret_q <= '0;
         end else begin
             mstatus_q  <= mstatus_d;
             mtvec_q    <= mtvec_d;
@@ -124,6 +137,8 @@ module pirv32_csrs
             mepc_q     <= mepc_d;
             mcause_q   <= mcause_d;
             mtval_q    <= mtval_d;
+            mcycle_q   <= mcycle_d;
+            minstret_q <= minstret_d;
         end
     end
 
@@ -148,6 +163,10 @@ module pirv32_csrs
                 MEPC: rdata_o = {mepc_q[31:1], 1'b0};
                 MCAUSE: rdata_o = {mcause_q.interrupt, 26'h0, mcause_q.cause};
                 MTVAL: rdata_o = mtval_q;
+                MCYCLE: rdata_o = mcycle_q[31:0];
+                MCYCLEH: rdata_o = mcycle_q[63:32];
+                MINSTRET: rdata_o = minstret_q[31:0];
+                MINSTRETH: rdata_o = minstret_q[63:32];
             endcase
         end
     end

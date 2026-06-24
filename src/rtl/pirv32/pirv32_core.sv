@@ -22,6 +22,7 @@ module pirv32_core
     logic [31:0] pc_d_arch; // Architectural next PC
     logic [31:0] pc_d;
     logic [31:0] instr;
+    logic        is_first_cycle;
 
     assign pc_seq = pc + 4;
 
@@ -83,6 +84,8 @@ module pirv32_core
     mcause_t     trap_cause;
     logic [31:0] trap_val;
     logic [31:0] trap_epc;
+    logic        exception;
+    assign exception = trap && !trap_cause.interrupt;
 
     always_comb begin
         unique case (wb_src)
@@ -108,8 +111,10 @@ module pirv32_core
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             pc <= BOOT_ADDR;
+            is_first_cycle <= '1;
         end else begin
             pc <= pc_d;
+            is_first_cycle <= '0;
         end
     end
 
@@ -122,6 +127,9 @@ module pirv32_core
             is_mret: pc_d_arch = mepc;
             default: pc_d_arch = pc_seq;
         endcase
+
+        // Allow ITIM to fetch first instruction properly
+        if (is_first_cycle) pc_d_arch = pc;
     end
 
     assign pc_d = trap ? pc_trap : pc_d_arch;
@@ -188,7 +196,7 @@ module pirv32_core
         .raddr2_i(ra2),
         .rdata2_o(rs2),
         .waddr_i (rd),
-        .wen_i   (wb_we & (!trap || trap_cause.interrupt)),
+        .wen_i   (wb_we & ~exception),
         .wdata_i (wb_data)
     );
 
@@ -213,7 +221,9 @@ module pirv32_core
         .mie_o         (mie),
         .mip_o         (mip),
         .mtvec_o       (mtvec),
-        .mepc_o        (mepc)
+        .mepc_o        (mepc),
+
+        .commit_i      (~exception & ~is_first_cycle)
     );
 
     pirv32_alu alu_i (

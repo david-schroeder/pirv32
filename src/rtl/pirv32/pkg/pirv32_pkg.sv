@@ -71,14 +71,18 @@ package pirv32_pkg;
     } csr_op_e;
 
     typedef enum logic [11:0] {
-        MSTATUS  = 12'h300,
-        MIE      = 12'h304,
-        MTVEC    = 12'h305,
-        MSCRATCH = 12'h340,
-        MEPC     = 12'h341,
-        MCAUSE   = 12'h342,
-        MTVAL    = 12'h343,
-        MIP      = 12'h344
+        MSTATUS   = 12'h300,
+        MIE       = 12'h304,
+        MTVEC     = 12'h305,
+        MSCRATCH  = 12'h340,
+        MEPC      = 12'h341,
+        MCAUSE    = 12'h342,
+        MTVAL     = 12'h343,
+        MIP       = 12'h344,
+        MCYCLE    = 12'hB00,
+        MINSTRET  = 12'hB02,
+        MCYCLEH   = 12'hB80,
+        MINSTRETH = 12'hB82
     } csr_e;
 
     typedef enum logic [1:0] {

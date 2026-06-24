@@ -599,6 +599,8 @@ add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mtvec_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mtval_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcause_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mepc_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcycle_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/minstret_q
 add wave -noupdate -label Regs /pirv32_core_tb/DUT/regfile_i/mem
 add wave -noupdate -label DTIM /pirv32_core_tb/DUT/dtim_i/mem
 add wave -noupdate /pirv32_core_tb/DUT/clk_i
@@ -636,7 +638,7 @@ add wave -noupdate /pirv32_core_tb/DUT/alu_res
 add wave -noupdate /pirv32_core_tb/DUT/shiftout
 add wave -noupdate /pirv32_core_tb/DUT/load_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {526291605 fs} 0}
+WaveRestoreCursors {{Cursor 1} {13380381 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 245
 configure wave -valuecolwidth 100
@@ -652,4 +654,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {406830212 fs} {433601078 fs}
+WaveRestoreZoom {0 fs} {14554098 fs}
