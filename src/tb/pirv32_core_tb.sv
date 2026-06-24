@@ -32,15 +32,7 @@ module pirv32_core_tb ();
         rst_n <= '1;
         @(posedge clk);
 
-        for (int i = 0; i < 50; i++) @(posedge clk);
-
-        ext_int <= '1;
-
-        for (int i = 0; i < 10; i++) @(posedge clk);
-
-        ext_int <= '0;
-
-        for (int i = 0; i < 90; i++) @(posedge clk);
+        for (int i = 0; i < 500; i++) @(posedge clk);
 
         $finish;
     end

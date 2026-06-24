@@ -23,6 +23,7 @@ module pirv32_core
     logic [31:0] pc_d;
     logic [31:0] instr;
     logic        is_first_cycle;
+    logic        stall;
 
     assign pc_seq = pc + 4;
 
@@ -42,12 +43,14 @@ module pirv32_core
     logic [31:0] csr_rdata;
     alu_op_e     alu_op;
     shift_op_e   shift_op;
+    branch_e     branch_type;
+    multdiv_op_e multdiv_op;
     logic        is_jump;
     logic        is_branch;
     logic        is_ecall;
     logic        is_ebreak;
     logic        is_mret;
-    branch_e     branch_type;
+    logic        is_multdiv;
 
     assign rs1_o = rs1;
     assign csr_operand = csr_op_src ? {27'h0, ra1} : rs1;
@@ -65,6 +68,9 @@ module pirv32_core
     alu_src1_e   alu_src1;
     alu_src2_e   alu_src2;
     logic        branch_decision;
+    logic        div_stall;
+
+    assign stall = is_first_cycle | div_stall;
 
     // DTIM
     mem_op_e dtim_op;
@@ -77,7 +83,9 @@ module pirv32_core
     logic [31:0] alu_res;
     logic [31:0] shiftout;
     logic [31:0] load_data;
+    logic [31:0] multdiv_res;
     logic        csr_write_en;
+    logic        commit;
 
     // Traps
     logic        trap;
@@ -87,12 +95,15 @@ module pirv32_core
     logic        exception;
     assign exception = trap && !trap_cause.interrupt;
 
+    assign commit = ~exception & ~stall;
+
     always_comb begin
         unique case (wb_src)
             SHIFTER: wb_data = shiftout;
             DTIM   : wb_data = load_data;
             SEQ_PC : wb_data = pc_seq;
             CSR    : wb_data = csr_rdata;
+            MULTDIV: wb_data = multdiv_res;
             default: wb_data = alu_res;
         endcase
 
@@ -128,14 +139,13 @@ module pirv32_core
             default: pc_d_arch = pc_seq;
         endcase
 
-        // Allow ITIM to fetch first instruction properly
-        if (is_first_cycle) pc_d_arch = pc;
+        if (stall) pc_d_arch = pc;
     end
 
     assign pc_d = trap ? pc_trap : pc_d_arch;
 
     pirv32_itim #(
-        .LOG_SIZE(14)
+        .LOG_SIZE(15)
     ) itim_i (
         .clk_i,
         .rst_ni,
@@ -144,35 +154,43 @@ module pirv32_core
     );
 
     pirv32_decoder decoder_i (
-        .instr_i    (instr),
-        .rs1_adr_o  (ra1),
-        .rs2_adr_o  (ra2),
-        .rd_adr_o   (rd),
-        .reg_we_o   (wb_we),
-        .alu_op_o   (alu_op),
-        .shift_op_o (shift_op),
-        .mem_op_o   (dtim_op),
-        .branch_o   (branch_type),
-        .csr_sel_o  (csr_sel),
-        .csr_op_o   (csr_op),
-        .csr_we_o   (csr_write_en),
-        .csr_re_o   (csr_read_en),
-        .csr_opsrc_o(csr_op_src),
-        .is_jump_o  (is_jump),
-        .is_branch_o(is_branch),
-        .is_ecall_o (is_ecall),
-        .is_ebreak_o(is_ebreak),
-        .is_mret_o  (is_mret),
-        .imm_o      (imm),
-        .alu_src1_o (alu_src1),
-        .alu_src2_o (alu_src2),
-        .wb_src_o   (wb_src)
+        .instr_i     (instr),
+
+        .rs1_adr_o   (ra1),
+        .rs2_adr_o   (ra2),
+        .rd_adr_o    (rd),
+        .reg_we_o    (wb_we),
+
+        .alu_op_o    (alu_op),
+        .shift_op_o  (shift_op),
+        .mem_op_o    (dtim_op),
+        .branch_o    (branch_type),
+        .multdiv_op_o(multdiv_op),
+
+        .csr_sel_o   (csr_sel),
+        .csr_op_o    (csr_op),
+        .csr_we_o    (csr_write_en),
+        .csr_re_o    (csr_read_en),
+        .csr_opsrc_o (csr_op_src),
+
+        .is_jump_o   (is_jump),
+        .is_branch_o (is_branch),
+        .is_ecall_o  (is_ecall),
+        .is_ebreak_o (is_ebreak),
+        .is_mret_o   (is_mret),
+        .is_multdiv_o(is_multdiv),
+
+        .imm_o       (imm),
+        .alu_src1_o  (alu_src1),
+        .alu_src2_o  (alu_src2),
+        .wb_src_o    (wb_src)
     );
 
     pirv32_trap trap_i (
         .ext_ints_i       (interrupts_i),
         .pc_i             (pc),
         .next_arch_pc_i   (pc_d_arch),
+        .stall_i          (stall),
         .mstatus_i        (mstatus),
         .mie_i            (mie),
         .mip_i            (mip),
@@ -196,7 +214,7 @@ module pirv32_core
         .raddr2_i(ra2),
         .rdata2_o(rs2),
         .waddr_i (rd),
-        .wen_i   (wb_we & ~exception),
+        .wen_i   (wb_we & commit),
         .wdata_i (wb_data)
     );
 
@@ -223,7 +241,7 @@ module pirv32_core
         .mtvec_o       (mtvec),
         .mepc_o        (mepc),
 
-        .commit_i      (~exception & ~is_first_cycle)
+        .commit_i      (commit)
     );
 
     pirv32_alu alu_i (
@@ -249,6 +267,17 @@ module pirv32_core
         .op_i        (dtim_op),
         .data_o      (load_data),
         .misaligned_o(dtim_misaligned)
+    );
+
+    pirv32_multdiv multdiv_i (
+        .clk_i,
+        .rst_ni,
+        .rs1_i       (rs1),
+        .rs2_i       (rs2),
+        .result_o    (multdiv_res),
+        .op_i        (multdiv_op),
+        .is_multdiv_i(is_multdiv),
+        .div_stall_o (div_stall)
     );
 
 endmodule

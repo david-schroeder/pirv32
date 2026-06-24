@@ -9,6 +9,7 @@ module pirv32_trap
 
     input  logic [31:0] pc_i,
     input  logic [31:0] next_arch_pc_i,
+    input  logic        stall_i,
 
     // CSR sources
     input  mstatus_t    mstatus_i,
@@ -36,7 +37,7 @@ module pirv32_trap
     logic        interrupt;
     assign pending_ints = mip_i | ext_ints_i;
     assign valid_ints   = mie_i & pending_ints & {32{mstatus_i.mie}};
-    assign interrupt    = |valid_ints;
+    assign interrupt    = ~stall_i & |valid_ints;
 
     logic exception;
     assign exception = ecall_i | ebreak_i | dtim_misaligned_i;

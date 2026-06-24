@@ -80,24 +80,17 @@ _start:
 
     // Initialize various stack pointers, settings / CSRs etc. here
     la t0, _irq_stack_top
-    csrrw t0, mscratch, t0
-
-    csrsi mstatus, 8 // global interrupt enable
-
+    csrrw t0, mscratch, t0 // irq stack top
     li t0, 2048
-    csrw mie, t0 // enable machine external interrupt
-
-    csrsi mtvec, 1 // enabled vectored interrupts
-
-    ecall
-
+    csrw mie, t0           // enable machine external interrupt
+    csrsi mtvec, 1         // enabled vectored interrupts
+    csrsi mstatus, 8       // global interrupt enable
     jal main
 
     csrci mstatus, 8 // global interrupt disable
 
 _exit:
     // Set flags / communicate with host system here
-    ebreak
     j end_loop
 
 trap_handler:

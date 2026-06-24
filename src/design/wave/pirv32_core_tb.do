@@ -591,6 +591,8 @@ add wave -noupdate /pirv32_core_tb/DUT/trap_i/exception
 add wave -noupdate /pirv32_core_tb/DUT/trap_i/mtvec_i
 add wave -noupdate /pirv32_core_tb/DUT/trap_i/trap_pc_o
 add wave -noupdate /pirv32_core_tb/DUT/trap_i/cause_o
+add wave -noupdate /pirv32_core_tb/DUT/stall
+add wave -noupdate /pirv32_core_tb/DUT/commit
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mstatus_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mscratch_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mip_q
@@ -624,6 +626,8 @@ add wave -noupdate /pirv32_core_tb/DUT/alu_src2
 add wave -noupdate /pirv32_core_tb/DUT/alu_op
 add wave -noupdate /pirv32_core_tb/DUT/shift_op
 add wave -noupdate /pirv32_core_tb/DUT/is_jump
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_rem
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_quot
 add wave -noupdate /pirv32_core_tb/DUT/is_branch
 add wave -noupdate /pirv32_core_tb/DUT/is_ecall
 add wave -noupdate /pirv32_core_tb/DUT/is_ebreak
@@ -637,8 +641,21 @@ add wave -noupdate /pirv32_core_tb/DUT/wb_src
 add wave -noupdate /pirv32_core_tb/DUT/alu_res
 add wave -noupdate /pirv32_core_tb/DUT/shiftout
 add wave -noupdate /pirv32_core_tb/DUT/load_data
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/numerator
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/denominator
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_stall_o
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_active
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_start
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_finish
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_shifts_remaining
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_quot
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_rem
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/quotient
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/remainder
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/rem_shifted
+add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/skip_subtraction
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {13380381 fs} 0}
+WaveRestoreCursors {{Cursor 1} {646153995 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 245
 configure wave -valuecolwidth 100
@@ -654,4 +671,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 fs} {14554098 fs}
+WaveRestoreZoom {5003818223 fs} {5020851673 fs}

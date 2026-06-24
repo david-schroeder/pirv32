@@ -15,6 +15,7 @@ module pirv32_decoder
     output shift_op_e   shift_op_o,
     output mem_op_e     mem_op_o,
     output branch_e     branch_o,
+    output multdiv_op_e multdiv_op_o,
 
     output csr_e        csr_sel_o,
     output csr_op_e     csr_op_o,
@@ -27,6 +28,7 @@ module pirv32_decoder
     output logic        is_ecall_o,
     output logic        is_ebreak_o,
     output logic        is_mret_o,
+    output logic        is_multdiv_o,
 
     output logic [31:0] imm_o,
     output alu_src1_e   alu_src1_o,
@@ -54,6 +56,7 @@ module pirv32_decoder
     assign is_ecall_o = instr_i == 32'h00000073;
     assign is_ebreak_o = instr_i == 32'h00100073;
     assign is_mret_o = instr_i == 32'h30200073;
+    assign is_multdiv_o = opcode == 7'b0110011 && funct7 == 7'b0000001;
 
     logic is_csr_op;
     assign is_csr_op = opcode == 7'b1110011 && funct3 != 3'b000;
@@ -90,6 +93,17 @@ module pirv32_decoder
             {7'b0?10011, 3'b111}: alu_op_o = AND;
             {7'b1100011, 3'b???}: alu_op_o = SUB;
             default: alu_op_o = ADD;
+        endcase
+
+        unique case (funct3)
+            3'b001: multdiv_op_o = MULH;
+            3'b010: multdiv_op_o = MULHSU;
+            3'b011: multdiv_op_o = MULHU;
+            3'b100: multdiv_op_o = DIV;
+            3'b101: multdiv_op_o = DIVU;
+            3'b110: multdiv_op_o = REM;
+            3'b111: multdiv_op_o = REMU;
+            default: multdiv_op_o = MUL;
         endcase
 
         unique casez (opcode)
@@ -135,14 +149,15 @@ module pirv32_decoder
             default: imm_o = {{21{instr_i[31]}}, instr_i[30:20]};
         endcase
 
-        unique casez ({opcode, funct3})
-            {7'b0?00011, 3'b???}: wb_src_o = DTIM;
-            {7'b0?10011, 3'b?01}: wb_src_o = SHIFTER;
-            {7'b1101111, 3'b???},
-            {7'b1100111, 3'b000}: wb_src_o = SEQ_PC;
-            {7'b1110011, 3'b1??}, // Any opcode=SYSTEM && funct3 != 0
-            {7'b1110011, 3'b?1?},
-            {7'b1110011, 3'b??1}: wb_src_o = CSR;
+        unique casez ({opcode, funct3, funct7})
+            {7'b0?00011, 3'b???, 7'b???????}: wb_src_o = DTIM;
+            {7'b0?10011, 3'b?01, 7'b??????0}: wb_src_o = SHIFTER;
+            {7'b0110011, 3'b???, 7'b0000001}: wb_src_o = MULTDIV;
+            {7'b1101111, 3'b???, 7'b???????},
+            {7'b1100111, 3'b000, 7'b???????}: wb_src_o = SEQ_PC;
+            {7'b1110011, 3'b1??, 7'b???????}, // Any opcode=SYSTEM && funct3 != 0
+            {7'b1110011, 3'b?1?, 7'b???????},
+            {7'b1110011, 3'b??1, 7'b???????}: wb_src_o = CSR;
             default: wb_src_o = ALU;
         endcase
 
