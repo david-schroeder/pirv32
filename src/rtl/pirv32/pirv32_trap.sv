@@ -8,7 +8,7 @@ module pirv32_trap
     input  logic [31:0] ext_ints_i,
 
     input  logic [31:0] pc_i,
-    input  logic [31:0] next_pc_i,
+    input  logic [31:0] next_arch_pc_i,
 
     // CSR sources
     input  mstatus_t    mstatus_i,
@@ -46,7 +46,7 @@ module pirv32_trap
     always_comb begin
         cause_o = '{interrupt: interrupt & ~exception, cause: exc_cause_e'('0)};
         trap_val_o = '0;
-        epc_o = next_pc_i; // causes combinational loop, TODO: fix
+        epc_o = next_arch_pc_i;
 
         if (interrupt) begin
             for (int i = 0; i < 32; i++) begin

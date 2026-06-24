@@ -19,6 +19,7 @@ module pirv32_core
     logic [31:0] pc_seq;
     logic [31:0] pc_jump;
     logic [31:0] pc_trap;
+    logic [31:0] pc_d_arch; // Architectural next PC
     logic [31:0] pc_d;
     logic [31:0] instr;
 
@@ -115,20 +116,15 @@ module pirv32_core
     assign pc_jump = {alu_res[31:1], 1'b0};
 
     always_comb begin
-        pc_d = pc_seq;
-        if (is_jump) begin
-            pc_d = pc_jump;
-        end
-        if (is_branch && branch_decision) begin
-            pc_d = pc + imm;
-        end
-        if (is_mret) begin
-            pc_d = mepc;
-        end
-        if (trap) begin
-            pc_d = pc_trap;
-        end
+        unique case (1'b1)
+            is_jump: pc_d_arch = pc_jump;
+            is_branch && branch_decision: pc_d_arch = pc + imm;
+            is_mret: pc_d_arch = mepc;
+            default: pc_d_arch = pc_seq;
+        endcase
     end
+
+    assign pc_d = trap ? pc_trap : pc_d_arch;
 
     pirv32_itim #(
         .LOG_SIZE(14)
@@ -168,7 +164,7 @@ module pirv32_core
     pirv32_trap trap_i (
         .ext_ints_i       (interrupts_i),
         .pc_i             (pc),
-        .next_pc_i        (pc_d),
+        .next_arch_pc_i   (pc_d_arch),
         .mstatus_i        (mstatus),
         .mie_i            (mie),
         .mip_i            (mip),
