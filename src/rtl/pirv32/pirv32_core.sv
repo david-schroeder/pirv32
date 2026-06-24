@@ -196,6 +196,7 @@ module pirv32_core
         .dtim_addr_i   (alu_res),
         .interrupt_i   ('0),
         .interrupt_id_i('0),
+        .mret_i        (is_mret),
         .mtvec_o       (mtvec),
         .mepc_o        (mepc)
     );

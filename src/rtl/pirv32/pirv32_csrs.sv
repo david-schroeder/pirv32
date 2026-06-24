@@ -17,6 +17,7 @@ module pirv32_csrs
     input  logic [31:0] operand_i,
     output logic [31:0] rdata_o,
 
+    // Trap management
     input  logic        exc_save_i,
     input  exc_cause_e  exc_cause_i,
     input  logic [31:0] pc_i,
@@ -24,6 +25,7 @@ module pirv32_csrs
     input  logic [31:0] dtim_addr_i,
     input  logic        interrupt_i,
     input  logic [ 4:0] interrupt_id_i,
+    input  logic        mret_i,
     output mtvec_t      mtvec_o,
     output logic [31:0] mepc_o
 );
@@ -100,6 +102,12 @@ module pirv32_csrs
                 mpp: M_MODE,
                 mpie: mstatus_q.mie,
                 mie: '0
+            };
+        end else if (mret_i) begin
+            mstatus_d = '{
+                mpp: M_MODE,
+                mpie: '1,
+                mie: mstatus_q.mpie
             };
         end
     end

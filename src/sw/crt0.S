@@ -93,6 +93,7 @@ _start:
 _exit:
     // Set flags / communicate with host system here
     ebreak
+    j end_loop
 
 trap_handler:
     csrrw sp, mscratch, sp
