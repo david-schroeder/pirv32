@@ -603,8 +603,14 @@ add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcause_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mepc_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcycle_q
 add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/minstret_q
-add wave -noupdate -label Regs /pirv32_core_tb/DUT/regfile_i/mem
+add wave -noupdate -label Regs -expand /pirv32_core_tb/DUT/regfile_i/mem
 add wave -noupdate -label DTIM /pirv32_core_tb/DUT/dtim_i/mem
+add wave -noupdate /pirv32_core_tb/DUT/wb_we_q
+add wave -noupdate /pirv32_core_tb/DUT/rd_q
+add wave -noupdate /pirv32_core_tb/DUT/fw_rs1_from_wb
+add wave -noupdate /pirv32_core_tb/DUT/fw_rs2_from_wb
+add wave -noupdate /pirv32_core_tb/DUT/rs1_fw
+add wave -noupdate /pirv32_core_tb/DUT/rs2_fw
 add wave -noupdate /pirv32_core_tb/DUT/clk_i
 add wave -noupdate /pirv32_core_tb/DUT/rst_ni
 add wave -noupdate /pirv32_core_tb/DUT/rs1_o
@@ -655,7 +661,7 @@ add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/remainder
 add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/rem_shifted
 add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/skip_subtraction
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {646153995 fs} 0}
+WaveRestoreCursors {{Cursor 1} {375789849 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 245
 configure wave -valuecolwidth 100
@@ -671,4 +677,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {5003818223 fs} {5020851673 fs}
+WaveRestoreZoom {355065861 fs} {381527942 fs}

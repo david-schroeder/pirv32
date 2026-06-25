@@ -97,24 +97,79 @@ module pirv32_core
 
     assign commit = ~exception & ~stall;
 
+    // -> WB pipeline stage
+
+    logic [31:0] alu_res_q;
+    logic [31:0] shiftout_q;
+    // load_data is already buffered
+    logic [31:0] pc_seq_q;
+    logic [31:0] csr_rdata_q;
+    logic [31:0] multdiv_res_q;
+    logic        wb_we_q;
+    logic [ 4:0] rd_q;
+    wb_src_e     wb_src_q;
+    
+    // Forwarding logic
+    logic        fw_rs1_from_wb;
+    logic        fw_rs2_from_wb;
+    logic [31:0] rs1_fw;
+    logic [31:0] rs2_fw;
+
+    assign fw_rs1_from_wb = ra1 == rd_q && wb_we_q && ra1 != '0;
+    assign fw_rs2_from_wb = ra2 == rd_q && wb_we_q && ra2 != '0;
+
     always_comb begin
-        unique case (wb_src)
-            SHIFTER: wb_data = shiftout;
-            DTIM   : wb_data = load_data;
-            SEQ_PC : wb_data = pc_seq;
-            CSR    : wb_data = csr_rdata;
-            MULTDIV: wb_data = multdiv_res;
-            default: wb_data = alu_res;
+        priority case (1'b1)
+            fw_rs1_from_wb: rs1_fw = wb_data;
+            default       : rs1_fw = rs1;
+        endcase
+
+        priority case (1'b1)
+            fw_rs2_from_wb: rs2_fw = wb_data;
+            default       : rs2_fw = rs2;
+        endcase
+    end
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            alu_res_q     <= '0;
+            shiftout_q    <= '0;
+            pc_seq_q      <= '0;
+            csr_rdata_q   <= '0;
+            multdiv_res_q <= '0;
+            wb_we_q       <= '0;
+            rd_q          <= '0;
+            wb_src_q      <= ALU;
+        end else begin
+            alu_res_q     <= alu_res;
+            shiftout_q    <= shiftout;
+            pc_seq_q      <= pc_seq;
+            csr_rdata_q   <= csr_rdata;
+            multdiv_res_q <= multdiv_res;
+            wb_we_q       <= wb_we & commit;
+            rd_q          <= rd;
+            wb_src_q      <= wb_src;
+        end
+    end
+
+    always_comb begin
+        unique case (wb_src_q)
+            SHIFTER: wb_data = shiftout_q;
+            DTIM   : wb_data = load_data; // buffering in DTIM
+            SEQ_PC : wb_data = pc_seq_q;
+            CSR    : wb_data = csr_rdata_q;
+            MULTDIV: wb_data = multdiv_res_q;
+            default: wb_data = alu_res_q;
         endcase
 
         unique case (alu_src1)
-            RS1 : alu_a = rs1;
+            RS1 : alu_a = rs1_fw;
             PC  : alu_a = pc;
             ZERO: alu_a = '0;
         endcase
 
         unique case (alu_src2)
-            RS2: alu_b = rs2;
+            RS2: alu_b = rs2_fw;
             IMM: alu_b = imm;
         endcase
     end
@@ -213,8 +268,8 @@ module pirv32_core
         .rdata1_o(rs1),
         .raddr2_i(ra2),
         .rdata2_o(rs2),
-        .waddr_i (rd),
-        .wen_i   (wb_we & commit),
+        .waddr_i (rd_q),
+        .wen_i   (wb_we_q),
         .wdata_i (wb_data)
     );
 
@@ -260,9 +315,12 @@ module pirv32_core
         .data_o (shiftout)
     );
 
-    pirv32_dtim dtim_i (
+    pirv32_dtim #(
+        .LOG_SIZE(15) // 32 KiB
+    ) dtim_i (
         .clk_i,
-        .data_i      (rs2),
+        .rst_ni,
+        .data_i      (rs2_fw),
         .address_i   (alu_res),
         .op_i        (dtim_op),
         .data_o      (load_data),
@@ -272,8 +330,8 @@ module pirv32_core
     pirv32_multdiv multdiv_i (
         .clk_i,
         .rst_ni,
-        .rs1_i       (rs1),
-        .rs2_i       (rs2),
+        .rs1_i       (rs1_fw),
+        .rs2_i       (rs2_fw),
         .result_o    (multdiv_res),
         .op_i        (multdiv_op),
         .is_multdiv_i(is_multdiv),
