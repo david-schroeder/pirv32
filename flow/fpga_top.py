@@ -98,7 +98,7 @@ class FpgaTop(Block):
             t.synth_design(top=self.name, part=self.part,
                 directive="PerformanceOptimized",
                 flatten_hierarchy="rebuilt", # choices: full, none, rebuilt
-                *defines 
+                *defines
             )
             t.opt_design(directive="NoBramPowerOpt")
             t.write_checkpoint(r.dcp)

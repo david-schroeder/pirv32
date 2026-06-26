@@ -21,6 +21,7 @@ module pirv32_core
     logic [31:0] pc_trap;
     logic [31:0] pc_d_arch; // Architectural next PC
     logic [31:0] pc_d;
+    logic [31:0] mepc;
     logic [31:0] instr;
     logic        is_first_cycle;
     logic        stall;
@@ -55,13 +56,6 @@ module pirv32_core
     assign rs1_o = rs1;
     assign csr_operand = csr_op_src ? {27'h0, ra1} : rs1;
 
-    // CSR readouts
-    mstatus_t    mstatus;
-    logic [31:0] mie;
-    logic [31:0] mip;
-    mtvec_t      mtvec;
-    logic [31:0] mepc;
-
     // ALU + ex stage
     logic [31:0] alu_a;
     logic [31:0] alu_b;
@@ -90,8 +84,6 @@ module pirv32_core
     // Traps
     logic        trap;
     mcause_t     trap_cause;
-    logic [31:0] trap_val;
-    logic [31:0] trap_epc;
     logic        exception;
     assign exception = trap && !trap_cause.interrupt;
 
@@ -241,27 +233,6 @@ module pirv32_core
         .wb_src_o    (wb_src)
     );
 
-    pirv32_trap trap_i (
-        .ext_ints_i       (interrupts_i),
-        .pc_i             (pc),
-        .next_arch_pc_i   (pc_d_arch),
-        .stall_i          (stall),
-        .mstatus_i        (mstatus),
-        .mie_i            (mie),
-        .mip_i            (mip),
-        .mtvec_i          (mtvec),
-        .ecall_i          (is_ecall),
-        .ebreak_i         (is_ebreak),
-        .dtim_misaligned_i(dtim_misaligned),
-        .dtim_op_i        (dtim_op),
-        .dtim_addr_i      (alu_res),
-        .trap_o           (trap),
-        .cause_o          (trap_cause),
-        .trap_pc_o        (pc_trap),
-        .trap_val_o       (trap_val),
-        .epc_o            (trap_epc)
-    );
-
     pirv32_regfile regfile_i (
         .clk_i,
         .raddr1_i(ra1),
@@ -273,30 +244,36 @@ module pirv32_core
         .wdata_i (wb_data)
     );
 
-    pirv32_csrs csrfile_i (
+    pirv32_privileged priv_i (
         .clk_i,
         .rst_ni,
-        .read_en_i     (csr_read_en),
-        .write_en_i    (csr_write_en),
-        .csr_sel_i     (csr_sel),
-        .op_i          (csr_op),
-        .operand_i     (csr_operand),
-        .rdata_o       (csr_rdata),
 
-        .ext_ints_i    (interrupts_i),
-        .trap_i        (trap),
-        .trap_cause_i  (trap_cause),
-        .trap_val_i    (trap_val),
-        .epc_i         (trap_epc),
-        .mret_i        (is_mret),
+        .interrupts_i,
+        .pc_i             (pc),
+        .next_arch_pc_i   (pc_d_arch),
+        .stall_i          (stall),
 
-        .mstatus_o     (mstatus),
-        .mie_o         (mie),
-        .mip_o         (mip),
-        .mtvec_o       (mtvec),
-        .mepc_o        (mepc),
+        .ecall_i          (is_ecall),
+        .ebreak_i         (is_ebreak),
+        .mret_i           (is_mret),
+        .dtim_misaligned_i(dtim_misaligned),
 
-        .commit_i      (commit)
+        .dtim_op_i        (dtim_op),
+        .dtim_addr_i      (alu_res),
+
+        .csr_read_en_i    (csr_read_en),
+        .csr_write_en_i   (csr_write_en),
+        .csr_sel_i        (csr_sel),
+        .csr_op_i         (csr_op),
+        .csr_operand_i    (csr_operand),
+        .csr_rdata_o      (csr_rdata),
+
+        .trap_o           (trap),
+        .trap_cause_o     (trap_cause),
+        .trap_pc_o        (pc_trap),
+        .mepc_o           (mepc),
+
+        .commit_i         (commit)
     );
 
     pirv32_alu alu_i (

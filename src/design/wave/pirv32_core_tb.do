@@ -583,26 +583,26 @@ radix define riscv_csrs {
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider CPU
 add wave -noupdate /pirv32_core_tb/DUT/interrupts_i
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/trap_o
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/pending_ints
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/valid_ints
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/interrupt
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/exception
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/mtvec_i
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/trap_pc_o
-add wave -noupdate /pirv32_core_tb/DUT/trap_i/cause_o
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/trap_o
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/pending_ints
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/valid_ints
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/interrupt
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/exception
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/mtvec_i
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/trap_pc_o
+add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/cause_o
 add wave -noupdate /pirv32_core_tb/DUT/stall
 add wave -noupdate /pirv32_core_tb/DUT/commit
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mstatus_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mscratch_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mip_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mie_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mtvec_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mtval_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcause_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mepc_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/mcycle_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/csrfile_i/minstret_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mstatus_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mscratch_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mip_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mie_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mtvec_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mtval_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mcause_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mepc_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mcycle_q
+add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/minstret_q
 add wave -noupdate -label Regs -expand /pirv32_core_tb/DUT/regfile_i/mem
 add wave -noupdate -label DTIM /pirv32_core_tb/DUT/dtim_i/mem
 add wave -noupdate /pirv32_core_tb/DUT/wb_we_q
