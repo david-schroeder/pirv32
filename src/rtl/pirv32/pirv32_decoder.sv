@@ -17,17 +17,8 @@ module pirv32_decoder
     output branch_e     branch_o,
     output multdiv_op_e multdiv_op_o,
 
-    output csr_e        csr_sel_o,
-    output csr_op_e     csr_op_o,
-    output logic        csr_we_o,
-    output logic        csr_re_o,
-    output logic        csr_opsrc_o,
-
     output logic        is_jump_o,
     output logic        is_branch_o,
-    output logic        is_ecall_o,
-    output logic        is_ebreak_o,
-    output logic        is_mret_o,
     output logic        is_multdiv_o,
 
     output logic [31:0] imm_o,
@@ -53,17 +44,7 @@ module pirv32_decoder
 
     assign is_jump_o = opcode == 7'b1101111 || opcode == 7'b1100111;
     assign is_branch_o = opcode == 7'b1100011;
-    assign is_ecall_o = instr_i == 32'h00000073;
-    assign is_ebreak_o = instr_i == 32'h00100073;
-    assign is_mret_o = instr_i == 32'h30200073;
     assign is_multdiv_o = opcode == 7'b0110011 && funct7 == 7'b0000001;
-
-    logic is_csr_op;
-    assign is_csr_op = opcode == 7'b1110011 && funct3 != 3'b000;
-    assign csr_sel_o = csr_e'(instr_i[31:20]);
-    assign csr_opsrc_o = instr_i[14];
-    assign csr_re_o = is_csr_op && (csr_op_o != CSRRW || rd_adr_o != '0);
-    assign csr_we_o = is_csr_op && (csr_op_o == CSRRW || rs1_adr_o != '0);
 
     always_comb begin
         unique casez ({opcode, funct3})
@@ -169,13 +150,6 @@ module pirv32_decoder
             3'b111: branch_o = BGEU;
             default: branch_o = BEQ;
         endcase
-
-        unique case (funct3[1:0])
-            2'b10: csr_op_o = CSRRS;
-            2'b11: csr_op_o = CSRRC;
-            default: csr_op_o = CSRRW;
-        endcase
-
     end
 
 endmodule

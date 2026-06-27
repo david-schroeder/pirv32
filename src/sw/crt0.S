@@ -9,7 +9,7 @@
     .org 0
     j trap_handler  //  0
     nop             //  1
-    nop             //  2
+    j ext_handler   //  2
     nop             //  3
     nop             //  4
     nop             //  5
@@ -87,6 +87,8 @@ _start:
     csrsi mstatus, 8       // global interrupt enable
     jal main
 
+    csrsi mip, 4
+
     csrci mstatus, 8 // global interrupt disable
 
 _exit:
@@ -112,4 +114,6 @@ end_loop:
 
 ext_handler:
     csrw mip, zero
+    csrsi mip, 1
+    csrsi mstatus, 8
     mret

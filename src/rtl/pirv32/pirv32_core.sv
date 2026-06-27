@@ -36,11 +36,6 @@ module pirv32_core
     logic [31:0] rs1;
     logic [31:0] rs2;
     logic [31:0] imm;
-    logic        csr_read_en;
-    csr_e        csr_sel;
-    csr_op_e     csr_op;
-    logic        csr_op_src;
-    logic [31:0] csr_operand;
     logic [31:0] csr_rdata;
     alu_op_e     alu_op;
     shift_op_e   shift_op;
@@ -48,13 +43,8 @@ module pirv32_core
     multdiv_op_e multdiv_op;
     logic        is_jump;
     logic        is_branch;
-    logic        is_ecall;
-    logic        is_ebreak;
-    logic        is_mret;
     logic        is_multdiv;
-
-    assign rs1_o = rs1;
-    assign csr_operand = csr_op_src ? {27'h0, ra1} : rs1;
+    logic        is_mret;
 
     // ALU + ex stage
     logic [31:0] alu_a;
@@ -78,7 +68,6 @@ module pirv32_core
     logic [31:0] shiftout;
     logic [31:0] load_data;
     logic [31:0] multdiv_res;
-    logic        csr_write_en;
     logic        commit;
 
     // Traps
@@ -109,6 +98,8 @@ module pirv32_core
 
     assign fw_rs1_from_wb = ra1 == rd_q && wb_we_q && ra1 != '0;
     assign fw_rs2_from_wb = ra2 == rd_q && wb_we_q && ra2 != '0;
+
+    assign rs1_o = rs1_fw;
 
     always_comb begin
         priority case (1'b1)
@@ -214,17 +205,8 @@ module pirv32_core
         .branch_o    (branch_type),
         .multdiv_op_o(multdiv_op),
 
-        .csr_sel_o   (csr_sel),
-        .csr_op_o    (csr_op),
-        .csr_we_o    (csr_write_en),
-        .csr_re_o    (csr_read_en),
-        .csr_opsrc_o (csr_op_src),
-
         .is_jump_o   (is_jump),
         .is_branch_o (is_branch),
-        .is_ecall_o  (is_ecall),
-        .is_ebreak_o (is_ebreak),
-        .is_mret_o   (is_mret),
         .is_multdiv_o(is_multdiv),
 
         .imm_o       (imm),
@@ -252,21 +234,15 @@ module pirv32_core
         .pc_i             (pc),
         .next_arch_pc_i   (pc_d_arch),
         .stall_i          (stall),
-
-        .ecall_i          (is_ecall),
-        .ebreak_i         (is_ebreak),
-        .mret_i           (is_mret),
         .dtim_misaligned_i(dtim_misaligned),
 
         .dtim_op_i        (dtim_op),
         .dtim_addr_i      (alu_res),
 
-        .csr_read_en_i    (csr_read_en),
-        .csr_write_en_i   (csr_write_en),
-        .csr_sel_i        (csr_sel),
-        .csr_op_i         (csr_op),
-        .csr_operand_i    (csr_operand),
+        .instr_i          (instr),
+        .rs1_i            (rs1_fw),
         .csr_rdata_o      (csr_rdata),
+        .mret_o           (is_mret),
 
         .trap_o           (trap),
         .trap_cause_o     (trap_cause),

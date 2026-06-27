@@ -12,20 +12,14 @@ module pirv32_privileged
     input  logic [31:0] next_arch_pc_i,
     input  logic        stall_i,
 
-    input  logic        ecall_i,
-    input  logic        ebreak_i,
-    input  logic        mret_i,
     input  logic        dtim_misaligned_i,
-
     input  mem_op_e     dtim_op_i,
     input  logic [31:0] dtim_addr_i,
 
-    input  logic        csr_read_en_i,
-    input  logic        csr_write_en_i,
-    input  csr_e        csr_sel_i,
-    input  csr_op_e     csr_op_i,
-    input  logic [31:0] csr_operand_i,
+    input  logic [31:0] instr_i,
+    input  logic [31:0] rs1_i,
     output logic [31:0] csr_rdata_o,
+    output logic        mret_o,
 
     output logic        trap_o,
     output mcause_t     trap_cause_o,
@@ -43,6 +37,17 @@ module pirv32_privileged
     logic [31:0] mip;
     mtvec_t      mtvec;
 
+    csr_e        csr_sel;
+    csr_op_e     csr_op;
+    logic [31:0] csr_operand;
+    logic        csr_re;
+    logic        csr_we;
+    logic        ecall;
+    logic        ebreak;
+    logic        mret;
+
+    assign mret_o = mret;
+
     pirv32_trap trap_i (
         .ext_ints_i       (interrupts_i),
         .pc_i             (pc_i),
@@ -52,8 +57,8 @@ module pirv32_privileged
         .mie_i            (mie),
         .mip_i            (mip),
         .mtvec_i          (mtvec),
-        .ecall_i          (ecall_i),
-        .ebreak_i         (ebreak_i),
+        .ecall_i          (ecall),
+        .ebreak_i         (ebreak),
         .dtim_misaligned_i(dtim_misaligned_i),
         .dtim_op_i        (dtim_op_i),
         .dtim_addr_i      (dtim_addr_i),
@@ -67,11 +72,11 @@ module pirv32_privileged
     pirv32_csrs csrfile_i (
         .clk_i,
         .rst_ni,
-        .read_en_i     (csr_read_en_i),
-        .write_en_i    (csr_write_en_i),
-        .csr_sel_i     (csr_sel_i),
-        .op_i          (csr_op_i),
-        .operand_i     (csr_operand_i),
+        .read_en_i     (csr_re),
+        .write_en_i    (csr_we),
+        .csr_sel_i     (csr_sel),
+        .op_i          (csr_op),
+        .operand_i     (csr_operand),
         .rdata_o       (csr_rdata_o),
 
         .ext_ints_i    (interrupts_i),
@@ -79,7 +84,7 @@ module pirv32_privileged
         .trap_cause_i  (trap_cause_o),
         .trap_val_i    (trap_val),
         .epc_i         (trap_epc),
-        .mret_i        (mret_i),
+        .mret_i        (mret),
 
         .mstatus_o     (mstatus),
         .mie_o         (mie),
@@ -88,6 +93,19 @@ module pirv32_privileged
         .mepc_o        (mepc_o),
 
         .commit_i      (commit_i)
+    );
+
+    pirv32_privdec privdec_i (
+        .instr_i,
+        .rs1_i,
+        .csr_sel_o    (csr_sel),
+        .csr_op_o     (csr_op),
+        .csr_operand_o(csr_operand),
+        .csr_re_o     (csr_re),
+        .csr_we_o     (csr_we),
+        .ecall_o      (ecall),
+        .ebreak_o     (ebreak),
+        .mret_o       (mret)
     );
 
 endmodule
