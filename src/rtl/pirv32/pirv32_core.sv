@@ -3,6 +3,7 @@
 
 module pirv32_core
     import pirv32_pkg::*;
+    import tilelink_pkg::*;
 #(
     parameter logic [31:0] BOOT_ADDR = 32'h00000080
 ) (
@@ -10,7 +11,11 @@ module pirv32_core
     input  logic rst_ni,
 
     input  logic [31:0] interrupts_i,
-    output logic [31:0] rs1_o
+
+    output tl_h2d_t     ibus_o,
+    input  tl_d2h_t     ibus_i,
+    output tl_h2d_t     dbus_o,
+    input  tl_d2h_t     dbus_i
 );
 
     // IF stage
@@ -25,6 +30,7 @@ module pirv32_core
     logic [31:0] instr;
     logic        is_first_cycle;
     logic        stall;
+    logic        expect_ibus_rsp;
 
     assign pc_seq = pc + 4;
 
@@ -54,7 +60,10 @@ module pirv32_core
     logic        branch_decision;
     logic        div_stall;
 
-    assign stall = is_first_cycle | div_stall;
+    assign stall = is_first_cycle
+                 | div_stall
+                 | expect_ibus_rsp && ibus_i.d_valid
+                 | ibus_o.a_valid && !ibus_i.a_ready;
 
     // DTIM
     mem_op_e dtim_op;
@@ -98,8 +107,6 @@ module pirv32_core
 
     assign fw_rs1_from_wb = ra1 == rd_q && wb_we_q && ra1 != '0;
     assign fw_rs2_from_wb = ra2 == rd_q && wb_we_q && ra2 != '0;
-
-    assign rs1_o = rs1_fw;
 
     always_comb begin
         priority case (1'b1)
@@ -161,9 +168,11 @@ module pirv32_core
         if (~rst_ni) begin
             pc <= BOOT_ADDR;
             is_first_cycle <= '1;
+            expect_ibus_rsp <= '0;
         end else begin
             pc <= pc_d;
             is_first_cycle <= '0;
+            expect_ibus_rsp <= ibus_o.a_valid;
         end
     end
 
@@ -171,6 +180,7 @@ module pirv32_core
 
     always_comb begin
         unique case (1'b1)
+            is_first_cycle: pc_d_arch = BOOT_ADDR;
             is_jump: pc_d_arch = pc_jump;
             is_branch && branch_decision: pc_d_arch = pc + imm;
             is_mret: pc_d_arch = mepc;
@@ -182,14 +192,25 @@ module pirv32_core
 
     assign pc_d = trap ? pc_trap : pc_d_arch;
 
-    pirv32_itim #(
-        .LOG_SIZE(15)
-    ) itim_i (
-        .clk_i,
-        .rst_ni,
-        .address_i(pc_d),
-        .instr_o  (instr)
-    );
+    // Instruction interface
+
+    assign ibus_o = '{
+        a_valid: (~stall | is_first_cycle) & rst_ni,
+        a_opcode: Get,
+        a_address: pc_d,
+        a_data: '0,
+        a_mask: 4'b1111,
+        a_source: ibus_i.d_source == '0 ? 8'd1 : '0,
+        a_size: 2'h2,
+        d_ready: '1
+    };
+
+    assign instr = ibus_i.d_valid ? ibus_i.d_data : '0;
+
+    assign dbus_o = '{
+        a_opcode: Get,
+        default: '0
+    };
 
     pirv32_decoder decoder_i (
         .instr_i     (instr),

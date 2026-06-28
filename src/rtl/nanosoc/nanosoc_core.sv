@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-// This is your project toplevel.
+// NanoSoC -- minimal SoC for PIRV32.
 
 module nanosoc_core (
     input  logic clk_i, // 100MHz clock
@@ -10,21 +10,37 @@ module nanosoc_core (
     output top_pkg::fpga2board_t io_o
 );
 
-    logic [31:0] data;
+    import tilelink_pkg::*;
+
+    tl_h2d_t ibus_req, dbus_req;
+    tl_d2h_t ibus_rsp, dbus_rsp;
 
     pirv32_core core_i (
         .clk_i,
         .rst_ni,
-        .rs1_o(data)
+        .ibus_o(ibus_req),
+        .ibus_i(ibus_rsp),
+        .dbus_o(dbus_req),
+        .dbus_i(dbus_rsp)
+    );
+
+    `define STRINGIFY(x) `"x`"
+    nanosoc_ram #(
+        .MEMFILE(`STRINGIFY(`INIT_MEM_FILE))
+    ) iram_i (
+        .clk_i,
+        .rst_ni,
+        .tl_i  (ibus_req),
+        .tl_o  (ibus_rsp)
     );
 
     always_comb begin
         io_o = '{default: '0};
         unique case (io_i.switch[1:0])
-            2'b00: io_o.led = data[ 7: 0];
-            2'b01: io_o.led = data[15: 8];
-            2'b10: io_o.led = data[23:16];
-            2'b11: io_o.led = data[31:24];
+            2'b00: io_o.led = ibus_req.a_address[ 7: 0];
+            2'b01: io_o.led = ibus_req.a_address[15: 8];
+            2'b10: io_o.led = ibus_req.a_address[23:16];
+            2'b11: io_o.led = ibus_req.a_address[31:24];
         endcase
     end
 
