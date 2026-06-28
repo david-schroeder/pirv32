@@ -108,4 +108,9 @@ module pirv32_dtim
         endcase
     end
 
+    `define STRINGIFY(x) `"x`"
+    initial begin
+        $readmemh(`STRINGIFY(`INIT_MEM_FILE), mem);
+    end
+
 endmodule

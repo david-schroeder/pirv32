@@ -2,6 +2,9 @@
 // SPDX-FileCopyrightText: David Schröder 2026
 
 #include <stdio.h>
+#include <stdint.h>
+
+static uint8_t *textbuf = 0x0;
 
 static size_t
 stdin_read(FILE *fp, char *bp, size_t n) {
@@ -10,6 +13,9 @@ stdin_read(FILE *fp, char *bp, size_t n) {
 
 static size_t
 stdout_write(FILE *fp, const char *bp, size_t n) {
+    while (n-- > 0) {
+        *(textbuf++) = *(bp++);
+    }
     return n;
 }
 
