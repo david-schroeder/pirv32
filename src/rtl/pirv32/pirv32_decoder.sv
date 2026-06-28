@@ -20,6 +20,7 @@ module pirv32_decoder
     output logic        is_jump_o,
     output logic        is_branch_o,
     output logic        is_multdiv_o,
+    output logic        is_mem_op_o,
 
     output logic [31:0] imm_o,
     output alu_src1_e   alu_src1_o,
@@ -45,6 +46,7 @@ module pirv32_decoder
     assign is_jump_o = opcode == 7'b1101111 || opcode == 7'b1100111;
     assign is_branch_o = opcode == 7'b1100011;
     assign is_multdiv_o = opcode == 7'b0110011 && funct7 == 7'b0000001;
+    assign is_mem_op_o = opcode ==? 7'b0?00011;
 
     always_comb begin
         unique casez ({opcode, funct3})

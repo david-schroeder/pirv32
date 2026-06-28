@@ -51,6 +51,7 @@ module pirv32_core
     logic        is_branch;
     logic        is_multdiv;
     logic        is_mret;
+    logic        is_mem_op;
 
     // ALU + ex stage
     logic [31:0] alu_a;
@@ -59,11 +60,13 @@ module pirv32_core
     alu_src2_e   alu_src2;
     logic        branch_decision;
     logic        div_stall;
+    logic        dbus_stall;
 
     assign stall = is_first_cycle
                  | div_stall
-                 | expect_ibus_rsp && ibus_i.d_valid
-                 | ibus_o.a_valid && !ibus_i.a_ready;
+                 | expect_ibus_rsp && !ibus_i.d_valid
+                 | ibus_o.a_valid && !ibus_i.a_ready
+                 | dbus_stall;
 
     // DTIM
     mem_op_e dtim_op;
@@ -172,7 +175,7 @@ module pirv32_core
         end else begin
             pc <= pc_d;
             is_first_cycle <= '0;
-            expect_ibus_rsp <= ibus_o.a_valid;
+            expect_ibus_rsp <= ibus_o.a_valid | expect_ibus_rsp & ~ibus_i.d_valid;
         end
     end
 
@@ -207,11 +210,6 @@ module pirv32_core
 
     assign instr = ibus_i.d_valid ? ibus_i.d_data : '0;
 
-    assign dbus_o = '{
-        a_opcode: Get,
-        default: '0
-    };
-
     pirv32_decoder decoder_i (
         .instr_i     (instr),
 
@@ -229,6 +227,7 @@ module pirv32_core
         .is_jump_o   (is_jump),
         .is_branch_o (is_branch),
         .is_multdiv_o(is_multdiv),
+        .is_mem_op_o (is_mem_op),
 
         .imm_o       (imm),
         .alu_src1_o  (alu_src1),
@@ -289,16 +288,20 @@ module pirv32_core
         .data_o (shiftout)
     );
 
-    pirv32_dtim #(
-        .LOG_SIZE(15) // 32 KiB
-    ) dtim_i (
+    pirv32_lsu lsu_i (
         .clk_i,
         .rst_ni,
         .data_i      (rs2_fw),
         .address_i   (alu_res),
+        .is_mem_op_i (is_mem_op),
         .op_i        (dtim_op),
         .data_o      (load_data),
-        .misaligned_o(dtim_misaligned)
+        .misaligned_o(dtim_misaligned),
+        .stall_o     (dbus_stall),
+        .stall_i     (stall),
+
+        .tl_o        (dbus_o),
+        .tl_i        (dbus_i)
     );
 
     pirv32_multdiv multdiv_i (

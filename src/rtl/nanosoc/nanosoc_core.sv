@@ -12,6 +12,8 @@ module nanosoc_core (
 
     import tilelink_pkg::*;
 
+    `define STRINGIFY(x) `"x`"
+
     tl_h2d_t ibus_req, dbus_req;
     tl_d2h_t ibus_rsp, dbus_rsp;
 
@@ -25,7 +27,6 @@ module nanosoc_core (
         .dbus_i      (dbus_rsp)
     );
 
-    `define STRINGIFY(x) `"x`"
     nanosoc_ram #(
         .MEMFILE(`STRINGIFY(`INIT_MEM_FILE))
     ) iram_i (
@@ -33,6 +34,15 @@ module nanosoc_core (
         .rst_ni,
         .tl_i  (ibus_req),
         .tl_o  (ibus_rsp)
+    );
+
+    nanosoc_ram #(
+        .MEMFILE(`STRINGIFY(`INIT_MEM_FILE))
+    ) dram_i (
+        .clk_i,
+        .rst_ni,
+        .tl_i  (dbus_req),
+        .tl_o  (dbus_rsp)
     );
 
     always_comb begin
