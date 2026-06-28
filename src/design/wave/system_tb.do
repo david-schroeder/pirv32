@@ -735,8 +735,15 @@ add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_
 add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/valid_ints
 add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/interrupt
 add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/exception
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_seq
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_jump
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_trap
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_d_arch
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_d
+add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/branch_decision
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {777006334 fs} 0}
+WaveRestoreCursors {{Cursor 1} {1391582089 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 346
 configure wave -valuecolwidth 100
@@ -752,4 +759,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {497383305 fs} {1235505860 fs}
+WaveRestoreZoom {1380945334 fs} {1411990823 fs}

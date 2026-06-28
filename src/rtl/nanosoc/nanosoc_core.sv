@@ -18,10 +18,11 @@ module nanosoc_core (
     pirv32_core core_i (
         .clk_i,
         .rst_ni,
-        .ibus_o(ibus_req),
-        .ibus_i(ibus_rsp),
-        .dbus_o(dbus_req),
-        .dbus_i(dbus_rsp)
+        .interrupts_i('0),
+        .ibus_o      (ibus_req),
+        .ibus_i      (ibus_rsp),
+        .dbus_o      (dbus_req),
+        .dbus_i      (dbus_rsp)
     );
 
     `define STRINGIFY(x) `"x`"
