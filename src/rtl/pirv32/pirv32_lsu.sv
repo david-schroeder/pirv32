@@ -59,19 +59,21 @@ module pirv32_lsu
     assign rdata = tl_i.d_valid ? tl_i.d_data : '0;
 
     logic rsp_pending_wb;
+    logic stalled_rsp;
+
+    assign stalled_rsp = rsp_pending_wb & ~tl_i.d_valid;
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) rsp_pending_wb <= '0;
         else begin
-            rsp_pending_wb <= tl_o.a_valid | rsp_pending_wb & ~tl_i.d_valid;
+            rsp_pending_wb <= tl_o.a_valid | stalled_rsp;
         end
     end
 
-    assign stall_o = rsp_pending_wb & ~tl_i.d_valid
-                   | tl_o.a_valid & ~tl_i.a_ready;
+    assign stall_o = stalled_rsp | tl_o.a_valid & ~tl_i.a_ready;
 
     assign tl_o = '{
-        a_valid: is_mem_op_i && !stall_i,
+        a_valid: is_mem_op_i && !stalled_rsp,
         a_opcode: |wmask ? (wmask == 4'hF ? PutFullData : PutPartialData) : Get,
         a_address: {waddr, 2'h0},
         a_size: 2'h2,

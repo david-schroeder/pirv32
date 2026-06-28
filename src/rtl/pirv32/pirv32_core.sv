@@ -29,6 +29,7 @@ module pirv32_core
     logic [31:0] mepc;
     logic [31:0] instr;
     logic        is_first_cycle;
+    logic        stall_except_ibus_req;
     logic        stall;
     logic        expect_ibus_rsp;
 
@@ -62,11 +63,12 @@ module pirv32_core
     logic        div_stall;
     logic        dbus_stall;
 
-    assign stall = is_first_cycle
+    assign stall_except_ibus_req = is_first_cycle
                  | div_stall
                  | expect_ibus_rsp && !ibus_i.d_valid
-                 | ibus_o.a_valid && !ibus_i.a_ready
                  | dbus_stall;
+
+    assign stall = stall_except_ibus_req | ibus_o.a_valid && !ibus_i.a_ready;
 
     // DTIM
     mem_op_e dtim_op;
@@ -198,7 +200,7 @@ module pirv32_core
     // Instruction interface
 
     assign ibus_o = '{
-        a_valid: (~stall | is_first_cycle) & rst_ni,
+        a_valid: (~stall_except_ibus_req | is_first_cycle) & rst_ni,
         a_opcode: Get,
         a_address: pc_d,
         a_data: '0,
