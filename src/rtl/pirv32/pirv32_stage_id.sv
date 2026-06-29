@@ -83,7 +83,7 @@ module pirv32_stage_id
             instr_id <= '0;
             valid_id <= '0;
         end else begin
-            if (ns_ready_i) begin
+            if (ps_ready_o) begin
                 pc_id    <= pc_i;
                 instr_id <= instr_i;
                 valid_id <= ps_valid_i;
@@ -92,7 +92,7 @@ module pirv32_stage_id
     end
 
     // TODO: deassert ns_valid_o on stall, CSR read, fence etc
-    assign ns_valid_o = valid_id;
+    assign ns_valid_o = valid_id && ps_ready_o;
 
     /////////////////
     //             //

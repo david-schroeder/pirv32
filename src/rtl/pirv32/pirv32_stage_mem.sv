@@ -66,7 +66,7 @@ module pirv32_stage_mem
             wb_src_mem    <= ALU;
             ex_result_mem <= '0;
         end else begin
-            if (ns_ready_i) begin
+            if (ps_ready_o) begin
                 valid_mem     <= ps_valid_i;
                 rd_mem        <= rd_i;
                 reg_we_mem    <= reg_we_i;
@@ -76,7 +76,7 @@ module pirv32_stage_mem
         end
     end
 
-    assign ns_valid_o = valid_mem;
+    assign ns_valid_o = valid_mem && ps_ready_o;
 
     /////////////////
     //             //

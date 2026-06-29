@@ -106,7 +106,7 @@ module pirv32_stage_ex
             reg_we_ex      <= '0;
             wb_src_ex      <= ALU;
         end else begin
-            if (ns_ready_i) begin
+            if (ps_ready_o) begin
                 valid_ex       <= ps_valid_i;
                 pc_ex          <= pc_i;
                 ra1_ex         <= ra1_i;
@@ -128,7 +128,7 @@ module pirv32_stage_ex
         end
     end
 
-    assign ns_valid_o = valid_ex;
+    assign ns_valid_o = valid_ex && ps_ready_o;
 
     /////////////////
     //             //

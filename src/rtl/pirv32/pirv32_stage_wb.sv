@@ -61,11 +61,13 @@ module pirv32_stage_wb
             wb_src_wb    <= ALU;
             ex_result_wb <= '0;
         end else begin
-            valid_wb     <= ps_valid_i;
-            rd_wb        <= rd_i;
-            reg_we_wb    <= reg_we_i;
-            wb_src_wb    <= wb_src_i;
-            ex_result_wb <= ex_result_i;
+            if (ps_ready_o) begin
+                valid_wb     <= ps_valid_i;
+                rd_wb        <= rd_i;
+                reg_we_wb    <= reg_we_i;
+                wb_src_wb    <= wb_src_i;
+                ex_result_wb <= ex_result_i;
+            end
         end
     end
 
