@@ -17,8 +17,8 @@ module pirv32_stage_mem
     output tl_h2d_t dbus_o
 );
 
-    //logic stage_ready;
-    //assign stage_ready = '1;
-    //assign ps_ready_o = ns_ready_i & stage_ready;
+    logic stage_ready;
+    assign stage_ready = '1;
+    assign ps_ready_o = ns_ready_i & stage_ready;
 
 endmodule

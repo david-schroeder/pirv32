@@ -12,11 +12,138 @@ module pirv32_stage_id
     input  logic ps_valid_i,
     output logic ps_ready_o,
     output logic ns_valid_o,
-    input  logic ns_ready_i
+    input  logic ns_ready_i,
+
+    // IF inputs
+    input  logic [31:0] interrupts_i,
+    input  logic [31:0] pc_i,
+    input  logic [31:0] instr_i,
+
+    // EX control signals
+    output logic [31:0] reg_rs1_o,
+    output logic [31:0] reg_rs2_o,
+    output logic [31:0] imm_o,
+    output logic [31:0] pc_o,
+    output alu_src1_e   alu_src1_o,
+    output alu_src2_e   alu_src2_o,
+    output alu_op_e     alu_op_o,
+    output shift_op_e   shift_op_o,
+    output branch_e     branch_o,
+    output multdiv_op_e multdiv_op_o,
+    output logic        is_multdiv_o,
+
+    // MEM control signals
+    output mem_op_e     mem_op_o,
+    output logic        is_mem_op_o,
+
+    // WB control signals
+    output logic [ 4:0] rd_o,
+    output logic        reg_we_o,
+    output wb_src_e     wb_src_o,
+
+    // Register write port
+    input  logic [ 4:0] rd_i,
+    input  logic [31:0] reg_wdata_i,
+    input  logic        reg_we_i
 );
 
-    //logic stage_ready;
-    //assign stage_ready = '1;
-    //assign ps_ready_o = ns_ready_i & stage_ready;
+    logic stage_ready;
+    assign stage_ready = '1;
+    assign ps_ready_o = ns_ready_i & stage_ready;
+
+    /////////////
+    //         //
+    // Signals //
+    //         //
+    /////////////
+
+    logic [ 4:0] ra1;
+    logic [ 4:0] ra2;
+    logic [31:0] imm;
+    logic [31:0] csr_rdata;
+
+    logic        is_jump;
+    logic        is_branch;
+
+    ////////////////////
+    //                //
+    // IF <-> ID Regs //
+    //                //
+    ////////////////////
+
+    logic [31:0] pc_id;
+    logic [31:0] instr_id;
+    logic        valid_id;
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            pc_id    <= '0;
+            instr_id <= '0;
+            valid_id <= '0;
+        end else begin
+            if (ns_ready_i) begin
+                pc_id    <= pc_i;
+                instr_id <= instr_i;
+                valid_id <= ps_valid_i;
+            end
+        end
+    end
+
+    // TODO: deassert ns_valid_o on stall, CSR read, fence etc
+    assign ns_valid_o = valid_id;
+
+    /////////////////
+    //             //
+    // Stage Logic //
+    //             //
+    /////////////////
+
+    assign pc_o = pc_id;
+
+    ///////////////////
+    //               //
+    // Instantiation //
+    //               //
+    ///////////////////
+
+    pirv32_decoder decoder_i (
+        .instr_i     (instr_id),
+
+        .rs1_adr_o   (ra1),
+        .rs2_adr_o   (ra2),
+        .rd_adr_o    (rd_o),
+        .reg_we_o    (reg_we_o),
+
+        .alu_op_o,
+        .shift_op_o,
+        .mem_op_o,
+        .branch_o,
+        .multdiv_op_o,
+
+        .is_jump_o   (is_jump),
+        .is_branch_o (is_branch),
+        .is_multdiv_o,
+        .is_mem_op_o,
+
+        .imm_o,
+        .alu_src1_o,
+        .alu_src2_o,
+        .wb_src_o
+    );
+
+    pirv32_regfile regfile_i (
+        .clk_i,
+
+        .raddr1_i(ra1),
+        .raddr2_i(ra2),
+        .rdata1_o(reg_rs1_o),
+        .rdata2_o(reg_rs2_o),
+        .waddr_i (rd_i),
+        .wen_i   (reg_we_i),
+        .wdata_i (reg_wdata_i)
+    );
+
+    //TODO: rework privileged unit for full pipeline
+    //pirv32_privileged priv_i ();
 
 endmodule

@@ -15,6 +15,6 @@ module pirv32_stage_wb
     input  tl_d2h_t dbus_i
 );
 
-    //assign ps_ready_o = '1;
+    assign ps_ready_o = '1;
 
 endmodule
