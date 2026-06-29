@@ -20,6 +20,8 @@ module pirv32_stage_id
     input  logic [31:0] instr_i,
 
     // EX control signals
+    output logic [ 4:0] reg_ra1_o,
+    output logic [ 4:0] reg_ra2_o,
     output logic [31:0] reg_rs1_o,
     output logic [31:0] reg_rs2_o,
     output logic [31:0] imm_o,
@@ -99,6 +101,8 @@ module pirv32_stage_id
     /////////////////
 
     assign pc_o = pc_id;
+    assign reg_ra1_o = ra1;
+    assign reg_ra2_o = ra2;
 
     ///////////////////
     //               //

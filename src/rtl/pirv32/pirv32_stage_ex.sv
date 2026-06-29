@@ -16,6 +16,8 @@ module pirv32_stage_ex
 
     // ID stage inputs
     input  logic [31:0] pc_i,
+    input  logic [ 4:0] ra1_i,
+    input  logic [ 4:0] ra2_i,
     input  logic [31:0] rs1_i,
     input  logic [31:0] rs2_i,
     input  logic [31:0] imm_i,
@@ -25,7 +27,24 @@ module pirv32_stage_ex
     input  shift_op_e   shift_op_i,
     input  branch_e     branch_i,
     input  multdiv_op_e multdiv_op_i,
-    input  logic        is_multdiv_i
+    input  logic        is_multdiv_i,
+    input  logic [ 4:0] rd_i,
+    input  logic        reg_we_i,
+    input  wb_src_e     wb_src_i,
+
+    // Forwarding inputs
+    input  logic        fw_valid_mem_i,
+    input  logic [ 4:0] fw_rd_mem_i,
+    input  logic [31:0] fw_data_mem_i,
+    input  logic        fw_valid_wb_i,
+    input  logic [ 4:0] fw_rd_wb_i,
+    input  logic [31:0] fw_data_wb_i,
+
+    // MEM stage outputs
+    output logic [ 4:0] rd_o,
+    output logic        reg_we_o,
+    output wb_src_e     wb_src_o,
+    output logic [31:0] result_o
 );
 
     logic stage_ready;
@@ -37,8 +56,13 @@ module pirv32_stage_ex
     //         //
     /////////////
 
+    logic [31:0] rs1_fw, rs2_fw;
     logic [31:0] operand_a, operand_b;
     logic        div_stall;
+
+    logic [31:0] alu_result;
+    logic [31:0] shifter_result;
+    logic [31:0] multdiv_result;
 
     ////////////////////
     //                //
@@ -48,6 +72,7 @@ module pirv32_stage_ex
 
     logic        valid_ex;
     logic [31:0] pc_ex;
+    logic [ 4:0] ra1_ex, ra2_ex;
     logic [31:0] rs1_ex, rs2_ex;
     logic [31:0] imm_ex;
     alu_src1_e   alu_src1_ex;
@@ -57,11 +82,16 @@ module pirv32_stage_ex
     branch_e     branch_type_ex;
     multdiv_op_e multdiv_op_ex;
     logic        is_multdiv_ex;
+    logic [ 4:0] rd_ex;
+    logic        reg_we_ex;
+    wb_src_e     wb_src_ex;
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             valid_ex       <= '0;
             pc_ex          <= '0;
+            ra1_ex         <= '0;
+            ra2_ex         <= '0;
             rs1_ex         <= '0;
             rs2_ex         <= '0;
             imm_ex         <= '0;
@@ -72,10 +102,15 @@ module pirv32_stage_ex
             branch_type_ex <= BEQ;
             multdiv_op_ex  <= MUL;
             is_multdiv_ex  <= '0;
+            rd_ex          <= '0;
+            reg_we_ex      <= '0;
+            wb_src_ex      <= ALU;
         end else begin
             if (ns_ready_i) begin
                 valid_ex       <= ps_valid_i;
                 pc_ex          <= pc_i;
+                ra1_ex         <= ra1_i;
+                ra2_ex         <= ra2_i;
                 rs1_ex         <= rs1_i;
                 rs2_ex         <= rs2_i;
                 imm_ex         <= imm_i;
@@ -86,6 +121,9 @@ module pirv32_stage_ex
                 branch_type_ex <= branch_i;
                 multdiv_op_ex  <= multdiv_op_i;
                 is_multdiv_ex  <= is_multdiv_i;
+                rd_ex          <= rd_i;
+                reg_we_ex      <= reg_we_i;
+                wb_src_ex      <= wb_src_i;
             end
         end
     end
@@ -99,19 +137,46 @@ module pirv32_stage_ex
     /////////////////
 
     always_comb begin
+        // RS1 forwarder
+        priority case (1'b1)
+            fw_valid_mem_i && fw_rd_mem_i == ra1_ex: rs1_fw = fw_data_mem_i;
+            fw_valid_wb_i && fw_rd_wb_i == ra1_ex: rs1_fw = fw_data_wb_i;
+            default: rs1_fw = rs1_ex;
+        endcase
+
+        // RS2 forwarder
+        priority case (1'b1)
+            fw_valid_mem_i && fw_rd_mem_i == ra2_ex: rs2_fw = fw_data_mem_i;
+            fw_valid_wb_i && fw_rd_wb_i == ra2_ex: rs2_fw = fw_data_wb_i;
+            default: rs2_fw = rs2_ex;
+        endcase
+
+        // Operand A mux
         unique case (alu_src1_ex)
-            RS1 : operand_a = rs1_ex;
+            RS1 : operand_a = rs1_fw;
             PC  : operand_a = pc_ex;
             ZERO: operand_a = '0;
         endcase
 
+        // Operand B mux
         unique case (alu_src2_ex)
-            RS2: operand_b = rs2_ex;
+            RS2: operand_b = rs2_fw;
             IMM: operand_b = imm_ex;
+        endcase
+
+        // Result mux
+        unique case (wb_src_ex)
+            SHIFTER: result_o = shifter_result;
+            MULTDIV: result_o = multdiv_result;
+            default: result_o = alu_result;
         endcase
     end
 
     assign stage_ready = ~div_stall;
+
+    assign rd_o     = rd_ex;
+    assign reg_we_o = reg_we_ex;
+    assign wb_src_o = wb_src_ex;
 
     ///////////////////
     //               //
@@ -123,7 +188,7 @@ module pirv32_stage_ex
         .a_i          (operand_a),
         .b_i          (operand_b),
         .op_i         (alu_op_ex),
-        .res_o        (),
+        .res_o        (alu_result),
         .branch_i     (branch_type_ex),
         .take_branch_o()
     );
@@ -132,7 +197,7 @@ module pirv32_stage_ex
         .data_i (operand_a),
         .shamt_i(operand_b),
         .op_i   (shift_op_ex),
-        .data_o ()
+        .data_o (shifter_result)
     );
 
     pirv32_multdiv multdiv_i (
@@ -141,7 +206,7 @@ module pirv32_stage_ex
 
         .rs1_i       (rs1_ex),
         .rs2_i       (rs2_ex),
-        .result_o    (),
+        .result_o    (multdiv_result),
         .op_i        (multdiv_op_ex),
         .is_multdiv_i(is_multdiv_ex),
         .div_stall_o (div_stall)
