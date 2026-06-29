@@ -584,8 +584,8 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider Toplevel
 add wave -noupdate /system_tb/board_i/DUT/core_i/clk_i
 add wave -noupdate /system_tb/board_i/DUT/core_i/rst_ni
-add wave -noupdate /system_tb/board_i/DUT/core_i/ibus_req
-add wave -noupdate /system_tb/board_i/DUT/core_i/ibus_rsp
+add wave -noupdate -expand /system_tb/board_i/DUT/core_i/ibus_req
+add wave -noupdate -expand /system_tb/board_i/DUT/core_i/ibus_rsp
 add wave -noupdate /system_tb/board_i/DUT/core_i/dbus_req
 add wave -noupdate /system_tb/board_i/DUT/core_i/dbus_rsp
 add wave -noupdate /system_tb/board_i/DUT/core_i/io_i
@@ -608,9 +608,11 @@ add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/pc
 add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/pc_d
 add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/is_first_cycle
 add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/stall
+add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/stall_q
 add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/div_stall
 add wave -noupdate -divider {Instruction Decoding}
-add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/core_i/instr
+add wave -noupdate -radix riscv_instr -childformat {{{/system_tb/board_i/DUT/core_i/core_i/instr[31]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[30]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[29]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[28]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[27]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[26]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[25]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[24]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[23]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[22]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[21]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[20]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[19]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[18]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[17]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[16]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[15]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[14]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[13]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[12]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[11]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[10]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[9]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[8]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[7]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[6]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[5]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[4]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[3]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[2]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[1]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[0]} -radix riscv_instr}} -subitemconfig {{/system_tb/board_i/DUT/core_i/core_i/instr[31]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[30]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[29]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[28]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[27]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[26]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[25]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[24]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[23]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[22]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[21]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[20]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[19]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[18]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[17]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[16]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[15]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[14]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[13]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[12]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[11]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[10]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[9]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[8]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[7]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[6]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[5]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[4]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[3]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[2]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[1]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[0]} {-height 14 -radix riscv_instr}} /system_tb/board_i/DUT/core_i/core_i/instr
+add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/core_i/instr_q
 add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/opcode
 add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/funct3
 add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/funct7
@@ -749,7 +751,7 @@ add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_d
 add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_d
 add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/branch_decision
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1474258867 fs} 0}
+WaveRestoreCursors {{Cursor 1} {3097447100 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 346
 configure wave -valuecolwidth 100
@@ -765,4 +767,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 fs} {19626661395 fs}
+WaveRestoreZoom {5700444832 fs} {5931945390 fs}

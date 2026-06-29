@@ -80,7 +80,7 @@ module pirv32_lsu
         a_mask: wmask == 4'h0 ? 4'hF : wmask, // 4'hF for reads
         a_data: wdata,
         a_source: tl_i.d_source == '0 ? 8'd1 : '0,
-        d_ready: '1
+        d_ready: rsp_pending_wb
     };
 
     /* Load logic */
@@ -93,8 +93,10 @@ module pirv32_lsu
             word_offset_q <= '0;
             op_q <= LB;
         end else begin
-            word_offset_q <= address_i[1:0];
-            op_q <= op_i;
+            if (~stall_i) begin
+                word_offset_q <= address_i[1:0];
+                op_q <= op_i;
+            end
         end
     end
 

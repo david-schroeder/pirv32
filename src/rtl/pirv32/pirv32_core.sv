@@ -28,9 +28,11 @@ module pirv32_core
     logic [31:0] pc_d;
     logic [31:0] mepc;
     logic [31:0] instr;
+    logic [31:0] instr_q;
     logic        is_first_cycle;
     logic        stall_except_ibus_req;
     logic        stall;
+    logic        stall_q;
     logic        expect_ibus_rsp;
 
     assign pc_seq = pc + 4;
@@ -64,11 +66,11 @@ module pirv32_core
     logic        dbus_stall;
 
     assign stall_except_ibus_req = is_first_cycle
-                 | div_stall
-                 | expect_ibus_rsp && !ibus_i.d_valid
-                 | dbus_stall;
+                 || div_stall
+                 || expect_ibus_rsp && !ibus_i.d_valid
+                 || dbus_stall;
 
-    assign stall = stall_except_ibus_req | ibus_o.a_valid && !ibus_i.a_ready;
+    assign stall = stall_except_ibus_req || ibus_o.a_valid && !ibus_i.a_ready;
 
     // DTIM
     mem_op_e dtim_op;
@@ -136,14 +138,16 @@ module pirv32_core
             rd_q          <= '0;
             wb_src_q      <= ALU;
         end else begin
-            alu_res_q     <= alu_res;
-            shiftout_q    <= shiftout;
-            pc_seq_q      <= pc_seq;
-            csr_rdata_q   <= csr_rdata;
-            multdiv_res_q <= multdiv_res;
-            wb_we_q       <= wb_we & commit;
-            rd_q          <= rd;
-            wb_src_q      <= wb_src;
+            if (!stall) begin
+                alu_res_q     <= alu_res;
+                shiftout_q    <= shiftout;
+                pc_seq_q      <= pc_seq;
+                csr_rdata_q   <= csr_rdata;
+                multdiv_res_q <= multdiv_res;
+                wb_we_q       <= wb_we;
+                rd_q          <= rd;
+                wb_src_q      <= wb_src;
+            end
         end
     end
 
@@ -210,7 +214,17 @@ module pirv32_core
         d_ready: '1
     };
 
-    assign instr = ibus_i.d_valid ? ibus_i.d_data : '0;
+    assign instr = stall_q ? instr_q : (ibus_i.d_valid ? ibus_i.d_data : '0);
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            instr_q <= '0;
+            stall_q <= '0;
+        end else begin
+            stall_q <= stall;
+            if (~stall_q) instr_q <= instr;
+        end
+    end
 
     pirv32_decoder decoder_i (
         .instr_i     (instr),
@@ -244,7 +258,7 @@ module pirv32_core
         .raddr2_i(ra2),
         .rdata2_o(rs2),
         .waddr_i (rd_q),
-        .wen_i   (wb_we_q),
+        .wen_i   (wb_we_q & commit),
         .wdata_i (wb_data)
     );
 
