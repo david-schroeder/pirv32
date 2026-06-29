@@ -153,15 +153,15 @@ module pirv32_stage_ex
 
         // Operand A mux
         unique case (alu_src1_ex)
-            RS1 : operand_a = rs1_fw;
-            PC  : operand_a = pc_ex;
-            ZERO: operand_a = '0;
+            RS1: operand_a = rs1_fw;
+            PC : operand_a = pc_ex;
+            default: operand_a = '0;
         endcase
 
         // Operand B mux
         unique case (alu_src2_ex)
             RS2: operand_b = rs2_fw;
-            IMM: operand_b = imm_ex;
+            default: operand_b = imm_ex;
         endcase
 
         // Result mux

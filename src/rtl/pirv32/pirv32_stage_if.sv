@@ -37,7 +37,7 @@ module pirv32_stage_if
         end else begin
             if (ns_ready_i) begin
                 pc_q <= pc_d;
-                instr_o <= instr_mem[pc_d];
+                instr_o <= instr_mem[pc_d[31:2]];
                 ns_valid_o <= '1;
             end
         end

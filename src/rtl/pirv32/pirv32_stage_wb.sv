@@ -76,10 +76,10 @@ module pirv32_stage_wb
     /////////////////
 
     always_comb begin
-        unique case (wb_src_i)
+        unique case (wb_src_wb)
             ALU,
             SHIFTER,
-            MULTDIV: wb_data = ex_result_i;
+            MULTDIV: wb_data = ex_result_wb;
             default: wb_data = '0;
         endcase
     end

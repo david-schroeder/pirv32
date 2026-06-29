@@ -19,13 +19,13 @@ module pirv32_alu
 
     always_comb begin
         unique case (op_i)
-            ADD : res_o = a_i + b_i;
             SUB : res_o = a_i - b_i;
             XOR : res_o = a_i ^ b_i;
             OR  : res_o = a_i | b_i;
             AND : res_o = a_i & b_i;
             SLT : res_o = {31'h0, lt};
             SLTU: res_o = {31'h0, ltu};
+            default: res_o = a_i + b_i;
         endcase
 
         unique case (branch_i)

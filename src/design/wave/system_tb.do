@@ -584,174 +584,79 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider Toplevel
 add wave -noupdate /system_tb/board_i/DUT/core_i/clk_i
 add wave -noupdate /system_tb/board_i/DUT/core_i/rst_ni
-add wave -noupdate -expand /system_tb/board_i/DUT/core_i/ibus_req
-add wave -noupdate -expand /system_tb/board_i/DUT/core_i/ibus_rsp
-add wave -noupdate /system_tb/board_i/DUT/core_i/dbus_req
-add wave -noupdate /system_tb/board_i/DUT/core_i/dbus_rsp
-add wave -noupdate /system_tb/board_i/DUT/core_i/io_i
-add wave -noupdate /system_tb/board_i/DUT/core_i/io_o
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/interrupts_i
-add wave -noupdate /system_tb/board_i/DUT/core_i/dram_i/mem
-add wave -noupdate -divider {CPU State}
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mstatus_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mscratch_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mip_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mie_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mtvec_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mtval_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mcause_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mepc_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mcycle_q
-add wave -noupdate -group CSRs /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/minstret_q
-add wave -noupdate -label Regs /system_tb/board_i/DUT/core_i/core_i/regfile_i/mem
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/pc
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/pc_d
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/is_first_cycle
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/stall
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/stall_q
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/div_stall
-add wave -noupdate -divider {Instruction Decoding}
-add wave -noupdate -radix riscv_instr -childformat {{{/system_tb/board_i/DUT/core_i/core_i/instr[31]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[30]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[29]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[28]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[27]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[26]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[25]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[24]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[23]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[22]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[21]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[20]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[19]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[18]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[17]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[16]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[15]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[14]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[13]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[12]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[11]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[10]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[9]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[8]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[7]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[6]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[5]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[4]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[3]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[2]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[1]} -radix riscv_instr} {{/system_tb/board_i/DUT/core_i/core_i/instr[0]} -radix riscv_instr}} -subitemconfig {{/system_tb/board_i/DUT/core_i/core_i/instr[31]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[30]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[29]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[28]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[27]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[26]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[25]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[24]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[23]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[22]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[21]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[20]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[19]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[18]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[17]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[16]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[15]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[14]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[13]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[12]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[11]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[10]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[9]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[8]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[7]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[6]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[5]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[4]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[3]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[2]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[1]} {-height 14 -radix riscv_instr} {/system_tb/board_i/DUT/core_i/core_i/instr[0]} {-height 14 -radix riscv_instr}} /system_tb/board_i/DUT/core_i/core_i/instr
-add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/core_i/instr_q
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/opcode
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/funct3
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/funct7
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/instr_type
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/rs1_adr_o
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/rs2_adr_o
-add wave -noupdate -group {Major Decoding} /system_tb/board_i/DUT/core_i/core_i/decoder_i/rd_adr_o
-add wave -noupdate -group {Component Operations} /system_tb/board_i/DUT/core_i/core_i/decoder_i/alu_op_o
-add wave -noupdate -group {Component Operations} /system_tb/board_i/DUT/core_i/core_i/decoder_i/shift_op_o
-add wave -noupdate -group {Component Operations} /system_tb/board_i/DUT/core_i/core_i/decoder_i/mem_op_o
-add wave -noupdate -group {Component Operations} /system_tb/board_i/DUT/core_i/core_i/decoder_i/branch_o
-add wave -noupdate -group {Component Operations} /system_tb/board_i/DUT/core_i/core_i/decoder_i/multdiv_op_o
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/decoder_i/is_jump_o
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/decoder_i/is_branch_o
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/decoder_i/is_multdiv_o
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/priv_i/ecall
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/priv_i/ebreak
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/priv_i/mret
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/priv_i/privdec_i/is_system
-add wave -noupdate -group {1Hot Instruction types} /system_tb/board_i/DUT/core_i/core_i/priv_i/privdec_i/is_csr_op
-add wave -noupdate -group {Datapath MUXes} /system_tb/board_i/DUT/core_i/core_i/decoder_i/alu_src1_o
-add wave -noupdate -group {Datapath MUXes} /system_tb/board_i/DUT/core_i/core_i/decoder_i/alu_src2_o
-add wave -noupdate -group {Datapath MUXes} /system_tb/board_i/DUT/core_i/core_i/decoder_i/wb_src_o
-add wave -noupdate -group {Other Control signals} /system_tb/board_i/DUT/core_i/core_i/decoder_i/reg_we_o
-add wave -noupdate -group {Other Control signals} /system_tb/board_i/DUT/core_i/core_i/decoder_i/imm_o
-add wave -noupdate -divider {Execution Phase}
-add wave -noupdate -group {RS1 Forwarder} /system_tb/board_i/DUT/core_i/core_i/rs1
-add wave -noupdate -group {RS1 Forwarder} /system_tb/board_i/DUT/core_i/core_i/fw_rs1_from_wb
-add wave -noupdate -group {RS1 Forwarder} /system_tb/board_i/DUT/core_i/core_i/rs1_fw
-add wave -noupdate -group {RS2 Forwarder} /system_tb/board_i/DUT/core_i/core_i/rs2
-add wave -noupdate -group {RS2 Forwarder} /system_tb/board_i/DUT/core_i/core_i/fw_rs2_from_wb
-add wave -noupdate -group {RS2 Forwarder} /system_tb/board_i/DUT/core_i/core_i/rs2_fw
-add wave -noupdate -group ALU /system_tb/board_i/DUT/core_i/core_i/alu_i/op_i
-add wave -noupdate -group ALU /system_tb/board_i/DUT/core_i/core_i/alu_a
-add wave -noupdate -group ALU /system_tb/board_i/DUT/core_i/core_i/alu_b
-add wave -noupdate -group ALU /system_tb/board_i/DUT/core_i/core_i/alu_res
-add wave -noupdate -group ALU /system_tb/board_i/DUT/core_i/core_i/branch_decision
-add wave -noupdate -group Shifter /system_tb/board_i/DUT/core_i/core_i/shifter_i/data_i
-add wave -noupdate -group Shifter /system_tb/board_i/DUT/core_i/core_i/shifter_i/shamt_i
-add wave -noupdate -group Shifter /system_tb/board_i/DUT/core_i/core_i/shifter_i/op_i
-add wave -noupdate -group Shifter /system_tb/board_i/DUT/core_i/core_i/shifter_i/data_o
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/data_i
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/address_i
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/is_mem_op_i
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/op_i
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/data_o
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/misaligned_o
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/stall_i
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/stall_o
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/tl_o
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/tl_i
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/waddr
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/wdata
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/wmask
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/rdata
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/rsp_pending_wb
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/word_offset_q
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/op_q
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/sel_halfword
-add wave -noupdate -expand -group LSU /system_tb/board_i/DUT/core_i/core_i/lsu_i/sel_byte
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/rs1_i
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/rs2_i
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/result_o
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/op_i
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/is_multdiv_i
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/div_stall_o
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/mult_result_full
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/mult_a
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/mult_b
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/div_active
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/div_start
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/div_finish
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/fast_div
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/div_signed
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/quot_sign
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/rem_sign
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/div_shifts_remaining
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/numerator
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/denominator
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/quotient
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/quotient_d
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/remainder
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/remainder_d
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/signed_quot
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/signed_rem
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/rem_shifted
-add wave -noupdate -group Multiplier/Divider /system_tb/board_i/DUT/core_i/core_i/multdiv_i/skip_subtraction
-add wave -noupdate -divider Writeback
-add wave -noupdate -group {Component Outputs} /system_tb/board_i/DUT/core_i/core_i/alu_res_q
-add wave -noupdate -group {Component Outputs} /system_tb/board_i/DUT/core_i/core_i/shiftout_q
-add wave -noupdate -group {Component Outputs} /system_tb/board_i/DUT/core_i/core_i/pc_seq_q
-add wave -noupdate -group {Component Outputs} /system_tb/board_i/DUT/core_i/core_i/csr_rdata_q
-add wave -noupdate -group {Component Outputs} /system_tb/board_i/DUT/core_i/core_i/multdiv_res_q
-add wave -noupdate -group {Component Outputs} /system_tb/board_i/DUT/core_i/core_i/load_data
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/wb_data
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/wb_we_q
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/rd_q
-add wave -noupdate /system_tb/board_i/DUT/core_i/core_i/wb_src_q
-add wave -noupdate -divider {Control + Status}
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mstatus_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mtvec_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mie_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mip_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mscratch_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mepc_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mcause_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mtval_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/mcycle_q
-add wave -noupdate -group {CSR Values} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/minstret_q
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/read_en_i
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/write_en_i
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/csr_sel_i
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/op_i
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/operand_i
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/rdata_o
-add wave -noupdate -group {CSR File} /system_tb/board_i/DUT/core_i/core_i/priv_i/csrfile_i/csr_wdata
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/ext_ints_i
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/pc_i
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/next_arch_pc_i
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/ecall_i
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/ebreak_i
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/dtim_misaligned_i
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/trap_o
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/cause_o
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/trap_pc_o
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/trap_val_o
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/epc_o
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/valid_ints
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/interrupt
-add wave -noupdate -group {Trap Unit} /system_tb/board_i/DUT/core_i/core_i/priv_i/trap_i/exception
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_seq
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_jump
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_trap
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_d_arch
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/pc_d
-add wave -noupdate -group {PC routing} /system_tb/board_i/DUT/core_i/core_i/branch_decision
+add wave -noupdate -divider {CPU Toplevel}
+add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/if_stage_valid
+add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_valid
+add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_valid
+add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_valid
+add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_ready
+add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_ready
+add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_ready
+add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_ready
+add wave -noupdate -divider {IF Stage}
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_q
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_d
+add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/instr_o
+add wave -noupdate -divider {ID Stage}
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/pc_id
+add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/instr_id
+add wave -noupdate -label Registers /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/regfile_i/mem
+add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_ra1_o
+add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_ra2_o
+add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/rd_o
+add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_rs1_o
+add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_rs2_o
+add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/imm_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_src1_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_src2_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_op_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/shift_op_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/branch_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/multdiv_op_o
+add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/mem_op_o
+add wave -noupdate -group {WB Control Signals} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/rd_o
+add wave -noupdate -group {WB Control Signals} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_we_o
+add wave -noupdate -group {WB Control Signals} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/wb_src_o
+add wave -noupdate -divider {EX Stage}
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/pc_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/ra1_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/ra2_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/rs1_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/rs2_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/imm_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/alu_src1_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/alu_src2_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/alu_op_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/shift_op_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/branch_type_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/multdiv_op_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/is_multdiv_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/rd_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/reg_we_ex
+add wave -noupdate -expand -group {ID -> EX Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/wb_src_ex
+add wave -noupdate -group {Operation results} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/alu_result
+add wave -noupdate -group {Operation results} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/shifter_result
+add wave -noupdate -group {Operation results} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/multdiv_result
+add wave -noupdate -group {Operation results} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/result_o
+add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_valid_mem_i
+add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_rd_mem_i
+add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_data_mem_i
+add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_valid_wb_i
+add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_rd_wb_i
+add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_data_wb_i
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/div_stall
+add wave -noupdate -divider {MEM Stage}
+add wave -noupdate -divider {WB Stage}
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/wb_data
+add wave -noupdate -expand -group {MEM -> WB Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/rd_wb
+add wave -noupdate -expand -group {MEM -> WB Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_wb
+add wave -noupdate -expand -group {MEM -> WB Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/wb_src_wb
+add wave -noupdate -expand -group {MEM -> WB Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/ex_result_wb
+add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_rd_o
+add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_o
+add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_wdata_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3097447100 fs} 0}
+WaveRestoreCursors {{Cursor 1} {629871776 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 346
 configure wave -valuecolwidth 100
@@ -767,4 +672,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {5700444832 fs} {5931945390 fs}
+WaveRestoreZoom {588862687 fs} {649117270 fs}
