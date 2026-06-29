@@ -49,6 +49,8 @@ module pirv32_multdiv
     logic [31:0] denominator;
     logic [31:0] quotient, quotient_d;
     logic [31:0] remainder, remainder_d;
+    logic [31:0] result_quotient;
+    logic [31:0] result_remainder;
     logic [31:0] signed_quot, signed_rem;
     logic [31:0] rem_shifted;
     logic        skip_subtraction;
@@ -66,13 +68,14 @@ module pirv32_multdiv
     assign div_signed = op_i == DIV || op_i == REM;
     assign numerator = div_signed && rs1_i[31] ? -rs1_i : rs1_i;
     assign denominator = div_signed && rs2_i[31] ? -rs2_i : rs2_i;
-    assign rem_shifted = {remainder[30:0], numerator[div_shifts_remaining]};
-    assign skip_subtraction = rem_shifted < denominator;
     assign fast_div = numerator[31:16] == '0;
-    assign remainder_d = skip_subtraction ? rem_shifted : rem_shifted - denominator;
-    assign quotient_d = {quotient[30:0], ~skip_subtraction};
     assign quot_sign = rs1_i[31] ^ rs2_i[31];
     assign rem_sign = rs1_i[31];
+
+    assign rem_shifted = {remainder[30:0], numerator[div_shifts_remaining]};
+    assign skip_subtraction = rem_shifted < denominator;
+    assign remainder_d = skip_subtraction ? rem_shifted : rem_shifted - denominator;
+    assign quotient_d = {quotient[30:0], ~skip_subtraction};
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
@@ -80,6 +83,8 @@ module pirv32_multdiv
             div_shifts_remaining <= '1; // 31
             quotient <= '0;
             remainder <= '0;
+            result_quotient <= '0;
+            result_remainder <= '0;
         end else begin
             if (div_start | div_active) begin
                 remainder <= remainder_d;
@@ -92,16 +97,19 @@ module pirv32_multdiv
                 end
             end
             if (div_finish) begin
+                result_quotient <= quotient_d;
+                result_remainder <= remainder_d;
                 remainder <= '0;
                 quotient <= '0;
+                if (div_active) div_shifts_remaining <= '0;
             end
         end
     end
 
     assign div_finish = div_shifts_remaining == '0;
-    assign div_stall_o = (div_start | div_active) & ~div_finish;
-    assign signed_quot = quot_sign ? -quotient_d : quotient_d;
-    assign signed_rem = rem_sign ? -remainder_d : remainder_d;
+    assign div_stall_o = div_start & ~div_finish | div_active;
+    assign signed_quot = quot_sign ? -result_quotient : result_quotient;
+    assign signed_rem = rem_sign ? -result_remainder : result_remainder;
 
     /* Result mux */
     always_comb begin
@@ -111,9 +119,9 @@ module pirv32_multdiv
             MULHSU,
             MULHU: result_o = mult_result_full[63:32];
             DIV: result_o = signed_quot;
-            DIVU: result_o = quotient_d;
+            DIVU: result_o = result_quotient;
             REM: result_o = signed_rem;
-            REMU: result_o = remainder_d;
+            REMU: result_o = result_remainder;
             default: result_o = '0;
         endcase
     end
