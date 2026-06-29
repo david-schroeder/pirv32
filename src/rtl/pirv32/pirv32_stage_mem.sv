@@ -88,7 +88,11 @@ module pirv32_stage_mem
     assign reg_we_o    = reg_we_mem;
     assign wb_src_o    = wb_src_mem;
     assign reg_wdata_o = ex_result_mem;
-    assign dbus_o      = '{a_opcode: Get, default: '0};
+    assign dbus_o      = '{
+        a_opcode: Get,
+        a_address: reg_wdata_o,
+        default: '0
+    };
 
     assign fw_valid_o  = rd_mem != '0 && reg_we_mem && valid_mem;
     assign fw_rd_o     = rd_mem;

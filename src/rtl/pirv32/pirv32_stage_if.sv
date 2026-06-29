@@ -27,6 +27,11 @@ module pirv32_stage_if
     assign pc_d = pc_q + 4;
     assign pc_o = pc_q;
 
+    assign ibus_o = '{
+        a_opcode: Get,
+        default : '0
+    };
+
     reg [31:0] instr_mem [8191:0];
 
     always_ff @(posedge clk_i or negedge rst_ni) begin

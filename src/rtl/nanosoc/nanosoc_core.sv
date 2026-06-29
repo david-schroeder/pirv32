@@ -48,10 +48,10 @@ module nanosoc_core (
     always_comb begin
         io_o = '{default: '0};
         unique case (io_i.switch[1:0])
-            2'b00: io_o.led = ibus_req.a_address[ 7: 0];
-            2'b01: io_o.led = ibus_req.a_address[15: 8];
-            2'b10: io_o.led = ibus_req.a_address[23:16];
-            2'b11: io_o.led = ibus_req.a_address[31:24];
+            2'b00: io_o.led = dbus_req.a_address[ 7: 0];
+            2'b01: io_o.led = dbus_req.a_address[15: 8];
+            2'b10: io_o.led = dbus_req.a_address[23:16];
+            2'b11: io_o.led = dbus_req.a_address[31:24];
         endcase
     end
 
