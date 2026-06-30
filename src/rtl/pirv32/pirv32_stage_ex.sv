@@ -26,11 +26,19 @@ module pirv32_stage_ex
     input  alu_op_e     alu_op_i,
     input  shift_op_e   shift_op_i,
     input  branch_e     branch_i,
+    input  logic        is_branch_i,
+    input  logic        is_jump_i,
     input  multdiv_op_e multdiv_op_i,
     input  logic        is_multdiv_i,
     input  logic [ 4:0] rd_i,
     input  logic        reg_we_i,
     input  wb_src_e     wb_src_i,
+
+    // Jump / Branch outputs
+    output logic [31:0] pc_target_o,
+    output logic        is_branch_o,
+    output logic        is_jump_o,
+    output logic        take_branch_o,
 
     // Forwarding inputs
     input  logic        fw_valid_mem_i,
@@ -64,6 +72,9 @@ module pirv32_stage_ex
     logic [31:0] shifter_result;
     logic [31:0] multdiv_result;
 
+    logic [31:0] branch_target;
+    logic [31:0] jump_target;
+
     ////////////////////
     //                //
     // ID <-> EX Regs //
@@ -80,6 +91,8 @@ module pirv32_stage_ex
     alu_op_e     alu_op_ex;
     shift_op_e   shift_op_ex;
     branch_e     branch_type_ex;
+    logic        is_branch_ex;
+    logic        is_jump_ex;
     multdiv_op_e multdiv_op_ex;
     logic        is_multdiv_ex;
     logic [ 4:0] rd_ex;
@@ -100,6 +113,8 @@ module pirv32_stage_ex
             alu_op_ex      <= ADD;
             shift_op_ex    <= SLL;
             branch_type_ex <= BEQ;
+            is_branch_ex   <= '0;
+            is_jump_ex     <= '0;
             multdiv_op_ex  <= MUL;
             is_multdiv_ex  <= '0;
             rd_ex          <= '0;
@@ -119,6 +134,8 @@ module pirv32_stage_ex
                 alu_op_ex      <= alu_op_i;
                 shift_op_ex    <= shift_op_i;
                 branch_type_ex <= branch_i;
+                is_branch_ex   <= is_branch_i;
+                is_jump_ex     <= is_jump_i;
                 multdiv_op_ex  <= multdiv_op_i;
                 is_multdiv_ex  <= is_multdiv_i;
                 rd_ex          <= rd_i;
@@ -172,7 +189,14 @@ module pirv32_stage_ex
         endcase
     end
 
+    assign branch_target = pc_ex + imm_ex;
+    assign jump_target   = {alu_result[31:1], 1'b0};
+
     assign stage_ready = ~div_stall;
+
+    assign pc_target_o = is_branch_ex ? branch_target : jump_target;
+    assign is_branch_o = is_branch_ex;
+    assign is_jump_o   = is_jump_ex;
 
     assign rd_o     = rd_ex;
     assign reg_we_o = reg_we_ex;
@@ -190,7 +214,7 @@ module pirv32_stage_ex
         .op_i         (alu_op_ex),
         .res_o        (alu_result),
         .branch_i     (branch_type_ex),
-        .take_branch_o()
+        .take_branch_o
     );
 
     pirv32_shifter shifter_i (

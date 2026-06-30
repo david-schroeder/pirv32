@@ -31,6 +31,8 @@ module pirv32_stage_id
     output alu_op_e     alu_op_o,
     output shift_op_e   shift_op_o,
     output branch_e     branch_o,
+    output logic        is_branch_o,
+    output logic        is_jump_o,
     output multdiv_op_e multdiv_op_o,
     output logic        is_multdiv_o,
 
@@ -63,9 +65,6 @@ module pirv32_stage_id
     logic [ 4:0] ra2;
     logic [31:0] imm;
     logic [31:0] csr_rdata;
-
-    logic        is_jump;
-    logic        is_branch;
 
     ////////////////////
     //                //
@@ -124,8 +123,8 @@ module pirv32_stage_id
         .branch_o,
         .multdiv_op_o,
 
-        .is_jump_o   (is_jump),
-        .is_branch_o (is_branch),
+        .is_jump_o,
+        .is_branch_o,
         .is_multdiv_o,
         .is_mem_op_o,
 

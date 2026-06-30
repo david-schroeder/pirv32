@@ -597,6 +597,10 @@ add wave -noupdate -divider {IF Stage}
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_q
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_d
 add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/instr_o
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_target_i
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/is_jump_i
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/is_branch_i
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/take_branch_i
 add wave -noupdate -divider {ID Stage}
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/pc_id
 add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/instr_id
@@ -656,7 +660,7 @@ add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/cor
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_o
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_wdata_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {629871776 fs} 0}
+WaveRestoreCursors {{Cursor 1} {575998998 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 346
 configure wave -valuecolwidth 100
@@ -672,4 +676,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {588862687 fs} {649117270 fs}
+WaveRestoreZoom {546986458 fs} {553499477 fs}
