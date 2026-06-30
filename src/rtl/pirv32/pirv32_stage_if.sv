@@ -16,7 +16,8 @@ module pirv32_stage_if
     output logic ns_valid_o,
     input  logic ns_ready_i,
 
-    input  logic [31:0] pc_target_i,
+    input  logic [31:0] jump_target_i,
+    input  logic [31:0] branch_target_i,
     input  logic        is_jump_i,
     input  logic        is_branch_i,
     input  logic        take_branch_i,
@@ -37,8 +38,8 @@ module pirv32_stage_if
     always_comb begin
         unique case (1'b1)
             ~ns_valid_o    : pc_d = BOOT_ADDR; // First cycle after boot
-            is_jump_i      : pc_d = pc_target_i;
-            is_taken_branch: pc_d = pc_target_i;
+            is_jump_i      : pc_d = jump_target_i;
+            is_taken_branch: pc_d = branch_target_i;
             default        : pc_d = pc_q + 4;
         endcase
     end

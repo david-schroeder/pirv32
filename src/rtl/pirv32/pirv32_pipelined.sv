@@ -56,7 +56,8 @@ module pirv32_pipelined
     wb_src_e     wb_src_id;
 
     // EX stage signals
-    logic [31:0] pc_target_ex;
+    logic [31:0] jump_target_ex;
+    logic [31:0] branch_target_ex;
     logic        is_branch_ex;
     logic        is_jump_ex;
     logic        take_branch_ex;
@@ -99,10 +100,11 @@ module pirv32_pipelined
         .ns_ready_i(id_stage_ready),
         .ns_valid_o(if_stage_valid),
 
-        .pc_target_i  (pc_target_ex),
-        .is_jump_i    (is_jump_ex),
-        .is_branch_i  (is_branch_ex),
-        .take_branch_i(take_branch_ex),
+        .jump_target_i  (jump_target_ex),
+        .branch_target_i(branch_target_ex),
+        .is_jump_i      (is_jump_ex),
+        .is_branch_i    (is_branch_ex),
+        .take_branch_i  (take_branch_ex),
 
         .pc_o   (pc_if),
         .instr_o(instr_if),
@@ -180,10 +182,11 @@ module pirv32_pipelined
         .reg_we_i    (reg_we_id),
         .wb_src_i    (wb_src_id),
 
-        .pc_target_o  (pc_target_ex),
-        .is_branch_o  (is_branch_ex),
-        .is_jump_o    (is_jump_ex),
-        .take_branch_o(take_branch_ex),
+        .jump_target_o  (jump_target_ex),
+        .branch_target_o(branch_target_ex),
+        .is_branch_o    (is_branch_ex),
+        .is_jump_o      (is_jump_ex),
+        .take_branch_o  (take_branch_ex),
 
         .fw_valid_mem_i(fw_valid_mem),
         .fw_rd_mem_i   (fw_rd_mem),

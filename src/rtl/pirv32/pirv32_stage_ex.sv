@@ -35,7 +35,8 @@ module pirv32_stage_ex
     input  wb_src_e     wb_src_i,
 
     // Jump / Branch outputs
-    output logic [31:0] pc_target_o,
+    output logic [31:0] jump_target_o,
+    output logic [31:0] branch_target_o,
     output logic        is_branch_o,
     output logic        is_jump_o,
     output logic        take_branch_o,
@@ -71,9 +72,6 @@ module pirv32_stage_ex
     logic [31:0] alu_result;
     logic [31:0] shifter_result;
     logic [31:0] multdiv_result;
-
-    logic [31:0] branch_target;
-    logic [31:0] jump_target;
 
     ////////////////////
     //                //
@@ -189,12 +187,11 @@ module pirv32_stage_ex
         endcase
     end
 
-    assign branch_target = pc_ex + imm_ex;
-    assign jump_target   = {alu_result[31:1], 1'b0};
+    assign branch_target_o = pc_ex + imm_ex;
+    assign jump_target_o   = {alu_result[31:1], 1'b0};
 
     assign stage_ready = ~div_stall;
 
-    assign pc_target_o = is_branch_ex ? branch_target : jump_target;
     assign is_branch_o = is_branch_ex;
     assign is_jump_o   = is_jump_ex;
 
