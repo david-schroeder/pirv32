@@ -81,7 +81,8 @@ module pirv32_stage_wb
         unique case (wb_src_wb)
             ALU,
             SHIFTER,
-            MULTDIV: wb_data = ex_result_wb;
+            MULT,
+            DIVIDER: wb_data = ex_result_wb;
             default: wb_data = '0;
         endcase
     end

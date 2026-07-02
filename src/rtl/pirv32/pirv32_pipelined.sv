@@ -49,8 +49,10 @@ module pirv32_pipelined
     branch_e     branch_type_id;
     logic        is_branch_id;
     logic        is_jump_id;
-    multdiv_op_e multdiv_op_id;
-    logic        is_multdiv_id;
+    mult_op_e    mult_op_id;
+    div_op_e     div_op_id;
+    logic        is_mult_id;
+    logic        is_div_id;
     logic [ 4:0] rd_id;
     logic        reg_we_id;
     wb_src_e     wb_src_id;
@@ -65,6 +67,8 @@ module pirv32_pipelined
     logic        reg_we_ex;
     wb_src_e     wb_src_ex;
     logic [31:0] result_ex;
+    mult_op_e    mult_op_ex;
+    logic [63:0] mult_result_ex;
 
     // MEM stage signals
     logic [ 4:0] rd_mem;
@@ -149,8 +153,10 @@ module pirv32_pipelined
         .branch_o    (branch_type_id),
         .is_branch_o (is_branch_id),
         .is_jump_o   (is_jump_id),
-        .multdiv_op_o(multdiv_op_id),
-        .is_multdiv_o(is_multdiv_id),
+        .mult_op_o   (mult_op_id),
+        .div_op_o    (div_op_id),
+        .is_mult_o   (is_mult_id),
+        .is_div_o    (is_div_id),
 
         .mem_op_o    (),
         .is_mem_op_o (),
@@ -174,24 +180,26 @@ module pirv32_pipelined
         .ns_ready_i  (mem_stage_ready),
         .invalidate_i(inval_ex_mem),
 
-        .pc_i        (pc_id),
-        .ra1_i       (ra1_id),
-        .ra2_i       (ra2_id),
-        .rs1_i       (rs1_id),
-        .rs2_i       (rs2_id),
-        .imm_i       (imm_id),
-        .alu_src1_i  (alu_src1_id),
-        .alu_src2_i  (alu_src2_id),
-        .alu_op_i    (alu_op_id),
-        .shift_op_i  (shift_op_id),
-        .branch_i    (branch_type_id),
-        .is_branch_i (is_branch_id),
-        .is_jump_i   (is_jump_id),
-        .multdiv_op_i(multdiv_op_id),
-        .is_multdiv_i(is_multdiv_id),
-        .rd_i        (rd_id),
-        .reg_we_i    (reg_we_id),
-        .wb_src_i    (wb_src_id),
+        .pc_i       (pc_id),
+        .ra1_i      (ra1_id),
+        .ra2_i      (ra2_id),
+        .rs1_i      (rs1_id),
+        .rs2_i      (rs2_id),
+        .imm_i      (imm_id),
+        .alu_src1_i (alu_src1_id),
+        .alu_src2_i (alu_src2_id),
+        .alu_op_i   (alu_op_id),
+        .shift_op_i (shift_op_id),
+        .branch_i   (branch_type_id),
+        .is_branch_i(is_branch_id),
+        .is_jump_i  (is_jump_id),
+        .mult_op_i  (mult_op_id),
+        .is_mult_i  (is_mult_id),
+        .div_op_i   (div_op_id),
+        .is_div_i   (is_div_id),
+        .rd_i       (rd_id),
+        .reg_we_i   (reg_we_id),
+        .wb_src_i   (wb_src_id),
 
         .jump_target_o  (jump_target_ex),
         .branch_target_o(branch_target_ex),
@@ -206,10 +214,12 @@ module pirv32_pipelined
         .fw_rd_wb_i    (fw_rd_wb),
         .fw_data_wb_i  (fw_data_wb),
 
-        .rd_o    (rd_ex),
-        .reg_we_o(reg_we_ex),
-        .wb_src_o(wb_src_ex),
-        .result_o(result_ex)
+        .rd_o      (rd_ex),
+        .reg_we_o  (reg_we_ex),
+        .wb_src_o  (wb_src_ex),
+        .result_o  (result_ex),
+        .mult_op_o (mult_op_ex),
+        .mult_res_o(mult_result_ex)
     );
 
     pirv32_stage_mem mem_stage_i (
@@ -221,10 +231,12 @@ module pirv32_pipelined
         .ns_valid_o(mem_stage_valid),
         .ns_ready_i(wb_stage_ready),
 
-        .rd_i       (rd_ex),
-        .reg_we_i   (reg_we_ex),
-        .wb_src_i   (wb_src_ex),
-        .ex_result_i(result_ex),
+        .rd_i        (rd_ex),
+        .reg_we_i    (reg_we_ex),
+        .wb_src_i    (wb_src_ex),
+        .ex_result_i (result_ex),
+        .ex_mul_op_i (mult_op_ex),
+        .ex_mul_res_i(mult_result_ex),
 
         .jump_tgt_i   (jump_target_ex),
         .branch_tgt_i (branch_target_ex),

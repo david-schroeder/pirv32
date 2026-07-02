@@ -29,8 +29,10 @@ module pirv32_stage_ex
     input  branch_e     branch_i,
     input  logic        is_branch_i,
     input  logic        is_jump_i,
-    input  multdiv_op_e multdiv_op_i,
-    input  logic        is_multdiv_i,
+    input  mult_op_e    mult_op_i,
+    input  div_op_e     div_op_i,
+    input  logic        is_mult_i,
+    input  logic        is_div_i,
     input  logic [ 4:0] rd_i,
     input  logic        reg_we_i,
     input  wb_src_e     wb_src_i,
@@ -54,7 +56,9 @@ module pirv32_stage_ex
     output logic [ 4:0] rd_o,
     output logic        reg_we_o,
     output wb_src_e     wb_src_o,
-    output logic [31:0] result_o
+    output logic [31:0] result_o,
+    output mult_op_e    mult_op_o,
+    output logic [63:0] mult_res_o
 );
 
     logic stage_ready;
@@ -72,7 +76,7 @@ module pirv32_stage_ex
 
     logic [31:0] alu_result;
     logic [31:0] shifter_result;
-    logic [31:0] multdiv_result;
+    logic [31:0] div_result;
 
     ////////////////////
     //                //
@@ -92,8 +96,10 @@ module pirv32_stage_ex
     branch_e     branch_type_ex;
     logic        is_branch_ex;
     logic        is_jump_ex;
-    multdiv_op_e multdiv_op_ex;
-    logic        is_multdiv_ex;
+    mult_op_e    mult_op_ex;
+    div_op_e     div_op_ex;
+    logic        is_mult_ex;
+    logic        is_div_ex;
     logic [ 4:0] rd_ex;
     logic        reg_we_ex;
     wb_src_e     wb_src_ex;
@@ -114,8 +120,10 @@ module pirv32_stage_ex
             branch_type_ex <= BEQ;
             is_branch_ex   <= '0;
             is_jump_ex     <= '0;
-            multdiv_op_ex  <= MUL;
-            is_multdiv_ex  <= '0;
+            mult_op_ex     <= MUL;
+            is_mult_ex     <= '0;
+            div_op_ex      <= DIV;
+            is_div_ex      <= '0;
             rd_ex          <= '0;
             reg_we_ex      <= '0;
             wb_src_ex      <= ALU;
@@ -135,8 +143,10 @@ module pirv32_stage_ex
                 branch_type_ex <= branch_i;
                 is_branch_ex   <= is_branch_i;
                 is_jump_ex     <= is_jump_i;
-                multdiv_op_ex  <= multdiv_op_i;
-                is_multdiv_ex  <= is_multdiv_i;
+                mult_op_ex     <= mult_op_i;
+                is_mult_ex     <= is_mult_i;
+                div_op_ex      <= div_op_i;
+                is_div_ex      <= is_div_i;
                 rd_ex          <= rd_i;
                 reg_we_ex      <= reg_we_i;
                 wb_src_ex      <= wb_src_i;
@@ -183,7 +193,7 @@ module pirv32_stage_ex
         // Result mux
         unique case (wb_src_ex)
             SHIFTER: result_o = shifter_result;
-            MULTDIV: result_o = multdiv_result;
+            DIVIDER: result_o = div_result;
             default: result_o = alu_result;
         endcase
     end
@@ -199,6 +209,8 @@ module pirv32_stage_ex
     assign rd_o     = rd_ex;
     assign reg_we_o = reg_we_ex;
     assign wb_src_o = wb_src_ex;
+
+    assign mult_op_o = mult_op_ex;
 
     ///////////////////
     //               //
@@ -222,16 +234,24 @@ module pirv32_stage_ex
         .data_o (shifter_result)
     );
 
-    pirv32_multdiv multdiv_i (
+    pirv32_mult mult_i (
+        .rs1_i    (rs1_fw),
+        .rs2_i    (rs2_fw),
+        .result_o (mult_res_o),
+        .op_i     (mult_op_ex),
+        .is_mult_i(is_mult_ex)
+    );
+
+    pirv32_divider div_i (
         .clk_i,
         .rst_ni,
 
-        .rs1_i       (rs1_ex),
-        .rs2_i       (rs2_ex),
-        .result_o    (multdiv_result),
-        .op_i        (multdiv_op_ex),
-        .is_multdiv_i(is_multdiv_ex),
-        .div_stall_o (div_stall)
+        .rs1_i      (rs1_fw),
+        .rs2_i      (rs2_fw),
+        .result_o   (div_result),
+        .op_i       (div_op_ex),
+        .is_div_i   (is_div_ex),
+        .div_stall_o(div_stall)
     );
 
 endmodule

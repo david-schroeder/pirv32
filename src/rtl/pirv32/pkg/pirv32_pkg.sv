@@ -27,16 +27,19 @@ package pirv32_pkg;
         SRA
     } shift_op_e;
 
-    typedef enum logic [2:0] {
+    typedef enum logic [1:0] {
         MUL,
         MULH,
         MULHSU,
-        MULHU,
+        MULHU
+    } mult_op_e;
+
+    typedef enum logic [1:0] {
         DIV,
         DIVU,
         REM,
         REMU
-    } multdiv_op_e;
+    } div_op_e;
 
     typedef enum logic [2:0] {
         LB,
@@ -64,7 +67,8 @@ package pirv32_pkg;
         DTIM,
         SEQ_PC,
         CSR,
-        MULTDIV
+        MULT,
+        DIVIDER
     } wb_src_e;
 
     typedef enum logic [2:0] {

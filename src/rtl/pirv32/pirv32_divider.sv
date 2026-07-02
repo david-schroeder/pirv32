@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_multdiv
+module pirv32_divider
     import pirv32_pkg::*;
 (
     input  logic clk_i,
@@ -11,30 +11,10 @@ module pirv32_multdiv
     input  logic [31:0] rs2_i,
     output logic [31:0] result_o,
 
-    input  multdiv_op_e op_i,
-    input  logic        is_multdiv_i,
+    input  div_op_e     op_i,
+    input  logic        is_div_i,
     output logic        div_stall_o
 );
-
-    /* Multiplier */
-
-    logic signed [65:0] mult_result_full;
-    logic signed [32:0] mult_a, mult_b;
-
-    always_comb begin
-        unique case (op_i)
-            MULHU: mult_a = {1'b0, rs1_i};
-            default: mult_a = {rs1_i[31], rs1_i};
-        endcase
-
-        unique case (op_i)
-            MULHSU,
-            MULHU: mult_b = {1'b0, rs2_i};
-            default: mult_b = {rs2_i[31], rs2_i};
-        endcase
-    end
-
-    assign mult_result_full = mult_a * mult_b;
 
     /* Divider */
 
@@ -60,7 +40,7 @@ module pirv32_multdiv
             DIV,
             DIVU,
             REM,
-            REMU: div_start = is_multdiv_i;
+            REMU: div_start = is_div_i;
             default: div_start = '0;
         endcase
     end
@@ -114,10 +94,6 @@ module pirv32_multdiv
     /* Result mux */
     always_comb begin
         unique case (op_i)
-            MUL: result_o = mult_result_full[31:0];
-            MULH,
-            MULHSU,
-            MULHU: result_o = mult_result_full[63:32];
             DIV: result_o = signed_quot;
             DIVU: result_o = result_quotient;
             REM: result_o = signed_rem;

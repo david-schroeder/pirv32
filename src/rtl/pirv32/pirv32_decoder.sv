@@ -15,11 +15,13 @@ module pirv32_decoder
     output shift_op_e   shift_op_o,
     output mem_op_e     mem_op_o,
     output branch_e     branch_o,
-    output multdiv_op_e multdiv_op_o,
+    output mult_op_e    mult_op_o,
+    output div_op_e     div_op_o,
 
     output logic        is_jump_o,
     output logic        is_branch_o,
-    output logic        is_multdiv_o,
+    output logic        is_mult_o,
+    output logic        is_div_o,
     output logic        is_mem_op_o,
 
     output logic [31:0] imm_o,
@@ -45,7 +47,8 @@ module pirv32_decoder
 
     assign is_jump_o = opcode == 7'b1101111 || opcode == 7'b1100111;
     assign is_branch_o = opcode == 7'b1100011;
-    assign is_multdiv_o = opcode == 7'b0110011 && funct7 == 7'b0000001;
+    assign is_mult_o = opcode == 7'b0110011 && funct7 == 7'b0000001 && funct3[2] == 1'b0;
+    assign is_div_o = opcode == 7'b0110011 && funct7 == 7'b0000001 && funct3[2] == 1'b1;
     assign is_mem_op_o = opcode ==? 7'b0?00011;
 
     always_comb begin
@@ -78,15 +81,18 @@ module pirv32_decoder
             default: alu_op_o = ADD;
         endcase
 
-        unique case (funct3)
-            3'b001: multdiv_op_o = MULH;
-            3'b010: multdiv_op_o = MULHSU;
-            3'b011: multdiv_op_o = MULHU;
-            3'b100: multdiv_op_o = DIV;
-            3'b101: multdiv_op_o = DIVU;
-            3'b110: multdiv_op_o = REM;
-            3'b111: multdiv_op_o = REMU;
-            default: multdiv_op_o = MUL;
+        unique case (funct3[1:0])
+            2'b01  : mult_op_o = MULH;
+            2'b10  : mult_op_o = MULHSU;
+            2'b11  : mult_op_o = MULHU;
+            default: mult_op_o = MUL;
+        endcase
+
+        unique case (funct3[1:0])
+            3'b01  : div_op_o = DIVU;
+            3'b10  : div_op_o = REM;
+            3'b11  : div_op_o = REMU;
+            default: div_op_o = DIV;
         endcase
 
         unique casez (opcode)
@@ -135,7 +141,8 @@ module pirv32_decoder
         unique casez ({opcode, funct3, funct7})
             {7'b0?00011, 3'b???, 7'b???????}: wb_src_o = DTIM;
             {7'b0?10011, 3'b?01, 7'b??????0}: wb_src_o = SHIFTER;
-            {7'b0110011, 3'b???, 7'b0000001}: wb_src_o = MULTDIV;
+            {7'b0110011, 3'b0??, 7'b0000001}: wb_src_o = MULT;
+            {7'b0110011, 3'b1??, 7'b0000001}: wb_src_o = DIVIDER;
             {7'b1101111, 3'b???, 7'b???????},
             {7'b1100111, 3'b000, 7'b???????}: wb_src_o = SEQ_PC;
             {7'b1110011, 3'b1??, 7'b???????}, // Any opcode=SYSTEM && funct3 != 0

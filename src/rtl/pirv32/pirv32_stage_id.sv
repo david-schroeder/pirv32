@@ -34,8 +34,10 @@ module pirv32_stage_id
     output branch_e     branch_o,
     output logic        is_branch_o,
     output logic        is_jump_o,
-    output multdiv_op_e multdiv_op_o,
-    output logic        is_multdiv_o,
+    output mult_op_e    mult_op_o,
+    output div_op_e     div_op_o,
+    output logic        is_mult_o,
+    output logic        is_div_o,
 
     // MEM control signals
     output mem_op_e     mem_op_o,
@@ -122,11 +124,13 @@ module pirv32_stage_id
         .shift_op_o,
         .mem_op_o,
         .branch_o,
-        .multdiv_op_o,
+        .mult_op_o,
+        .div_op_o,
 
         .is_jump_o,
         .is_branch_o,
-        .is_multdiv_o,
+        .is_mult_o,
+        .is_div_o,
         .is_mem_op_o,
 
         .imm_o,
