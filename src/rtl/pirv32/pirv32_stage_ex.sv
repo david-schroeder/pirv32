@@ -13,6 +13,7 @@ module pirv32_stage_ex
     output logic ps_ready_o,
     output logic ns_valid_o,
     input  logic ns_ready_i,
+    input  logic invalidate_i,
 
     // ID stage inputs
     input  logic [31:0] pc_i,
@@ -143,7 +144,7 @@ module pirv32_stage_ex
         end
     end
 
-    assign ns_valid_o = valid_ex && ps_ready_o;
+    assign ns_valid_o = valid_ex && ps_ready_o && !invalidate_i;
 
     /////////////////
     //             //

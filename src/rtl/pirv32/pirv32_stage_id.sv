@@ -13,6 +13,7 @@ module pirv32_stage_id
     output logic ps_ready_o,
     output logic ns_valid_o,
     input  logic ns_ready_i,
+    input  logic invalidate_i,
 
     // IF inputs
     input  logic [31:0] interrupts_i,
@@ -91,7 +92,7 @@ module pirv32_stage_id
     end
 
     // TODO: deassert ns_valid_o on stall, CSR read, fence etc
-    assign ns_valid_o = valid_id && ps_ready_o;
+    assign ns_valid_o = valid_id && ps_ready_o && !invalidate_i;
 
     /////////////////
     //             //

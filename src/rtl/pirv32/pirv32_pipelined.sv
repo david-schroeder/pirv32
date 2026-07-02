@@ -71,6 +71,14 @@ module pirv32_pipelined
     logic        reg_we_mem;
     wb_src_e     wb_src_mem;
     logic [31:0] reg_wdata_mem;
+    logic [31:0] jump_target_mem;
+    logic [31:0] branch_target_mem;
+    logic        is_branch_mem;
+    logic        is_jump_mem;
+    logic        take_branch_mem;
+    logic        inval_if_mem;
+    logic        inval_id_mem;
+    logic        inval_ex_mem;
     logic        fw_valid_mem;
     logic [ 4:0] fw_rd_mem;
     logic [31:0] fw_data_mem;
@@ -97,14 +105,15 @@ module pirv32_pipelined
         .clk_i,
         .rst_ni,
 
-        .ns_ready_i(id_stage_ready),
-        .ns_valid_o(if_stage_valid),
+        .ns_ready_i  (id_stage_ready),
+        .ns_valid_o  (if_stage_valid),
+        .invalidate_i(inval_if_mem),
 
-        .jump_target_i  (jump_target_ex),
-        .branch_target_i(branch_target_ex),
-        .is_jump_i      (is_jump_ex),
-        .is_branch_i    (is_branch_ex),
-        .take_branch_i  (take_branch_ex),
+        .jump_target_i  (jump_target_mem),
+        .branch_target_i(branch_target_mem),
+        .is_jump_i      (is_jump_mem),
+        .is_branch_i    (is_branch_mem),
+        .take_branch_i  (take_branch_mem),
 
         .pc_o   (pc_if),
         .instr_o(instr_if),
@@ -117,10 +126,11 @@ module pirv32_pipelined
         .clk_i,
         .rst_ni,
 
-        .ps_valid_i(if_stage_valid),
-        .ps_ready_o(id_stage_ready),
-        .ns_valid_o(id_stage_valid),
-        .ns_ready_i(ex_stage_ready),
+        .ps_valid_i  (if_stage_valid),
+        .ps_ready_o  (id_stage_ready),
+        .ns_valid_o  (id_stage_valid),
+        .ns_ready_i  (ex_stage_ready),
+        .invalidate_i(inval_id_mem),
 
         .interrupts_i,
         .pc_i        (pc_if),
@@ -158,10 +168,11 @@ module pirv32_pipelined
         .clk_i,
         .rst_ni,
 
-        .ps_valid_i(id_stage_valid),
-        .ps_ready_o(ex_stage_ready),
-        .ns_valid_o(ex_stage_valid),
-        .ns_ready_i(mem_stage_ready),
+        .ps_valid_i  (id_stage_valid),
+        .ps_ready_o  (ex_stage_ready),
+        .ns_valid_o  (ex_stage_valid),
+        .ns_ready_i  (mem_stage_ready),
+        .invalidate_i(inval_ex_mem),
 
         .pc_i        (pc_id),
         .ra1_i       (ra1_id),
@@ -215,10 +226,25 @@ module pirv32_pipelined
         .wb_src_i   (wb_src_ex),
         .ex_result_i(result_ex),
 
+        .jump_tgt_i   (jump_target_ex),
+        .branch_tgt_i (branch_target_ex),
+        .is_jump_i    (is_jump_ex),
+        .is_branch_i  (is_branch_ex),
+        .take_branch_i(take_branch_ex),
+        .inval_if_o   (inval_if_mem),
+        .inval_id_o   (inval_id_mem),
+        .inval_ex_o   (inval_ex_mem),
+
         .rd_o       (rd_mem),
         .reg_we_o   (reg_we_mem),
         .wb_src_o   (wb_src_mem),
         .reg_wdata_o(reg_wdata_mem),
+
+        .jump_tgt_o   (jump_target_mem),
+        .branch_tgt_o (branch_target_mem),
+        .is_jump_o    (is_jump_mem),
+        .is_branch_o  (is_branch_mem),
+        .take_branch_o(take_branch_mem),
 
         .fw_valid_o(fw_valid_mem),
         .fw_rd_o   (fw_rd_mem),
