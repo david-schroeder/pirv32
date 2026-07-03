@@ -76,6 +76,8 @@ module pirv32_stage_ex
     //         //
     /////////////
 
+    logic        forward_rs1_wb;
+    logic        forward_rs2_wb;
     logic [31:0] rs1_fw, rs2_fw;
     logic [31:0] operand_a, operand_b;
     logic        div_stall;
@@ -161,8 +163,8 @@ module pirv32_stage_ex
                 // WB stage is not stalled and data will no longer
                 // be available for forwarding next cycle, so
                 // update rs*_ex instead if rd matches
-                if (ra1_ex == fw_rd_wb_i) rs1_ex <= fw_data_wb_i;
-                if (ra2_ex == fw_rd_wb_i) rs2_ex <= fw_data_wb_i;
+                if (forward_rs1_wb) rs1_ex <= fw_data_wb_i;
+                if (forward_rs2_wb) rs2_ex <= fw_data_wb_i;
             end
         end
     end
@@ -179,14 +181,14 @@ module pirv32_stage_ex
         // RS1 forwarder
         priority case (1'b1)
             fw_valid_mem_i && fw_rd_mem_i == ra1_ex: rs1_fw = fw_data_mem_i;
-            fw_valid_wb_i && fw_rd_wb_i == ra1_ex: rs1_fw = fw_data_wb_i;
+            forward_rs1_wb: rs1_fw = fw_data_wb_i;
             default: rs1_fw = rs1_ex;
         endcase
 
         // RS2 forwarder
         priority case (1'b1)
             fw_valid_mem_i && fw_rd_mem_i == ra2_ex: rs2_fw = fw_data_mem_i;
-            fw_valid_wb_i && fw_rd_wb_i == ra2_ex: rs2_fw = fw_data_wb_i;
+            forward_rs2_wb: rs2_fw = fw_data_wb_i;
             default: rs2_fw = rs2_ex;
         endcase
 
@@ -210,6 +212,9 @@ module pirv32_stage_ex
             default: result_o = alu_result;
         endcase
     end
+
+    assign forward_rs1_wb = fw_valid_wb_i && fw_rd_wb_i == ra1_ex;
+    assign forward_rs2_wb = fw_valid_wb_i && fw_rd_wb_i == ra2_ex;
 
     assign branch_target_o = pc_ex + imm_ex;
     assign jump_target_o   = {alu_result[31:1], 1'b0};
