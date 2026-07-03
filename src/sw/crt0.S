@@ -80,7 +80,7 @@ _start:
 
     li t0, 527
     li t1, 125
-    mul t2, t0, t1
+    div t2, t0, t1
     addi t2, t2, 1
 
     // Initialize various stack pointers, settings / CSRs etc. here

@@ -589,6 +589,7 @@ add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/u
 add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_valid
 add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_valid
 add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_valid
+add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/valid_wb
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_ready
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_ready
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_ready
@@ -610,12 +611,14 @@ add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/cor
 add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_rs1_o
 add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_rs2_o
 add wave -noupdate -expand -group {Register Decoding} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/imm_o
-add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_src1_o
-add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_src2_o
-add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_op_o
-add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/shift_op_o
-add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/branch_o
-add wave -noupdate -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/mem_op_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_src1_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_src2_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/alu_op_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/shift_op_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/branch_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/mem_op_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/mult_op_o
+add wave -noupdate -expand -group {Operation Type} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/div_op_o
 add wave -noupdate -group {WB Control Signals} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/rd_o
 add wave -noupdate -group {WB Control Signals} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/reg_we_o
 add wave -noupdate -group {WB Control Signals} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_i/wb_src_o
@@ -643,12 +646,12 @@ add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_st
 add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_valid_wb_i
 add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_rd_wb_i
 add wave -noupdate -group Forwarding /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/fw_data_wb_i
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/rs1_fw
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/rs2_fw
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/operand_a
+add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/operand_b
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/div_stall
 add wave -noupdate -divider {MEM Stage}
-add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/mult_res_mem
-add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/mult_result
-add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/operation_result
-add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/ex_mul_op_i
 add wave -noupdate -divider {WB Stage}
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/wb_data
 add wave -noupdate -expand -group {MEM -> WB Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/rd_wb
@@ -659,7 +662,7 @@ add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/cor
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_o
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_wdata_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {976697789 fs} 0}
+WaveRestoreCursors {{Cursor 1} {975852120 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 346
 configure wave -valuecolwidth 100
@@ -675,4 +678,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {941032208 fs} {945634218 fs}
+WaveRestoreZoom {948351880 fs} {959248201 fs}

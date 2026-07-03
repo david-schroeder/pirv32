@@ -131,9 +131,9 @@ module pirv32_stage_mem
         default: '0
     };
 
-    assign fw_valid_o  = rd_mem != '0 && reg_we_mem && valid_mem;
-    assign fw_rd_o     = rd_mem;
-    assign fw_data_o   = ex_result_mem;
+    assign fw_valid_o = rd_mem != '0 && reg_we_mem && valid_mem;
+    assign fw_rd_o    = rd_mem;
+    assign fw_data_o  = ex_result_mem;
 
     assign jump_tgt_o    = jump_tgt_mem;
     assign branch_tgt_o  = branch_tgt_mem;

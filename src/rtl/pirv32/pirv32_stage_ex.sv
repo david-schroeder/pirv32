@@ -156,6 +156,13 @@ module pirv32_stage_ex
                 rd_ex          <= rd_i;
                 reg_we_ex      <= reg_we_i;
                 wb_src_ex      <= wb_src_i;
+            end else begin
+                // EX stage is stalled; handle edge case:
+                // WB stage is not stalled and data will no longer
+                // be available for forwarding next cycle, so
+                // update rs*_ex instead if rd matches
+                if (ra1_ex == fw_rd_wb_i) rs1_ex <= fw_data_wb_i;
+                if (ra2_ex == fw_rd_wb_i) rs2_ex <= fw_data_wb_i;
             end
         end
     end
