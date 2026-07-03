@@ -37,6 +37,13 @@ module pirv32_stage_ex
     input  logic        reg_we_i,
     input  wb_src_e     wb_src_i,
 
+    // ID stage stall control (datahazards)
+    output logic        is_valid_mult_o,
+
+    // MEM / WB stage CE inputs for mult
+    input  logic        ce_mem_i,
+    input  logic        ce_wb_i,
+
     // Jump / Branch outputs
     output logic [31:0] jump_target_o,
     output logic [31:0] branch_target_o,
@@ -57,8 +64,7 @@ module pirv32_stage_ex
     output logic        reg_we_o,
     output wb_src_e     wb_src_o,
     output logic [31:0] result_o,
-    output mult_op_e    mult_op_o,
-    output logic [63:0] mult_res_o
+    output logic [31:0] mult_res_wb_o
 );
 
     logic stage_ready;
@@ -210,7 +216,7 @@ module pirv32_stage_ex
     assign reg_we_o = reg_we_ex;
     assign wb_src_o = wb_src_ex;
 
-    assign mult_op_o = mult_op_ex;
+    assign is_valid_mult_o = is_mult_ex && valid_ex;
 
     ///////////////////
     //               //
@@ -235,11 +241,15 @@ module pirv32_stage_ex
     );
 
     pirv32_mult mult_i (
+        .clk_i,
+        .rst_ni,
+
         .rs1_i    (rs1_fw),
         .rs2_i    (rs2_fw),
-        .result_o (mult_res_o),
+        .ce_mem_i,
+        .ce_wb_i,
         .op_i     (mult_op_ex),
-        .is_mult_i(is_mult_ex)
+        .result_o (mult_res_wb_o)
     );
 
     pirv32_divider div_i (

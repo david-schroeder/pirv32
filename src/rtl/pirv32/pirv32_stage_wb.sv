@@ -17,6 +17,7 @@ module pirv32_stage_wb
     input  logic        reg_we_i,
     input  wb_src_e     wb_src_i,
     input  logic [31:0] ex_result_i,
+    input  logic [31:0] ex_mul_res_i,
 
     // Regfile writeback outputs
     output logic [ 4:0] reg_rd_o,
@@ -81,8 +82,8 @@ module pirv32_stage_wb
         unique case (wb_src_wb)
             ALU,
             SHIFTER,
-            MULT,
             DIVIDER: wb_data = ex_result_wb;
+            MULT   : wb_data = ex_mul_res_i;
             default: wb_data = '0;
         endcase
     end

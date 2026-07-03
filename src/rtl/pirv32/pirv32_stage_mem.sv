@@ -19,8 +19,6 @@ module pirv32_stage_mem
     input  logic        reg_we_i,
     input  wb_src_e     wb_src_i,
     input  logic [31:0] ex_result_i,
-    input  mult_op_e    ex_mul_op_i,
-    input  logic [63:0] ex_mul_res_i,
     input  logic [31:0] jump_tgt_i,
     input  logic [31:0] branch_tgt_i,
     input  logic        is_branch_i,
@@ -69,10 +67,6 @@ module pirv32_stage_mem
     // (i.e. a jump or a taken branch)
     logic ctrl_flow_branches;
 
-    // ex_result or mult result
-    logic [31:0] mult_result;
-    logic [31:0] operation_result;
-
     /////////////////////
     //                 //
     // EX <-> MEM Regs //
@@ -84,7 +78,6 @@ module pirv32_stage_mem
     logic        reg_we_mem;
     wb_src_e     wb_src_mem;
     logic [31:0] ex_result_mem;
-    logic [63:0] mult_res_mem;
 
     logic [31:0] jump_tgt_mem;
     logic [31:0] branch_tgt_mem;
@@ -99,7 +92,6 @@ module pirv32_stage_mem
             reg_we_mem      <= '0;
             wb_src_mem      <= ALU;
             ex_result_mem   <= '0;
-            mult_res_mem    <= '0;
             jump_tgt_mem    <= '0;
             branch_tgt_mem  <= '0;
             is_jump_mem     <= '0;
@@ -112,7 +104,6 @@ module pirv32_stage_mem
                 reg_we_mem      <= reg_we_i;
                 wb_src_mem      <= wb_src_i;
                 ex_result_mem   <= ex_result_i;
-                mult_res_mem    <= ex_mul_res_i;
                 jump_tgt_mem    <= jump_tgt_i;
                 branch_tgt_mem  <= branch_tgt_i;
                 is_jump_mem     <= is_jump_i;
@@ -130,23 +121,10 @@ module pirv32_stage_mem
     //             //
     /////////////////
 
-    /* Mult result mux */
-    always_comb begin
-        unique case (ex_mul_op_i)
-            MUL: mult_result = mult_res_mem[31:0];
-            MULH,
-            MULHSU,
-            MULHU: mult_result = mult_res_mem[63:32];
-            default: mult_result = '0;
-        endcase
-    end
-
-    assign operation_result = wb_src_mem == MULT ? mult_result : ex_result_mem;
-
     assign rd_o        = rd_mem;
     assign reg_we_o    = reg_we_mem;
     assign wb_src_o    = wb_src_mem;
-    assign reg_wdata_o = operation_result;
+    assign reg_wdata_o = ex_result_mem;
     assign dbus_o      = '{
         a_opcode: Get,
         a_address: reg_wdata_o,
@@ -155,7 +133,7 @@ module pirv32_stage_mem
 
     assign fw_valid_o  = rd_mem != '0 && reg_we_mem && valid_mem;
     assign fw_rd_o     = rd_mem;
-    assign fw_data_o   = operation_result;
+    assign fw_data_o   = ex_result_mem;
 
     assign jump_tgt_o    = jump_tgt_mem;
     assign branch_tgt_o  = branch_tgt_mem;

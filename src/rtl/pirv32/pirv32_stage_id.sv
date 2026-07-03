@@ -15,6 +15,10 @@ module pirv32_stage_id
     input  logic ns_ready_i,
     input  logic invalidate_i,
 
+    // Stall control (datahazards)
+    input  logic        valid_mult_ex_i,
+    input  logic [ 4:0] rd_ex_i,
+
     // IF inputs
     input  logic [31:0] interrupts_i,
     input  logic [31:0] pc_i,
@@ -55,7 +59,6 @@ module pirv32_stage_id
 );
 
     logic stage_ready;
-    assign stage_ready = '1;
     assign ps_ready_o = ns_ready_i & stage_ready;
 
     /////////////
@@ -68,6 +71,8 @@ module pirv32_stage_id
     logic [ 4:0] ra2;
     logic [31:0] imm;
     logic [31:0] csr_rdata;
+
+    logic        stall_mult_use;
 
     ////////////////////
     //                //
@@ -105,6 +110,10 @@ module pirv32_stage_id
     assign pc_o = pc_id;
     assign reg_ra1_o = ra1;
     assign reg_ra2_o = ra2;
+
+    assign stall_mult_use = valid_mult_ex_i && rd_ex_i inside {ra1, ra2};
+
+    assign stage_ready = ~stall_mult_use;
 
     ///////////////////
     //               //
