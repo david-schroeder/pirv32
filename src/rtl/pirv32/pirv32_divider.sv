@@ -46,8 +46,6 @@ module pirv32_divider
     end
 
     assign div_signed = op_i == DIV || op_i == REM;
-    assign numerator = div_signed && rs1_i[31] ? -rs1_i : rs1_i;
-    assign denominator = div_signed && rs2_i[31] ? -rs2_i : rs2_i;
     assign fast_div = numerator[31:16] == '0;
     assign quot_sign = rs1_i[31] ^ rs2_i[31];
     assign rem_sign = rs1_i[31];
@@ -59,23 +57,30 @@ module pirv32_divider
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
-            div_active <= '0;
+            div_active           <= '0;
             div_shifts_remaining <= '1; // 31
-            quotient <= '0;
-            remainder <= '0;
-            result_quotient <= '0;
-            result_remainder <= '0;
+            numerator            <= '0;
+            denominator          <= '0;
+            quotient             <= '0;
+            remainder            <= '0;
+            result_quotient      <= '0;
+            result_remainder     <= '0;
         end else begin
-            if (div_start | div_active) begin
-                remainder <= remainder_d;
-                quotient <= quotient_d;
-                div_shifts_remaining <= div_shifts_remaining - 1;
-                div_active <= ~div_finish;
-
-                if (fast_div && div_start && !div_active) begin
-                    div_shifts_remaining <= 5'd15;
-                end
+            if (div_start) begin
+                div_active  <= ~div_finish;
+                numerator   <= div_signed && rs1_i[31] ? -rs1_i : rs1_i;
+                denominator <= div_signed && rs2_i[31] ? -rs2_i : rs2_i;
             end
+
+            if (div_active) begin
+                remainder            <= remainder_d;
+                quotient             <= quotient_d;
+                div_active           <= ~div_finish;
+                div_shifts_remaining <= div_shifts_remaining - 1;
+            end else if (fast_div && div_start) begin
+                div_shifts_remaining <= 5'd15;
+            end
+
             if (div_finish) begin
                 result_quotient <= quotient_d;
                 result_remainder <= remainder_d;
