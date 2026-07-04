@@ -26,7 +26,17 @@ module pirv32_regfile
         end
     end
 
-    assign rdata1_o = raddr1_i == '0 ? '0 : mem[raddr1_i];
-    assign rdata2_o = raddr2_i == '0 ? '0 : mem[raddr2_i];
+    logic        rs1_bypass;
+    logic [31:0] rs1_wfirst;
+    logic        rs2_bypass;
+    logic [31:0] rs2_wfirst;
+
+    assign rs1_bypass = wen_i && waddr_i == raddr1_i;
+    assign rs2_bypass = wen_i && waddr_i == raddr2_i;
+    assign rs1_wfirst = rs1_bypass ? wdata_i : mem[raddr1_i];
+    assign rs2_wfirst = rs2_bypass ? wdata_i : mem[raddr2_i];
+
+    assign rdata1_o = raddr1_i == '0 ? '0 : rs1_wfirst;
+    assign rdata2_o = raddr2_i == '0 ? '0 : rs2_wfirst;
 
 endmodule

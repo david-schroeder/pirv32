@@ -23,6 +23,7 @@ module pirv32_stage_id
     // IF inputs
     input  logic [31:0] interrupts_i,
     input  logic [31:0] pc_i,
+    input  logic [31:0] pc_seq_i,
     input  logic [31:0] instr_i,
 
     // EX control signals
@@ -32,6 +33,7 @@ module pirv32_stage_id
     output logic [31:0] reg_rs2_o,
     output logic [31:0] imm_o,
     output logic [31:0] pc_o,
+    output logic [31:0] pc_seq_o,
     output alu_src1_e   alu_src1_o,
     output alu_src2_e   alu_src2_o,
     output alu_op_e     alu_op_o,
@@ -89,11 +91,13 @@ module pirv32_stage_id
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             pc_id    <= '0;
+            pc_seq_o <= '0;
             instr_id <= '0;
             valid_id <= '0;
         end else begin
             if (ps_ready_o) begin
                 pc_id    <= pc_i;
+                pc_seq_o <= pc_seq_i;
                 instr_id <= instr_i;
                 valid_id <= ps_valid_i;
             end

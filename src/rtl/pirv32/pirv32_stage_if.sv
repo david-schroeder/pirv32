@@ -24,6 +24,7 @@ module pirv32_stage_if
     input  logic        take_branch_i,
 
     output logic [31:0] pc_o,
+    output logic [31:0] pc_seq_o,
     output logic [31:0] instr_o,
 
     output tl_h2d_t ibus_o,
@@ -31,9 +32,12 @@ module pirv32_stage_if
 );
 
     logic [31:0] pc_d, pc_q;
+    logic [31:0] pc_seq;
     logic is_taken_branch;
     logic is_first_cycle;
 
+    assign pc_seq = pc_q + 4;
+    assign pc_seq_o = pc_seq;
 
     assign pc_o = pc_q;
     assign is_taken_branch = is_branch_i && take_branch_i;
@@ -43,7 +47,7 @@ module pirv32_stage_if
             is_first_cycle : pc_d = BOOT_ADDR; // First cycle after boot
             is_jump_i      : pc_d = jump_target_i;
             is_taken_branch: pc_d = branch_target_i;
-            default        : pc_d = pc_q + 4;
+            default        : pc_d = pc_seq;
         endcase
     end
 

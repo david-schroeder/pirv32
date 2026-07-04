@@ -33,10 +33,12 @@ module pirv32_pipelined
 
     // IF stage signals
     logic [31:0] pc_if;
+    logic [31:0] pc_seq_if;
     logic [31:0] instr_if;
 
     // ID stage signals
     logic [31:0] pc_id;
+    logic [31:0] pc_seq_id;
     logic [ 4:0] ra1_id;
     logic [ 4:0] ra2_id;
     logic [31:0] rs1_id;
@@ -60,6 +62,7 @@ module pirv32_pipelined
     wb_src_e     wb_src_id;
 
     // EX stage signals
+    logic [31:0] pc_seq_ex;
     logic [31:0] jump_target_ex;
     logic [31:0] branch_target_ex;
     logic        is_branch_ex;
@@ -77,6 +80,7 @@ module pirv32_pipelined
     logic [31:0] mult_result_ex;
 
     // MEM stage signals
+    logic [31:0] pc_seq_mem;
     logic [ 4:0] rd_mem;
     logic        reg_we_mem;
     wb_src_e     wb_src_mem;
@@ -125,8 +129,9 @@ module pirv32_pipelined
         .is_branch_i    (is_branch_mem),
         .take_branch_i  (take_branch_mem),
 
-        .pc_o   (pc_if),
-        .instr_o(instr_if),
+        .pc_o    (pc_if),
+        .pc_seq_o(pc_seq_if),
+        .instr_o (instr_if),
 
         .ibus_o,
         .ibus_i
@@ -148,6 +153,7 @@ module pirv32_pipelined
 
         .interrupts_i,
         .pc_i        (pc_if),
+        .pc_seq_i    (pc_seq_if),
         .instr_i     (instr_if),
     
         .reg_ra1_o   (ra1_id),
@@ -156,6 +162,7 @@ module pirv32_pipelined
         .reg_rs2_o   (rs2_id),
         .imm_o       (imm_id),
         .pc_o        (pc_id),
+        .pc_seq_o    (pc_seq_id),
         .alu_src1_o  (alu_src1_id),
         .alu_src2_o  (alu_src2_id),
         .alu_op_o    (alu_op_id),
@@ -190,6 +197,7 @@ module pirv32_pipelined
         .invalidate_i(inval_ex_mem),
 
         .pc_i       (pc_id),
+        .pc_seq_i   (pc_seq_id),
         .ra1_i      (ra1_id),
         .ra2_i      (ra2_id),
         .rs1_i      (rs1_id),

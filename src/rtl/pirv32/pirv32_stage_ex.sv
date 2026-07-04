@@ -17,6 +17,7 @@ module pirv32_stage_ex
 
     // ID stage inputs
     input  logic [31:0] pc_i,
+    input  logic [31:0] pc_seq_i,
     input  logic [ 4:0] ra1_i,
     input  logic [ 4:0] ra2_i,
     input  logic [31:0] rs1_i,
@@ -102,6 +103,7 @@ module pirv32_stage_ex
 
     logic        valid_ex;
     logic [31:0] pc_ex;
+    logic [31:0] pc_seq_ex;
     logic [ 4:0] ra1_ex, ra2_ex;
     logic [31:0] rs1_ex, rs2_ex;
     logic [31:0] imm_ex;
@@ -126,6 +128,7 @@ module pirv32_stage_ex
         if (~rst_ni) begin
             valid_ex       <= '0;
             pc_ex          <= '0;
+            pc_seq_ex      <= '0;
             ra1_ex         <= '0;
             ra2_ex         <= '0;
             rs1_ex         <= '0;
@@ -151,6 +154,7 @@ module pirv32_stage_ex
             if (ps_ready_o) begin
                 valid_ex       <= ps_valid_i;
                 pc_ex          <= pc_i;
+                pc_seq_ex      <= pc_seq_i;
                 ra1_ex         <= ra1_i;
                 ra2_ex         <= ra2_i;
                 rs1_ex         <= rs1_i;
@@ -223,6 +227,7 @@ module pirv32_stage_ex
         unique case (wb_src_ex)
             SHIFTER: result_o = shifter_result;
             DIVIDER: result_o = div_result;
+            SEQ_PC : result_o = pc_seq_ex;
             default: result_o = alu_result;
         endcase
     end

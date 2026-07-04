@@ -78,7 +78,8 @@ module pirv32_stage_wb
             ALU,
             SHIFTER,
             DIVIDER,
-            LSU    : wb_data = ex_result_wb;
+            LSU,
+            SEQ_PC : wb_data = ex_result_wb;
             MULT   : wb_data = ex_mul_res_i;
             default: wb_data = '0;
         endcase
