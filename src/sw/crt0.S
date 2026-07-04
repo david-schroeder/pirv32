@@ -78,9 +78,9 @@ _start:
     li  x30,0
     li  x31,0
 
-    li t0, 527
-    li t1, 125
-    div t2, t0, t1
+    li t0, 57
+    sb t0, 13(zero)
+    lb t2, 13(zero)
     addi t2, t2, 1
 
     // Initialize various stack pointers, settings / CSRs etc. here

@@ -65,6 +65,7 @@ module pirv32_pipelined
     logic        is_branch_ex;
     logic        is_jump_ex;
     logic        is_valid_mult_ex;
+    logic        is_valid_load_ex;
     logic        take_branch_ex;
     mem_op_e     mem_op_ex;
     logic        is_mem_op_ex;
@@ -142,6 +143,7 @@ module pirv32_pipelined
         .invalidate_i(inval_id_mem),
 
         .valid_mult_ex_i(is_valid_mult_ex),
+        .valid_load_ex_i(is_valid_load_ex),
         .rd_ex_i        (rd_ex),
 
         .interrupts_i,
@@ -211,6 +213,7 @@ module pirv32_pipelined
         .wb_src_i   (wb_src_id),
 
         .is_valid_mult_o(is_valid_mult_ex),
+        .is_valid_load_o(is_valid_load_ex),
 
         .ce_mem_i(mem_stage_ready),
         .ce_wb_i ('1),
