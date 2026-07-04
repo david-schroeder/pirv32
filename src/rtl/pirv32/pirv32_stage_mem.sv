@@ -12,7 +12,6 @@ module pirv32_stage_mem
     input  logic ps_valid_i,
     output logic ps_ready_o,
     output logic ns_valid_o,
-    input  logic ns_ready_i,
 
     // EX stage inputs
     input  logic [ 4:0] rd_i,
@@ -54,7 +53,7 @@ module pirv32_stage_mem
 
     logic stage_ready;
     assign stage_ready = '1;
-    assign ps_ready_o = ns_ready_i & stage_ready;
+    assign ps_ready_o = stage_ready;
 
     /////////////
     //         //

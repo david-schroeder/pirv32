@@ -10,7 +10,6 @@ module pirv32_stage_wb
 
     // Stage control
     input  logic ps_valid_i,
-    output logic ps_ready_o,
 
     // MEM stage inputs
     input  logic [ 4:0] rd_i,
@@ -31,8 +30,6 @@ module pirv32_stage_wb
 
     input  tl_d2h_t dbus_i
 );
-
-    assign ps_ready_o = '1;
 
     /////////////
     //         //
@@ -62,13 +59,11 @@ module pirv32_stage_wb
             wb_src_wb    <= ALU;
             ex_result_wb <= '0;
         end else begin
-            if (ps_ready_o) begin
-                valid_wb     <= ps_valid_i;
-                rd_wb        <= rd_i;
-                reg_we_wb    <= reg_we_i;
-                wb_src_wb    <= wb_src_i;
-                ex_result_wb <= ex_result_i;
-            end
+            valid_wb     <= ps_valid_i;
+            rd_wb        <= rd_i;
+            reg_we_wb    <= reg_we_i;
+            wb_src_wb    <= wb_src_i;
+            ex_result_wb <= ex_result_i;
         end
     end
 

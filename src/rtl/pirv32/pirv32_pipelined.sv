@@ -29,7 +29,7 @@ module pirv32_pipelined
     logic id_stage_ready;
     logic ex_stage_ready;
     logic mem_stage_ready;
-    logic wb_stage_ready;
+    // WB stage must always be ready
 
     // IF stage signals
     logic [31:0] pc_if;
@@ -207,7 +207,7 @@ module pirv32_pipelined
         .is_valid_mult_o(is_valid_mult_ex),
 
         .ce_mem_i(mem_stage_ready),
-        .ce_wb_i (wb_stage_ready),
+        .ce_wb_i ('1),
 
         .jump_target_o  (jump_target_ex),
         .branch_target_o(branch_target_ex),
@@ -236,7 +236,6 @@ module pirv32_pipelined
         .ps_valid_i(ex_stage_valid),
         .ps_ready_o(mem_stage_ready),
         .ns_valid_o(mem_stage_valid),
-        .ns_ready_i(wb_stage_ready),
 
         .rd_i        (rd_ex),
         .reg_we_i    (reg_we_ex),
@@ -276,7 +275,6 @@ module pirv32_pipelined
         .rst_ni,
 
         .ps_valid_i(mem_stage_valid),
-        .ps_ready_o(wb_stage_ready),
 
         .rd_i        (rd_mem),
         .reg_we_i    (reg_we_mem),
