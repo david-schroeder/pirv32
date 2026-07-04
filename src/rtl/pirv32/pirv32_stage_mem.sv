@@ -23,6 +23,9 @@ module pirv32_stage_mem
     input  logic        is_branch_i,
     input  logic        is_jump_i,
     input  logic        take_branch_i,
+    input  mem_op_e     mem_op_i,
+    input  logic        is_mem_op_i,
+    input  logic [31:0] mem_wdata_i,
 
     // Control flow management outputs
     output logic [31:0] jump_tgt_o,
@@ -52,7 +55,6 @@ module pirv32_stage_mem
 );
 
     logic stage_ready;
-    assign stage_ready = '1;
     assign ps_ready_o = stage_ready;
 
     /////////////
@@ -78,6 +80,10 @@ module pirv32_stage_mem
     wb_src_e     wb_src_mem;
     logic [31:0] ex_result_mem;
 
+    mem_op_e     mem_op_mem;
+    logic        is_mem_op_mem;
+    logic [31:0] mem_wdata_mem;
+
     logic [31:0] jump_tgt_mem;
     logic [31:0] branch_tgt_mem;
     logic        is_jump_mem;
@@ -91,6 +97,9 @@ module pirv32_stage_mem
             reg_we_mem      <= '0;
             wb_src_mem      <= ALU;
             ex_result_mem   <= '0;
+            mem_op_mem      <= LB;
+            is_mem_op_mem   <= '0;
+            mem_wdata_mem   <= '0;
             jump_tgt_mem    <= '0;
             branch_tgt_mem  <= '0;
             is_jump_mem     <= '0;
@@ -103,6 +112,9 @@ module pirv32_stage_mem
                 reg_we_mem      <= reg_we_i;
                 wb_src_mem      <= wb_src_i;
                 ex_result_mem   <= ex_result_i;
+                mem_op_mem      <= mem_op_i;
+                is_mem_op_mem   <= is_mem_op_i;
+                mem_wdata_mem   <= mem_wdata_i;
                 jump_tgt_mem    <= jump_tgt_i;
                 branch_tgt_mem  <= branch_tgt_i;
                 is_jump_mem     <= is_jump_i;
@@ -120,18 +132,19 @@ module pirv32_stage_mem
     //             //
     /////////////////
 
+    logic lsu_stall;
+    assign stage_ready = !lsu_stall;
+
+    logic [31:0] lsu_rdata;
+
     assign rd_o        = rd_mem;
     assign reg_we_o    = reg_we_mem;
     assign wb_src_o    = wb_src_mem;
-    assign reg_wdata_o = ex_result_mem;
-    assign dbus_o      = '{
-        a_opcode: Get,
-        a_address: reg_wdata_o,
-        default: '0
-    };
+    assign reg_wdata_o = wb_src_mem == LSU ? lsu_rdata : ex_result_mem;
 
     assign fw_valid_o = rd_mem != '0 && reg_we_mem && valid_mem;
     assign fw_rd_o    = rd_mem;
+    // Forwarded data never comes from the bus (load-use stall)
     assign fw_data_o  = ex_result_mem;
 
     assign jump_tgt_o    = jump_tgt_mem;
@@ -145,5 +158,30 @@ module pirv32_stage_mem
     assign inval_if_o = ctrl_flow_branches;
     assign inval_id_o = ctrl_flow_branches;
     assign inval_ex_o = ctrl_flow_branches;
+
+    ///////////////////
+    //               //
+    // Instantiation //
+    //               //
+    ///////////////////
+
+    pirv32_lsu lsu_i (
+        .clk_i,
+        .rst_ni,
+
+        .data_i     (mem_wdata_mem),
+        .address_i  (ex_result_mem),
+        .is_mem_op_i(is_mem_op_mem),
+        .op_i       (mem_op_mem),
+
+        .data_o      (lsu_rdata),
+        .misaligned_o(), // TODO: exception handling
+
+        .valid_i(valid_mem),
+        .stall_o(lsu_stall),
+
+        .tl_o(dbus_o),
+        .tl_i(dbus_i)
+    );
 
 endmodule

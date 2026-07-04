@@ -139,7 +139,7 @@ module pirv32_decoder
         endcase
 
         unique casez ({opcode, funct3, funct7})
-            {7'b0?00011, 3'b???, 7'b???????}: wb_src_o = DTIM;
+            {7'b0?00011, 3'b???, 7'b???????}: wb_src_o = LSU;
             {7'b0?10011, 3'b?01, 7'b??????0}: wb_src_o = SHIFTER;
             {7'b0110011, 3'b0??, 7'b0000001}: wb_src_o = MULT;
             {7'b0110011, 3'b1??, 7'b0000001}: wb_src_o = DIVIDER;

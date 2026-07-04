@@ -584,6 +584,10 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider Toplevel
 add wave -noupdate /system_tb/board_i/DUT/core_i/clk_i
 add wave -noupdate /system_tb/board_i/DUT/core_i/rst_ni
+add wave -noupdate /system_tb/board_i/DUT/core_i/ibus_req
+add wave -noupdate /system_tb/board_i/DUT/core_i/ibus_rsp
+add wave -noupdate /system_tb/board_i/DUT/core_i/dbus_req
+add wave -noupdate /system_tb/board_i/DUT/core_i/dbus_rsp
 add wave -noupdate -divider {CPU Toplevel}
 add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/if_stage_valid
 add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_valid
@@ -593,7 +597,6 @@ add wave -noupdate -expand -group {Stage Valids} /system_tb/board_i/DUT/core_i/u
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/id_stage_ready
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_ready
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_ready
-add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_ready
 add wave -noupdate -divider {IF Stage}
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_q
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_d
@@ -662,7 +665,7 @@ add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/cor
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_o
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_wdata_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {975852120 fs} 0}
+WaveRestoreCursors {{Cursor 1} {613706691 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 346
 configure wave -valuecolwidth 100
@@ -678,4 +681,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {948351880 fs} {959248201 fs}
+WaveRestoreZoom {0 fs} {183694520 fs}

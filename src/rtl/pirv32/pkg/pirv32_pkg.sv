@@ -64,7 +64,7 @@ package pirv32_pkg;
     typedef enum logic [2:0] {
         ALU,
         SHIFTER,
-        DTIM,
+        LSU,
         SEQ_PC,
         CSR,
         MULT,

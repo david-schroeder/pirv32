@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-// PIRV32 Load-Store Unit.
+// PIRV32 Load-Store Unit. Lives entirely in the MEM stage.
 
 module pirv32_lsu
     import pirv32_pkg::*;
@@ -18,8 +18,8 @@ module pirv32_lsu
     output logic [31:0] data_o,
     output logic        misaligned_o,
 
-    input  logic        stall_i,
-    output logic        stall_o,
+    input  logic        valid_i, // From MEM stage
+    output logic        stall_o, // To MEM stage
 
     output tl_h2d_t     tl_o,
     input  tl_d2h_t     tl_i
@@ -53,60 +53,75 @@ module pirv32_lsu
         endcase
     end
 
+    /* Bus FSM */
+
+    typedef enum logic [0:0] {
+        Idle,
+        AwaitData
+    } lsu_state_e;
+
+    lsu_state_e state_d, state_q;
+
+    logic a_exchange;
+    logic d_exchange;
+    logic is_valid_mem_op;
+    assign a_exchange = tl_o.a_valid && tl_i.a_ready;
+    assign d_exchange = tl_i.d_valid && tl_o.d_ready;
+    assign is_valid_mem_op = is_mem_op_i && valid_i;
+
+    always_comb begin
+        unique case (state_q)
+            Idle: begin
+                if (is_valid_mem_op && a_exchange && !d_exchange) begin
+                    state_d = AwaitData;
+                end else state_d = Idle;
+                stall_o = is_valid_mem_op && (!a_exchange || !d_exchange);
+            end
+            AwaitData: begin
+                if (d_exchange) state_d = Idle;
+                else state_d = AwaitData;
+                stall_o = !d_exchange;
+            end
+            default: begin
+                state_d = state_q;
+                stall_o = '0;
+            end
+        endcase
+    end
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            state_q <= Idle;
+        end else begin
+            state_q <= state_d;
+        end
+    end
+
     /* Bus interface */
 
     logic [31:0] rdata;
     assign rdata = tl_i.d_valid ? tl_i.d_data : '0;
 
-    logic rsp_pending_wb;
-    logic stalled_rsp;
-
-    assign stalled_rsp = rsp_pending_wb & ~tl_i.d_valid;
-
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) rsp_pending_wb <= '0;
-        else begin
-            rsp_pending_wb <= tl_o.a_valid | stalled_rsp;
-        end
-    end
-
-    assign stall_o = stalled_rsp | tl_o.a_valid & ~tl_i.a_ready;
-
     assign tl_o = '{
-        a_valid: is_mem_op_i && !stalled_rsp,
+        a_valid: is_valid_mem_op && state_q == Idle,
         a_opcode: |wmask ? (wmask == 4'hF ? PutFullData : PutPartialData) : Get,
         a_address: {waddr, 2'h0},
         a_size: 2'h2,
-        a_mask: wmask == 4'h0 ? 4'hF : wmask, // 4'hF for reads
+        a_mask: wmask == 4'h0 ? 4'hF : wmask, // 4'hF for reads -> TileLink spec
         a_data: wdata,
-        a_source: tl_i.d_source == '0 ? 8'd1 : '0,
-        d_ready: rsp_pending_wb
+        a_source: '0, // Only ever one outstanding request
+        d_ready: '1
     };
 
     /* Load logic */
 
-    logic [1:0] word_offset_q;
-    mem_op_e    op_q;
-
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            word_offset_q <= '0;
-            op_q <= LB;
-        end else begin
-            if (~stall_i) begin
-                word_offset_q <= address_i[1:0];
-                op_q <= op_i;
-            end
-        end
-    end
-
     logic [15:0] sel_halfword;
     logic [ 7:0] sel_byte;
-    assign sel_halfword = word_offset_q[1] ? rdata[31:16] : rdata[15:0];
-    assign sel_byte = word_offset_q[0] ? sel_halfword[15:8] : sel_halfword[7:0];
+    assign sel_halfword = address_i[1] ? rdata[31:16] : rdata[15:0];
+    assign sel_byte = address_i[0] ? sel_halfword[15:8] : sel_halfword[7:0];
 
     always_comb begin
-        unique case (op_q)
+        unique case (op_i)
             LB : data_o = {{24{sel_byte[7]}}, sel_byte};
             LBU: data_o = {24'h0, sel_byte};
             LH : data_o = {{16{sel_halfword[15]}}, sel_halfword};

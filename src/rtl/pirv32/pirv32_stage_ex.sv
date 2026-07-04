@@ -33,6 +33,8 @@ module pirv32_stage_ex
     input  div_op_e     div_op_i,
     input  logic        is_mult_i,
     input  logic        is_div_i,
+    input  mem_op_e     mem_op_i,
+    input  logic        is_mem_op_i,
     input  logic [ 4:0] rd_i,
     input  logic        reg_we_i,
     input  wb_src_e     wb_src_i,
@@ -60,6 +62,9 @@ module pirv32_stage_ex
     input  logic [31:0] fw_data_wb_i,
 
     // MEM stage outputs
+    output mem_op_e     mem_op_o,
+    output logic        is_mem_op_o,
+    output logic [31:0] mem_wdata_o,
     output logic [ 4:0] rd_o,
     output logic        reg_we_o,
     output wb_src_e     wb_src_o,
@@ -108,6 +113,8 @@ module pirv32_stage_ex
     div_op_e     div_op_ex;
     logic        is_mult_ex;
     logic        is_div_ex;
+    mem_op_e     mem_op_ex;
+    logic        is_mem_op_ex;
     logic [ 4:0] rd_ex;
     logic        reg_we_ex;
     wb_src_e     wb_src_ex;
@@ -132,6 +139,8 @@ module pirv32_stage_ex
             is_mult_ex     <= '0;
             div_op_ex      <= DIV;
             is_div_ex      <= '0;
+            mem_op_ex      <= LB;
+            is_mem_op_ex   <= '0;
             rd_ex          <= '0;
             reg_we_ex      <= '0;
             wb_src_ex      <= ALU;
@@ -155,6 +164,8 @@ module pirv32_stage_ex
                 is_mult_ex     <= is_mult_i;
                 div_op_ex      <= div_op_i;
                 is_div_ex      <= is_div_i;
+                mem_op_ex      <= mem_op_i;
+                is_mem_op_ex   <= is_mem_op_i;
                 rd_ex          <= rd_i;
                 reg_we_ex      <= reg_we_i;
                 wb_src_ex      <= wb_src_i;
@@ -223,6 +234,10 @@ module pirv32_stage_ex
 
     assign is_branch_o = is_branch_ex;
     assign is_jump_o   = is_jump_ex;
+
+    assign mem_op_o    = mem_op_ex;
+    assign is_mem_op_o = is_mem_op_ex;
+    assign mem_wdata_o = rs2_fw;
 
     assign rd_o     = rd_ex;
     assign reg_we_o = reg_we_ex;

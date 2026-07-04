@@ -53,6 +53,8 @@ module pirv32_pipelined
     div_op_e     div_op_id;
     logic        is_mult_id;
     logic        is_div_id;
+    mem_op_e     mem_op_id;
+    logic        is_mem_op_id;
     logic [ 4:0] rd_id;
     logic        reg_we_id;
     wb_src_e     wb_src_id;
@@ -64,6 +66,9 @@ module pirv32_pipelined
     logic        is_jump_ex;
     logic        is_valid_mult_ex;
     logic        take_branch_ex;
+    mem_op_e     mem_op_ex;
+    logic        is_mem_op_ex;
+    logic [31:0] mem_wdata_ex;
     logic [ 4:0] rd_ex;
     logic        reg_we_ex;
     wb_src_e     wb_src_ex;
@@ -160,9 +165,8 @@ module pirv32_pipelined
         .div_op_o    (div_op_id),
         .is_mult_o   (is_mult_id),
         .is_div_o    (is_div_id),
-
-        .mem_op_o   (),
-        .is_mem_op_o(),
+        .mem_op_o    (mem_op_id),
+        .is_mem_op_o (is_mem_op_id),
 
         .rd_o    (rd_id),
         .reg_we_o(reg_we_id),
@@ -200,6 +204,8 @@ module pirv32_pipelined
         .is_mult_i  (is_mult_id),
         .div_op_i   (div_op_id),
         .is_div_i   (is_div_id),
+        .mem_op_i   (mem_op_id),
+        .is_mem_op_i(is_mem_op_id),
         .rd_i       (rd_id),
         .reg_we_i   (reg_we_id),
         .wb_src_i   (wb_src_id),
@@ -222,6 +228,9 @@ module pirv32_pipelined
         .fw_rd_wb_i    (fw_rd_wb),
         .fw_data_wb_i  (fw_data_wb),
 
+        .mem_op_o     (mem_op_ex),
+        .is_mem_op_o  (is_mem_op_ex),
+        .mem_wdata_o  (mem_wdata_ex),
         .rd_o         (rd_ex),
         .reg_we_o     (reg_we_ex),
         .wb_src_o     (wb_src_ex),
@@ -247,6 +256,10 @@ module pirv32_pipelined
         .is_jump_i    (is_jump_ex),
         .is_branch_i  (is_branch_ex),
         .take_branch_i(take_branch_ex),
+        .mem_op_i     (mem_op_ex),
+        .is_mem_op_i  (is_mem_op_ex),
+        .mem_wdata_i  (mem_wdata_ex),
+
         .inval_if_o   (inval_if_mem),
         .inval_id_o   (inval_id_mem),
         .inval_ex_o   (inval_ex_mem),
