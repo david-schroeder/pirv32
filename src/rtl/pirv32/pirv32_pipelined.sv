@@ -151,7 +151,6 @@ module pirv32_pipelined
         .valid_load_ex_i(is_valid_load_ex),
         .rd_ex_i        (rd_ex),
 
-        .interrupts_i,
         .pc_i        (pc_if),
         .pc_seq_i    (pc_seq_if),
         .instr_i     (instr_if),

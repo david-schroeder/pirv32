@@ -20,9 +20,9 @@ module pirv32_trap
     // Exception causes
     input  logic        ecall_i,
     input  logic        ebreak_i,
-    input  logic        dtim_misaligned_i,
-    input  mem_op_e     dtim_op_i,
-    input  logic [31:0] dtim_addr_i,
+    input  logic        mem_misaligned_i,
+    input  mem_op_e     mem_op_i,
+    input  logic [31:0] mem_addr_i,
 
     // Output
     output logic        trap_o,
@@ -40,7 +40,7 @@ module pirv32_trap
     assign interrupt    = ~stall_i & |valid_ints;
 
     logic exception;
-    assign exception = ecall_i | ebreak_i | dtim_misaligned_i;
+    assign exception = ecall_i | ebreak_i | mem_misaligned_i;
 
     assign trap_o = interrupt | exception;
 
@@ -63,15 +63,15 @@ module pirv32_trap
             priority case (1'b1)
                 ecall_i: cause_o.cause = ECALL_MMODE;
                 ebreak_i: cause_o.cause = BREAKPOINT;
-                dtim_misaligned_i: begin
-                    unique case (dtim_op_i)
+                mem_misaligned_i: begin
+                    unique case (mem_op_i)
                         SB,
                         SH,
                         SW: cause_o.cause = STORE_ADDR_MISALIGNED;
                         default: cause_o.cause = LOAD_ADDR_MISALIGNED;
                     endcase
 
-                    trap_val_o = dtim_addr_i;
+                    trap_val_o = mem_addr_i;
                 end
             endcase
 

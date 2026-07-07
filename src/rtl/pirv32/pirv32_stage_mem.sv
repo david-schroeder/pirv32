@@ -27,6 +27,16 @@ module pirv32_stage_mem
     input  logic        is_mem_op_i,
     input  logic [31:0] mem_wdata_i,
 
+    // Privileged unit interface
+    input  logic [31:0] interrupts_i,
+    input  logic [31:0] pc_ex_i,
+    input  logic [31:0] seq_pc_ex_i,
+    input  logic [31:0] instr_ex_i,
+    input  logic [31:0] rs1_ex_i,
+    input  logic        commit_i,
+    output logic [31:0] csr_rdata_o,
+    output logic        mret_o,
+
     // Control flow management outputs
     output logic [31:0] jump_tgt_o,
     output logic [31:0] branch_tgt_o,
@@ -68,6 +78,20 @@ module pirv32_stage_mem
     // (i.e. a jump or a taken branch)
     logic ctrl_flow_branches;
 
+    logic        lsu_stall;
+    logic        lsu_misaligned;
+    logic [31:0] lsu_rdata;
+
+    logic [31:0] next_arch_pc;
+    logic        is_mret;
+    logic        is_trap;
+    logic        is_exception;
+    logic        is_interrupt;
+    logic [31:0] trap_pc;
+    logic [31:0] mepc;
+    mcause_t     mcause;
+    logic [31:0] csr_rdata;
+
     /////////////////////
     //                 //
     // EX <-> MEM Regs //
@@ -90,6 +114,11 @@ module pirv32_stage_mem
     logic        is_branch_mem;
     logic        take_branch_mem;
 
+    logic [31:0] pc_mem;
+    logic [31:0] seq_pc_mem;
+    logic [31:0] instr_mem;
+    logic [31:0] rs1_mem;
+
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             valid_mem       <= '0;
@@ -105,6 +134,10 @@ module pirv32_stage_mem
             is_jump_mem     <= '0;
             is_branch_mem   <= '0;
             take_branch_mem <= '0;
+            pc_mem          <= '0;
+            seq_pc_mem      <= '0;
+            instr_mem       <= '0;
+            rs1_mem         <= '0;
         end else begin
             if (ps_ready_o) begin
                 valid_mem       <= ps_valid_i;
@@ -120,6 +153,10 @@ module pirv32_stage_mem
                 is_jump_mem     <= is_jump_i;
                 is_branch_mem   <= is_branch_i;
                 take_branch_mem <= take_branch_i;
+                pc_mem          <= pc_ex_i;
+                seq_pc_mem      <= seq_pc_ex_i;
+                instr_mem       <= instr_ex_i;
+                rs1_mem         <= rs1_ex_i;
             end
         end
     end
@@ -132,15 +169,19 @@ module pirv32_stage_mem
     //             //
     /////////////////
 
-    logic lsu_stall;
     assign stage_ready = !lsu_stall;
-
-    logic [31:0] lsu_rdata;
 
     assign rd_o        = rd_mem;
     assign reg_we_o    = reg_we_mem;
     assign wb_src_o    = wb_src_mem;
-    assign reg_wdata_o = wb_src_mem == LSU ? lsu_rdata : ex_result_mem;
+
+    always_comb begin
+        unique case (wb_src_mem)
+            LSU    : reg_wdata_o = lsu_rdata;
+            CSR    : reg_wdata_o = csr_rdata;
+            default: reg_wdata_o = ex_result_mem;
+        endcase
+    end
 
     assign fw_valid_o = rd_mem != '0 && reg_we_mem && valid_mem;
     assign fw_rd_o    = rd_mem;
@@ -159,6 +200,15 @@ module pirv32_stage_mem
     assign inval_id_o = ctrl_flow_branches;
     assign inval_ex_o = ctrl_flow_branches;
 
+    assign is_exception = is_trap && !mcause.interrupt;
+    assign is_interrupt = is_trap &&  mcause.interrupt;
+
+    always_comb begin
+        next_arch_pc = seq_pc_mem;
+        if (is_jump_o) next_arch_pc = jump_tgt_mem;
+        if (is_branch_o && take_branch_mem) next_arch_pc = branch_tgt_mem;
+    end
+
     ///////////////////
     //               //
     // Instantiation //
@@ -175,13 +225,39 @@ module pirv32_stage_mem
         .op_i       (mem_op_mem),
 
         .data_o      (lsu_rdata),
-        .misaligned_o(), // TODO: exception handling
+        .misaligned_o(lsu_misaligned),
 
         .valid_i(valid_mem),
         .stall_o(lsu_stall),
 
         .tl_o(dbus_o),
         .tl_i(dbus_i)
+    );
+
+    pirv32_privileged priv_i (
+        .clk_i,
+        .rst_ni,
+
+        .interrupts_i,
+        .pc_i            (pc_mem),
+        .next_arch_pc_i  (next_arch_pc),
+        .stall_i         (~ps_ready_o),
+
+        .mem_misaligned_i(lsu_misaligned),
+        .mem_op_i        (mem_op_mem),
+        .mem_addr_i      (ex_result_mem),
+
+        .instr_i         (instr_mem),
+        .rs1_i           (rs1_mem),
+        .csr_rdata_o     (csr_rdata),
+        .mret_o          (is_mret),
+
+        .trap_o          (is_trap),
+        .mcause_o        (mcause),
+        .trap_pc_o       (trap_pc),
+        .mepc_o          (mepc),
+
+        .commit_i        (commit_i)
     );
 
 endmodule

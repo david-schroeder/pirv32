@@ -21,7 +21,6 @@ module pirv32_stage_id
     input  logic [ 4:0] rd_ex_i,
 
     // IF inputs
-    input  logic [31:0] interrupts_i,
     input  logic [31:0] pc_i,
     input  logic [31:0] pc_seq_i,
     input  logic [31:0] instr_i,
@@ -72,8 +71,6 @@ module pirv32_stage_id
 
     logic [ 4:0] ra1;
     logic [ 4:0] ra2;
-    logic [31:0] imm;
-    logic [31:0] csr_rdata;
 
     logic        stall_mult_use;
     logic        stall_load_use;
