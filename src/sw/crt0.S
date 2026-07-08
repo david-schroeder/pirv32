@@ -91,6 +91,10 @@ _start:
     ori t0, t0, 4 // machine software interrupt
     csrw mie, t0           // enable selected interrupts
 
+    csrr t1, mie
+
+    addi t1, t1, 1
+
     csrsi mtvec, 1         // enabled vectored interrupts
     csrsi mstatus, 8       // global interrupt enable
 

@@ -79,9 +79,10 @@ module pirv32_stage_wb
             SHIFTER,
             DIVIDER,
             LSU,
-            SEQ_PC : wb_data = ex_result_wb;
+            SEQ_PC,
+            CSR    : wb_data = ex_result_wb;
             MULT   : wb_data = ex_mul_res_i;
-            default: wb_data = '0;
+            default: wb_data = '1; // 0xFFFFFFFF for debugging
         endcase
     end
 

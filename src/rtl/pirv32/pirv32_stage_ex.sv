@@ -44,6 +44,7 @@ module pirv32_stage_ex
     // ID stage stall control (datahazards)
     output logic        is_valid_mult_o,
     output logic        is_valid_load_o,
+    output logic        is_valid_csrr_o,
 
     // MEM / WB stage CE inputs for mult
     input  logic        ce_mem_i,
@@ -94,7 +95,8 @@ module pirv32_stage_ex
     logic [31:0] operand_a, operand_b;
     logic        div_stall;
 
-    logic mem_op_is_load;
+    logic        mem_op_is_load;
+    logic        is_csrr;
 
     logic [31:0] alu_result;
     logic [31:0] shifter_result;
@@ -259,9 +261,11 @@ module pirv32_stage_ex
     assign reg_we_o = reg_we_ex;
     assign wb_src_o = wb_src_ex;
 
-    assign is_valid_mult_o = is_mult_ex && valid_ex;
     assign mem_op_is_load  = mem_op_ex inside {LB, LBU, LH, LHU, LW};
-    assign is_valid_load_o = is_mem_op_ex && valid_ex && mem_op_is_load;
+    assign is_csrr = instr_ex[6:0] == 7'h73 && instr_ex[14:12] != '0;
+    assign is_valid_mult_o = valid_ex && is_mult_ex;
+    assign is_valid_load_o = valid_ex && is_mem_op_ex && mem_op_is_load;
+    assign is_valid_csrr_o = valid_ex && is_csrr && rd_ex != '0;
 
     assign rs1_o    = rs1_fw;
     assign pc_o     = pc_ex;

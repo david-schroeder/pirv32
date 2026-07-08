@@ -73,6 +73,7 @@ module pirv32_pipelined
     logic        is_jump_ex;
     logic        is_valid_mult_ex;
     logic        is_valid_load_ex;
+    logic        is_valid_csrr_ex;
     logic        take_branch_ex;
     mem_op_e     mem_op_ex;
     logic        is_mem_op_ex;
@@ -152,6 +153,7 @@ module pirv32_pipelined
 
         .valid_mult_ex_i(is_valid_mult_ex),
         .valid_load_ex_i(is_valid_load_ex),
+        .valid_csrr_ex_i(is_valid_csrr_ex),
         .rd_ex_i        (rd_ex),
 
         .pc_i        (pc_if),
@@ -226,6 +228,7 @@ module pirv32_pipelined
 
         .is_valid_mult_o(is_valid_mult_ex),
         .is_valid_load_o(is_valid_load_ex),
+        .is_valid_csrr_o(is_valid_csrr_ex),
 
         .ce_mem_i(mem_stage_ready),
         .ce_wb_i ('1),

@@ -18,6 +18,7 @@ module pirv32_stage_id
     // Stall control (datahazards)
     input  logic        valid_mult_ex_i,
     input  logic        valid_load_ex_i,
+    input  logic        valid_csrr_ex_i,
     input  logic [ 4:0] rd_ex_i,
 
     // IF inputs
@@ -75,6 +76,7 @@ module pirv32_stage_id
 
     logic        stall_mult_use;
     logic        stall_load_use;
+    logic        stall_csrr_use;
 
     ////////////////////
     //                //
@@ -117,8 +119,12 @@ module pirv32_stage_id
 
     assign stall_mult_use = valid_mult_ex_i && rd_ex_i inside {ra1, ra2};
     assign stall_load_use = valid_load_ex_i && rd_ex_i inside {ra1, ra2};
+    assign stall_csrr_use = valid_csrr_ex_i && rd_ex_i inside {ra1, ra2};
 
-    assign stage_ready = ~stall_mult_use && ~stall_load_use;
+    assign stage_ready = (~stall_mult_use
+                      && ~stall_load_use
+                      && ~stall_csrr_use)
+                      || invalidate_i;
 
     assign instr_o = instr_id;
 
