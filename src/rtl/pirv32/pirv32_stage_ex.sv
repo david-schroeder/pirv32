@@ -18,6 +18,7 @@ module pirv32_stage_ex
     // ID stage inputs
     input  logic [31:0] pc_i,
     input  logic [31:0] pc_seq_i,
+    input  logic [31:0] instr_i,
     input  logic [ 4:0] ra1_i,
     input  logic [ 4:0] ra2_i,
     input  logic [31:0] rs1_i,
@@ -64,6 +65,10 @@ module pirv32_stage_ex
     input  logic [31:0] fw_data_wb_i,
 
     // MEM stage outputs
+    output logic [31:0] pc_o,
+    output logic [31:0] seq_pc_o,
+    output logic [31:0] instr_o,
+    output logic [31:0] rs1_o,
     output mem_op_e     mem_op_o,
     output logic        is_mem_op_o,
     output logic [31:0] mem_wdata_o,
@@ -104,6 +109,7 @@ module pirv32_stage_ex
     logic        valid_ex;
     logic [31:0] pc_ex;
     logic [31:0] pc_seq_ex;
+    logic [31:0] instr_ex;
     logic [ 4:0] ra1_ex, ra2_ex;
     logic [31:0] rs1_ex, rs2_ex;
     logic [31:0] imm_ex;
@@ -129,6 +135,7 @@ module pirv32_stage_ex
             valid_ex       <= '0;
             pc_ex          <= '0;
             pc_seq_ex      <= '0;
+            instr_ex       <= '0;
             ra1_ex         <= '0;
             ra2_ex         <= '0;
             rs1_ex         <= '0;
@@ -155,6 +162,7 @@ module pirv32_stage_ex
                 valid_ex       <= ps_valid_i;
                 pc_ex          <= pc_i;
                 pc_seq_ex      <= pc_seq_i;
+                instr_ex       <= instr_i;
                 ra1_ex         <= ra1_i;
                 ra2_ex         <= ra2_i;
                 rs1_ex         <= rs1_i;
@@ -254,6 +262,11 @@ module pirv32_stage_ex
     assign is_valid_mult_o = is_mult_ex && valid_ex;
     assign mem_op_is_load  = mem_op_ex inside {LB, LBU, LH, LHU, LW};
     assign is_valid_load_o = is_mem_op_ex && valid_ex && mem_op_is_load;
+
+    assign rs1_o    = rs1_fw;
+    assign pc_o     = pc_ex;
+    assign seq_pc_o = pc_seq_ex;
+    assign instr_o  = instr_ex;
 
     ///////////////////
     //               //

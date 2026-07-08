@@ -34,8 +34,6 @@ module pirv32_stage_mem
     input  logic [31:0] instr_ex_i,
     input  logic [31:0] rs1_ex_i,
     input  logic        commit_i,
-    output logic [31:0] csr_rdata_o,
-    output logic        mret_o,
 
     // Control flow management outputs
     output logic [31:0] jump_tgt_o,
@@ -247,6 +245,7 @@ module pirv32_stage_mem
         .mem_op_i        (mem_op_mem),
         .mem_addr_i      (ex_result_mem),
 
+        .instr_valid_i   (valid_mem),
         .instr_i         (instr_mem),
         .rs1_i           (rs1_mem),
         .csr_rdata_o     (csr_rdata),

@@ -33,6 +33,7 @@ module pirv32_stage_id
     output logic [31:0] imm_o,
     output logic [31:0] pc_o,
     output logic [31:0] pc_seq_o,
+    output logic [31:0] instr_o,
     output alu_src1_e   alu_src1_o,
     output alu_src2_e   alu_src2_o,
     output alu_op_e     alu_op_o,
@@ -118,6 +119,8 @@ module pirv32_stage_id
     assign stall_load_use = valid_load_ex_i && rd_ex_i inside {ra1, ra2};
 
     assign stage_ready = ~stall_mult_use && ~stall_load_use;
+
+    assign instr_o = instr_id;
 
     ///////////////////
     //               //

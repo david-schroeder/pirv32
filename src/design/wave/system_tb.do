@@ -599,7 +599,6 @@ add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_ready
 add wave -noupdate -expand -group {Stage Readies} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_ready
 add wave -noupdate -divider {IF Stage}
-add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_q
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_d
 add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/instr_o
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/is_jump_i
@@ -656,6 +655,16 @@ add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/operand_a
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/operand_b
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/ex_stage_i/div_stall
 add wave -noupdate -divider {MEM Stage}
+add wave -noupdate -expand -group CSRs -label MSTATUS /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mstatus_q
+add wave -noupdate -expand -group CSRs -label MTVEC /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mtvec_q
+add wave -noupdate -expand -group CSRs -label MIE /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mie_q
+add wave -noupdate -expand -group CSRs -label MIP /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mip_q
+add wave -noupdate -expand -group CSRs -label MSCRATCH /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mscratch_q
+add wave -noupdate -expand -group CSRs -label MEPC /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mepc_q
+add wave -noupdate -expand -group CSRs -label MCAUSE /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mcause_q
+add wave -noupdate -expand -group CSRs -label MTVAL /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mtval_q
+add wave -noupdate -expand -group CSRs -label MCYCLE /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/mcycle_q
+add wave -noupdate -expand -group CSRs -label MINSTRET /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/csrfile_i/minstret_q
 add wave -noupdate -divider {WB Stage}
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/wb_data
 add wave -noupdate -expand -group {MEM -> WB Pipe regs} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/rd_wb
@@ -666,9 +675,9 @@ add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/cor
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_o
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_wdata_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {5051946587 fs} 0}
+WaveRestoreCursors {{Cursor 1} {1094685712 fs} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 346
+configure wave -namecolwidth 413
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -682,4 +691,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 fs} {33592164316 fs}
+WaveRestoreZoom {1039363728 fs} {1261794007 fs}

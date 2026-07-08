@@ -6,6 +6,7 @@
 module pirv32_privdec
     import pirv32_pkg::*;
 (
+    input  logic        instr_valid_i,
     input  logic [31:0] instr_i,
     input  logic [31:0] rs1_i,
     output csr_e        csr_sel_o,
@@ -35,12 +36,12 @@ module pirv32_privdec
 
     // Instruction decoding
     assign is_system = opcode == 7'h73;
-    assign ecall_o  = instr_i == 32'h00000073;
-    assign ebreak_o = instr_i == 32'h00100073;
-    assign mret_o   = instr_i == 32'h30200073;
+    assign ecall_o  = instr_valid_i && instr_i == 32'h00000073;
+    assign ebreak_o = instr_valid_i && instr_i == 32'h00100073;
+    assign mret_o   = instr_valid_i && instr_i == 32'h30200073;
 
     // CSR control signals
-    assign is_csr_op     = is_system && funct3 != 3'b000;
+    assign is_csr_op     = is_system && funct3 != 3'b000 && instr_valid_i;
     assign csr_sel_o     = csr_e'(instr_i[31:20]);
     assign csr_re_o      = is_csr_op && (csr_op_o != CSRRW || rd != '0);
     assign csr_we_o      = is_csr_op && (csr_op_o == CSRRW || ra1 != '0);

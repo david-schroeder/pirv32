@@ -86,13 +86,15 @@ _start:
     // Initialize various stack pointers, settings / CSRs etc. here
     la t0, _irq_stack_top
     csrrw t0, mscratch, t0 // irq stack top
-    li t0, 2048
-    csrw mie, t0           // enable machine external interrupt
+
+    li t0, 2048   // machine external interrupt
+    ori t0, t0, 4 // machine software interrupt
+    csrw mie, t0           // enable selected interrupts
+
     csrsi mtvec, 1         // enabled vectored interrupts
     csrsi mstatus, 8       // global interrupt enable
-    jal main
 
-    csrsi mip, 4
+    jal main
 
     csrci mstatus, 8 // global interrupt disable
 

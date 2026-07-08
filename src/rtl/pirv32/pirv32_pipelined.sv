@@ -39,6 +39,7 @@ module pirv32_pipelined
     // ID stage signals
     logic [31:0] pc_id;
     logic [31:0] pc_seq_id;
+    logic [31:0] instr_id;
     logic [ 4:0] ra1_id;
     logic [ 4:0] ra2_id;
     logic [31:0] rs1_id;
@@ -62,7 +63,10 @@ module pirv32_pipelined
     wb_src_e     wb_src_id;
 
     // EX stage signals
-    logic [31:0] pc_seq_ex;
+    logic [31:0] pc_ex;
+    logic [31:0] seq_pc_ex;
+    logic [31:0] instr_ex;
+    logic [31:0] rs1_ex;
     logic [31:0] jump_target_ex;
     logic [31:0] branch_target_ex;
     logic        is_branch_ex;
@@ -80,7 +84,6 @@ module pirv32_pipelined
     logic [31:0] mult_result_ex;
 
     // MEM stage signals
-    logic [31:0] pc_seq_mem;
     logic [ 4:0] rd_mem;
     logic        reg_we_mem;
     wb_src_e     wb_src_mem;
@@ -162,6 +165,7 @@ module pirv32_pipelined
         .imm_o       (imm_id),
         .pc_o        (pc_id),
         .pc_seq_o    (pc_seq_id),
+        .instr_o     (instr_id),
         .alu_src1_o  (alu_src1_id),
         .alu_src2_o  (alu_src2_id),
         .alu_op_o    (alu_op_id),
@@ -197,6 +201,7 @@ module pirv32_pipelined
 
         .pc_i       (pc_id),
         .pc_seq_i   (pc_seq_id),
+        .instr_i    (instr_id),
         .ra1_i      (ra1_id),
         .ra2_i      (ra2_id),
         .rs1_i      (rs1_id),
@@ -238,6 +243,10 @@ module pirv32_pipelined
         .fw_rd_wb_i    (fw_rd_wb),
         .fw_data_wb_i  (fw_data_wb),
 
+        .pc_o         (pc_ex),
+        .seq_pc_o     (seq_pc_ex),
+        .instr_o      (instr_ex),
+        .rs1_o        (rs1_ex),
         .mem_op_o     (mem_op_ex),
         .is_mem_op_o  (is_mem_op_ex),
         .mem_wdata_o  (mem_wdata_ex),
@@ -269,6 +278,13 @@ module pirv32_pipelined
         .mem_op_i     (mem_op_ex),
         .is_mem_op_i  (is_mem_op_ex),
         .mem_wdata_i  (mem_wdata_ex),
+
+        .interrupts_i,
+        .pc_ex_i     (pc_ex),
+        .seq_pc_ex_i (seq_pc_ex),
+        .instr_ex_i  (instr_ex),
+        .rs1_ex_i    (rs1_ex),
+        .commit_i    (mem_stage_valid),
 
         .inval_if_o   (inval_if_mem),
         .inval_id_o   (inval_id_mem),

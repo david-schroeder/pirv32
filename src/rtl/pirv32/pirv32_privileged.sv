@@ -16,6 +16,7 @@ module pirv32_privileged
     input  mem_op_e     mem_op_i,
     input  logic [31:0] mem_addr_i,
 
+    input  logic        instr_valid_i,
     input  logic [31:0] instr_i,
     input  logic [31:0] rs1_i,
     output logic [31:0] csr_rdata_o,
@@ -47,6 +48,7 @@ module pirv32_privileged
     logic        mret;
 
     assign mret_o = mret;
+
     pirv32_trap trap_i (
         .ext_ints_i      (interrupts_i),
         .pc_i            (pc_i),
@@ -58,7 +60,7 @@ module pirv32_privileged
         .mtvec_i         (mtvec),
         .ecall_i         (ecall),
         .ebreak_i        (ebreak),
-        .mem_misaligned_i(mem_misaligned_i),
+        .mem_misaligned_i(mem_misaligned_i && instr_valid_i),
         .mem_op_i        (mem_op_i),
         .mem_addr_i      (mem_addr_i),
         .trap_o          (trap_o),
@@ -95,6 +97,7 @@ module pirv32_privileged
     );
 
     pirv32_privdec privdec_i (
+        .instr_valid_i,
         .instr_i,
         .rs1_i,
         .csr_sel_o    (csr_sel),
