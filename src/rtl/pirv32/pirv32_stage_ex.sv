@@ -314,7 +314,7 @@ module pirv32_stage_ex
         .rs2_i      (rs2_fw),
         .result_o   (div_result),
         .op_i       (div_op_ex),
-        .is_div_i   (is_div_ex),
+        .is_div_i   (is_div_ex && valid_ex && !invalidate_i),
         .div_stall_o(div_stall)
     );
 

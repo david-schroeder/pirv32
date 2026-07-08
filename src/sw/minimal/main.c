@@ -5,6 +5,6 @@
 #include <stdio.h>
 
 int main(void) {
-    printf("Hello World!\n");
+    printf("Hello World %d!\n", 567);
     return 0;
 }

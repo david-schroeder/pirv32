@@ -173,7 +173,4 @@ module pirv32_stage_id
         .wdata_i (reg_wdata_i)
     );
 
-    //TODO: rework privileged unit for full pipeline
-    //pirv32_privileged priv_i ();
-
 endmodule
