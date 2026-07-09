@@ -17,11 +17,8 @@ module pirv32_stage_if
     input  logic ns_ready_i,
     input  logic invalidate_i,
 
-    input  logic [31:0] jump_target_i,
-    input  logic [31:0] branch_target_i,
-    input  logic        is_jump_i,
-    input  logic        is_branch_i,
-    input  logic        take_branch_i,
+    input  logic [31:0] jump_tgt_i,
+    input  logic        do_jump_i,
 
     output logic [31:0] pc_o,
     output logic [31:0] pc_seq_o,
@@ -39,7 +36,6 @@ module pirv32_stage_if
 
     logic [31:0] pc_d, pc_if;
     logic [31:0] pc_seq;
-    logic        is_taken_branch;
     logic        is_first_cycle;
 
     reg   [31:0] instr_mem [8191:0];
@@ -78,13 +74,10 @@ module pirv32_stage_if
     assign pc_o     = pc_if;
     assign instr_o  = instr_if;
 
-    assign is_taken_branch = is_branch_i && take_branch_i;
-
     always_comb begin
         unique case (1'b1)
             is_first_cycle : pc_d = BOOT_ADDR; // First cycle after boot
-            is_jump_i      : pc_d = jump_target_i;
-            is_taken_branch: pc_d = branch_target_i;
+            do_jump_i      : pc_d = jump_tgt_i;
             default        : pc_d = pc_seq;
         endcase
     end

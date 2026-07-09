@@ -89,11 +89,8 @@ module pirv32_pipelined
     logic        reg_we_mem;
     wb_src_e     wb_src_mem;
     logic [31:0] reg_wdata_mem;
-    logic [31:0] jump_target_mem;
-    logic [31:0] branch_target_mem;
-    logic        is_branch_mem;
-    logic        is_jump_mem;
-    logic        take_branch_mem;
+    logic [31:0] jump_tgt_mem;
+    logic        do_jump_mem;
     logic        inval_if_mem;
     logic        inval_id_mem;
     logic        inval_ex_mem;
@@ -127,11 +124,8 @@ module pirv32_pipelined
         .ns_valid_o  (if_stage_valid),
         .invalidate_i(inval_if_mem),
 
-        .jump_target_i  (jump_target_mem),
-        .branch_target_i(branch_target_mem),
-        .is_jump_i      (is_jump_mem),
-        .is_branch_i    (is_branch_mem),
-        .take_branch_i  (take_branch_mem),
+        .jump_tgt_i(jump_tgt_mem),
+        .do_jump_i (do_jump_mem),
 
         .pc_o    (pc_if),
         .pc_seq_o(pc_seq_if),
@@ -298,11 +292,8 @@ module pirv32_pipelined
         .wb_src_o   (wb_src_mem),
         .reg_wdata_o(reg_wdata_mem),
 
-        .jump_tgt_o   (jump_target_mem),
-        .branch_tgt_o (branch_target_mem),
-        .is_jump_o    (is_jump_mem),
-        .is_branch_o  (is_branch_mem),
-        .take_branch_o(take_branch_mem),
+        .jump_tgt_o(jump_tgt_mem),
+        .do_jump_o (do_jump_mem),
 
         .fw_valid_o(fw_valid_mem),
         .fw_rd_o   (fw_rd_mem),

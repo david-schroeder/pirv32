@@ -37,10 +37,7 @@ module pirv32_stage_mem
 
     // Control flow management outputs
     output logic [31:0] jump_tgt_o,
-    output logic [31:0] branch_tgt_o,
-    output logic        is_branch_o,
-    output logic        is_jump_o,
-    output logic        take_branch_o,
+    output logic        do_jump_o,
     // Stage invalidation
     output logic        inval_if_o,
     output logic        inval_id_o,
@@ -186,13 +183,9 @@ module pirv32_stage_mem
     // Forwarded data never comes from the bus (load-use stall)
     assign fw_data_o  = ex_result_mem;
 
-    assign jump_tgt_o    = jump_tgt_mem;
-    assign branch_tgt_o  = branch_tgt_mem;
-    assign is_jump_o     = is_jump_mem && valid_mem;
-    assign is_branch_o   = is_branch_mem && valid_mem;
-    assign take_branch_o = take_branch_mem;
-
-    assign ctrl_flow_branches = is_jump_o || (is_branch_o && take_branch_o);
+    assign jump_tgt_o         = next_arch_pc;
+    assign ctrl_flow_branches = next_arch_pc != seq_pc_mem;
+    assign do_jump_o          = ctrl_flow_branches && valid_mem;
 
     assign inval_if_o = ctrl_flow_branches;
     assign inval_id_o = ctrl_flow_branches;
@@ -203,8 +196,10 @@ module pirv32_stage_mem
 
     always_comb begin
         next_arch_pc = seq_pc_mem;
-        if (is_jump_o) next_arch_pc = jump_tgt_mem;
-        if (is_branch_o && take_branch_mem) next_arch_pc = branch_tgt_mem;
+        if (valid_mem) begin
+            if (is_jump_mem) next_arch_pc = jump_tgt_mem;
+            if (is_branch_mem && take_branch_mem) next_arch_pc = branch_tgt_mem;
+        end
     end
 
     ///////////////////
