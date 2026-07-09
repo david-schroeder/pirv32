@@ -25,7 +25,7 @@ module pirv32_divider
     logic        div_signed;
     logic        quot_sign, rem_sign;
     logic [ 4:0] div_shifts_remaining;
-    logic [31:0] numerator;
+    logic [31:0] numerator, numerator_d;
     logic [31:0] denominator;
     logic [31:0] quotient, quotient_d;
     logic [31:0] remainder, remainder_d;
@@ -46,7 +46,8 @@ module pirv32_divider
     end
 
     assign div_signed = op_i == DIV || op_i == REM;
-    assign fast_div = numerator[31:16] == '0;
+    assign numerator_d = div_signed && rs1_i[31] ? -rs1_i : rs1_i;
+    assign fast_div = numerator_d[31:16] == '0;
     assign quot_sign = rs1_i[31] ^ rs2_i[31];
     assign rem_sign = rs1_i[31];
 
@@ -68,8 +69,10 @@ module pirv32_divider
         end else begin
             if (div_start) begin
                 div_active  <= ~div_finish;
-                numerator   <= div_signed && rs1_i[31] ? -rs1_i : rs1_i;
+                numerator   <= numerator_d;
                 denominator <= div_signed && rs2_i[31] ? -rs2_i : rs2_i;
+
+                div_shifts_remaining <= fast_div ? 5'h0F : 5'h1F;
             end
 
             if (div_active) begin
@@ -77,8 +80,6 @@ module pirv32_divider
                 quotient             <= quotient_d;
                 div_active           <= ~div_finish;
                 div_shifts_remaining <= div_shifts_remaining - 1;
-            end else if (fast_div && div_start) begin
-                div_shifts_remaining <= 5'd15;
             end
 
             if (div_finish) begin
