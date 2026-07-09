@@ -89,14 +89,10 @@ _start:
 
     li t0, 2048   // machine external interrupt
     ori t0, t0, 4 // machine software interrupt
-    csrw mie, t0           // enable selected interrupts
+    csrw mie, t0  // enable selected interrupts
 
-    csrr t1, mie
-
-    addi t1, t1, 1
-
-    csrsi mtvec, 1         // enabled vectored interrupts
-    csrsi mstatus, 8       // global interrupt enable
+    csrsi mtvec, 1   // enabled vectored interrupts
+    csrsi mstatus, 8 // global interrupt enable
 
     jal main
 
@@ -125,6 +121,4 @@ end_loop:
 
 ext_handler:
     csrw mip, zero
-    csrsi mip, 1
-    csrsi mstatus, 8
     mret

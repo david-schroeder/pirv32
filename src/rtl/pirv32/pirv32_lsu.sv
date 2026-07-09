@@ -67,7 +67,7 @@ module pirv32_lsu
     logic is_valid_mem_op;
     assign a_exchange = tl_o.a_valid && tl_i.a_ready;
     assign d_exchange = tl_i.d_valid && tl_o.d_ready;
-    assign is_valid_mem_op = is_mem_op_i && valid_i;
+    assign is_valid_mem_op = is_mem_op_i && valid_i && !misaligned_o;
 
     always_comb begin
         unique case (state_q)

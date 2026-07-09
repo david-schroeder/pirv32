@@ -68,20 +68,15 @@ module pirv32_stage_mem
     //         //
     /////////////
 
-    // Whether the instruction in MEM causes
-    // the control flow to become non-sequential
-    // (i.e. a jump or a taken branch)
-    logic ctrl_flow_branches;
-
     logic        lsu_stall;
     logic        lsu_misaligned;
     logic [31:0] lsu_rdata;
 
     logic [31:0] next_arch_pc;
+    logic [31:0] next_true_pc;
     logic        is_mret;
     logic        is_trap;
     logic        is_exception;
-    logic        is_interrupt;
     logic [31:0] trap_pc;
     logic [31:0] mepc;
     mcause_t     mcause;
@@ -156,7 +151,7 @@ module pirv32_stage_mem
         end
     end
 
-    assign ns_valid_o = valid_mem && ps_ready_o;
+    assign ns_valid_o = valid_mem && ps_ready_o && !is_exception;
 
     /////////////////
     //             //
@@ -183,24 +178,25 @@ module pirv32_stage_mem
     // Forwarded data never comes from the bus (load-use stall)
     assign fw_data_o  = ex_result_mem;
 
-    assign jump_tgt_o         = next_arch_pc;
-    assign ctrl_flow_branches = next_arch_pc != seq_pc_mem;
-    assign do_jump_o          = ctrl_flow_branches && valid_mem;
+    assign jump_tgt_o = next_true_pc;
+    assign do_jump_o  = next_true_pc != seq_pc_mem && valid_mem;
 
-    assign inval_if_o = ctrl_flow_branches;
-    assign inval_id_o = ctrl_flow_branches;
-    assign inval_ex_o = ctrl_flow_branches;
+    assign inval_if_o = do_jump_o;
+    assign inval_id_o = do_jump_o;
+    assign inval_ex_o = do_jump_o;
 
     assign is_exception = is_trap && !mcause.interrupt;
-    assign is_interrupt = is_trap &&  mcause.interrupt;
 
     always_comb begin
         next_arch_pc = seq_pc_mem;
         if (valid_mem) begin
             if (is_jump_mem) next_arch_pc = jump_tgt_mem;
             if (is_branch_mem && take_branch_mem) next_arch_pc = branch_tgt_mem;
+            if (is_mret) next_arch_pc = mepc;
         end
     end
+
+    assign next_true_pc = is_trap ? trap_pc : next_arch_pc;
 
     ///////////////////
     //               //
