@@ -50,9 +50,13 @@ module pirv32_privileged
     assign mret_o = mret;
 
     pirv32_trap trap_i (
+        .clk_i,
+        .rst_ni,
+
         .ext_ints_i      (interrupts_i),
         .pc_i            (pc_i),
         .next_arch_pc_i  (next_arch_pc_i),
+        .instr_valid_i   (instr_valid_i),
         .stall_i         (stall_i),
         .mstatus_i       (mstatus),
         .mie_i           (mie),
@@ -73,6 +77,7 @@ module pirv32_privileged
     pirv32_csrs csrfile_i (
         .clk_i,
         .rst_ni,
+
         .read_en_i     (csr_re),
         .write_en_i    (csr_we),
         .csr_sel_i     (csr_sel),

@@ -604,6 +604,7 @@ add wave -noupdate -expand -group Stalls /system_tb/board_i/DUT/core_i/uproc_i/i
 add wave -noupdate -label Commit? /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_valid
 add wave -noupdate -label {Comitted instruction} -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/instr_mem
 add wave -noupdate -label {Committed IP} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/pc_mem
+add wave -noupdate -label {Next IP} /system_tb/board_i/DUT/core_i/uproc_i/mem_stage_i/priv_i/trap_i/next_arch_pc
 add wave -noupdate -divider {IF Stage}
 add wave -noupdate /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/pc_d
 add wave -noupdate -radix riscv_instr /system_tb/board_i/DUT/core_i/uproc_i/if_stage_i/instr_o
@@ -686,7 +687,7 @@ add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/cor
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_we_o
 add wave -noupdate -expand -group {Regfile Writeback} /system_tb/board_i/DUT/core_i/uproc_i/wb_stage_i/reg_wdata_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {22466976980 fs} 0}
+WaveRestoreCursors {{Cursor 1} {1108534365 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 413
 configure wave -valuecolwidth 100
@@ -702,4 +703,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {22425845802 fs} {22470944358 fs}
+WaveRestoreZoom {1075068243 fs} {1087365097 fs}
