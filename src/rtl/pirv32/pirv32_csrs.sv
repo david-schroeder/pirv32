@@ -95,6 +95,7 @@ module pirv32_csrs
                 MCYCLEH: mcycle_d[63:32] = csr_wdata;
                 MINSTRET: minstret_d[31:0] = csr_wdata;
                 MINSTRETH: minstret_d[63:32] = csr_wdata;
+                default: ;
             endcase
         end
 
@@ -167,6 +168,7 @@ module pirv32_csrs
                 MCYCLEH: rdata_o = mcycle_q[63:32];
                 MINSTRET: rdata_o = minstret_q[31:0];
                 MINSTRETH: rdata_o = minstret_q[63:32];
+                default: rdata_o = '0;
             endcase
         end
     end

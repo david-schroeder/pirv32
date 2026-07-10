@@ -78,11 +78,6 @@ _start:
     li  x30,0
     li  x31,0
 
-    li t0, 57
-    sb t0, 13(zero)
-    lb t2, 13(zero)
-    addi t2, t2, 1
-
     // Initialize various stack pointers, settings / CSRs etc. here
     la t0, _irq_stack_top
     csrrw t0, mscratch, t0 // irq stack top

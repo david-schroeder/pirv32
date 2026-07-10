@@ -25,14 +25,14 @@ module pirv32_mult
 
     always_comb begin
         unique case (op_i)
-            MULHU: a_mux = {1'b0, rs1_i};
-            default: a_mux = {rs1_i[31], rs1_i};
+            MULHU: a_mux = $signed({1'b0, rs1_i});
+            default: a_mux = $signed({rs1_i[31], rs1_i});
         endcase
 
         unique case (op_i)
             MULHSU,
-            MULHU: b_mux = {1'b0, rs2_i};
-            default: b_mux = {rs2_i[31], rs2_i};
+            MULHU: b_mux = $signed({1'b0, rs2_i});
+            default: b_mux = $signed({rs2_i[31], rs2_i});
         endcase
     end
 
