@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_core_tb ();
+module turvo32_core_tb ();
 
     logic clk;
     logic rst_n;
@@ -17,7 +17,7 @@ module pirv32_core_tb ();
     logic        ext_int;
     assign ints = {20'h0, ext_int, 11'h0};
 
-    pirv32_core DUT (
+    turvo32_core DUT (
         .clk_i       (clk),
         .rst_ni      (rst_n),
         .interrupts_i(ints),

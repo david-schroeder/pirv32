@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_pipelined
-    import pirv32_pkg::*;
+module turvo32_pipelined
+    import turvo32_pkg::*;
     import tilelink_pkg::*;
 #(
     parameter logic [31:0] BOOT_ADDR      = 32'h00000080,
@@ -112,7 +112,7 @@ module pirv32_pipelined
     //                     //
     /////////////////////////
 
-    pirv32_stage_if #(
+    turvo32_stage_if #(
         .BOOT_ADDR     (BOOT_ADDR),
         .DEBUG_ADDR    (DEBUG_ADDR),
         .DEBUG_EXC_ADDR(DEBUG_EXC_ADDR)
@@ -135,7 +135,7 @@ module pirv32_pipelined
         .ibus_i
     );
 
-    pirv32_stage_id id_stage_i (
+    turvo32_stage_id id_stage_i (
         .clk_i,
         .rst_ni,
 
@@ -185,7 +185,7 @@ module pirv32_pipelined
         .reg_we_i   (reg_we_wb)
     );
 
-    pirv32_stage_ex ex_stage_i (
+    turvo32_stage_ex ex_stage_i (
         .clk_i,
         .rst_ni,
 
@@ -254,7 +254,7 @@ module pirv32_pipelined
         .mult_res_wb_o(mult_result_ex)
     );
 
-    pirv32_stage_mem mem_stage_i (
+    turvo32_stage_mem mem_stage_i (
         .clk_i,
         .rst_ni,
 
@@ -303,7 +303,7 @@ module pirv32_pipelined
         .dbus_i
     );
 
-    pirv32_stage_wb wb_stage_i (
+    turvo32_stage_wb wb_stage_i (
         .clk_i,
         .rst_ni,
 

@@ -582,84 +582,84 @@ radix define riscv_csrs {
 }
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider CPU
-add wave -noupdate /pirv32_core_tb/DUT/interrupts_i
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/trap_o
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/pending_ints
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/valid_ints
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/interrupt
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/exception
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/mtvec_i
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/trap_pc_o
-add wave -noupdate /pirv32_core_tb/DUT/priv_i/trap_i/cause_o
-add wave -noupdate /pirv32_core_tb/DUT/stall
-add wave -noupdate /pirv32_core_tb/DUT/commit
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mstatus_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mscratch_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mip_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mie_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mtvec_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mtval_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mcause_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mepc_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/mcycle_q
-add wave -noupdate -expand -group CSRs /pirv32_core_tb/DUT/priv_i/csrfile_i/minstret_q
-add wave -noupdate -label Regs -expand /pirv32_core_tb/DUT/regfile_i/mem
-add wave -noupdate -label DTIM /pirv32_core_tb/DUT/dtim_i/mem
-add wave -noupdate /pirv32_core_tb/DUT/wb_we_q
-add wave -noupdate /pirv32_core_tb/DUT/rd_q
-add wave -noupdate /pirv32_core_tb/DUT/fw_rs1_from_wb
-add wave -noupdate /pirv32_core_tb/DUT/fw_rs2_from_wb
-add wave -noupdate /pirv32_core_tb/DUT/rs1_fw
-add wave -noupdate /pirv32_core_tb/DUT/rs2_fw
-add wave -noupdate /pirv32_core_tb/DUT/clk_i
-add wave -noupdate /pirv32_core_tb/DUT/rst_ni
-add wave -noupdate /pirv32_core_tb/DUT/rs1_o
-add wave -noupdate /pirv32_core_tb/DUT/pc
-add wave -noupdate /pirv32_core_tb/DUT/pc_seq
-add wave -noupdate /pirv32_core_tb/DUT/pc_jump
-add wave -noupdate /pirv32_core_tb/DUT/pc_d
-add wave -noupdate -radix riscv_instr /pirv32_core_tb/DUT/instr
-add wave -noupdate /pirv32_core_tb/DUT/ra1
-add wave -noupdate /pirv32_core_tb/DUT/ra2
-add wave -noupdate /pirv32_core_tb/DUT/rd
-add wave -noupdate /pirv32_core_tb/DUT/rs1
-add wave -noupdate /pirv32_core_tb/DUT/rs2
-add wave -noupdate /pirv32_core_tb/DUT/imm
-add wave -noupdate /pirv32_core_tb/DUT/alu_a
-add wave -noupdate /pirv32_core_tb/DUT/alu_b
-add wave -noupdate /pirv32_core_tb/DUT/alu_src1
-add wave -noupdate /pirv32_core_tb/DUT/alu_src2
-add wave -noupdate /pirv32_core_tb/DUT/alu_op
-add wave -noupdate /pirv32_core_tb/DUT/shift_op
-add wave -noupdate /pirv32_core_tb/DUT/is_jump
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_rem
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_quot
-add wave -noupdate /pirv32_core_tb/DUT/is_branch
-add wave -noupdate /pirv32_core_tb/DUT/is_ecall
-add wave -noupdate /pirv32_core_tb/DUT/is_ebreak
-add wave -noupdate /pirv32_core_tb/DUT/branch_type
-add wave -noupdate /pirv32_core_tb/DUT/branch_decision
-add wave -noupdate /pirv32_core_tb/DUT/dtim_op
-add wave -noupdate /pirv32_core_tb/DUT/dtim_misaligned
-add wave -noupdate /pirv32_core_tb/DUT/wb_data
-add wave -noupdate /pirv32_core_tb/DUT/wb_we
-add wave -noupdate /pirv32_core_tb/DUT/wb_src
-add wave -noupdate /pirv32_core_tb/DUT/alu_res
-add wave -noupdate /pirv32_core_tb/DUT/shiftout
-add wave -noupdate /pirv32_core_tb/DUT/load_data
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/numerator
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/denominator
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_stall_o
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_active
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_start
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_finish
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/div_shifts_remaining
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_quot
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/signed_rem
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/quotient
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/remainder
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/rem_shifted
-add wave -noupdate /pirv32_core_tb/DUT/multdiv_i/skip_subtraction
+add wave -noupdate /turvo32_core_tb/DUT/interrupts_i
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/trap_o
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/pending_ints
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/valid_ints
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/interrupt
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/exception
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/mtvec_i
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/trap_pc_o
+add wave -noupdate /turvo32_core_tb/DUT/priv_i/trap_i/cause_o
+add wave -noupdate /turvo32_core_tb/DUT/stall
+add wave -noupdate /turvo32_core_tb/DUT/commit
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mstatus_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mscratch_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mip_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mie_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mtvec_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mtval_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mcause_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mepc_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/mcycle_q
+add wave -noupdate -expand -group CSRs /turvo32_core_tb/DUT/priv_i/csrfile_i/minstret_q
+add wave -noupdate -label Regs -expand /turvo32_core_tb/DUT/regfile_i/mem
+add wave -noupdate -label DTIM /turvo32_core_tb/DUT/dtim_i/mem
+add wave -noupdate /turvo32_core_tb/DUT/wb_we_q
+add wave -noupdate /turvo32_core_tb/DUT/rd_q
+add wave -noupdate /turvo32_core_tb/DUT/fw_rs1_from_wb
+add wave -noupdate /turvo32_core_tb/DUT/fw_rs2_from_wb
+add wave -noupdate /turvo32_core_tb/DUT/rs1_fw
+add wave -noupdate /turvo32_core_tb/DUT/rs2_fw
+add wave -noupdate /turvo32_core_tb/DUT/clk_i
+add wave -noupdate /turvo32_core_tb/DUT/rst_ni
+add wave -noupdate /turvo32_core_tb/DUT/rs1_o
+add wave -noupdate /turvo32_core_tb/DUT/pc
+add wave -noupdate /turvo32_core_tb/DUT/pc_seq
+add wave -noupdate /turvo32_core_tb/DUT/pc_jump
+add wave -noupdate /turvo32_core_tb/DUT/pc_d
+add wave -noupdate -radix riscv_instr /turvo32_core_tb/DUT/instr
+add wave -noupdate /turvo32_core_tb/DUT/ra1
+add wave -noupdate /turvo32_core_tb/DUT/ra2
+add wave -noupdate /turvo32_core_tb/DUT/rd
+add wave -noupdate /turvo32_core_tb/DUT/rs1
+add wave -noupdate /turvo32_core_tb/DUT/rs2
+add wave -noupdate /turvo32_core_tb/DUT/imm
+add wave -noupdate /turvo32_core_tb/DUT/alu_a
+add wave -noupdate /turvo32_core_tb/DUT/alu_b
+add wave -noupdate /turvo32_core_tb/DUT/alu_src1
+add wave -noupdate /turvo32_core_tb/DUT/alu_src2
+add wave -noupdate /turvo32_core_tb/DUT/alu_op
+add wave -noupdate /turvo32_core_tb/DUT/shift_op
+add wave -noupdate /turvo32_core_tb/DUT/is_jump
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/signed_rem
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/signed_quot
+add wave -noupdate /turvo32_core_tb/DUT/is_branch
+add wave -noupdate /turvo32_core_tb/DUT/is_ecall
+add wave -noupdate /turvo32_core_tb/DUT/is_ebreak
+add wave -noupdate /turvo32_core_tb/DUT/branch_type
+add wave -noupdate /turvo32_core_tb/DUT/branch_decision
+add wave -noupdate /turvo32_core_tb/DUT/dtim_op
+add wave -noupdate /turvo32_core_tb/DUT/dtim_misaligned
+add wave -noupdate /turvo32_core_tb/DUT/wb_data
+add wave -noupdate /turvo32_core_tb/DUT/wb_we
+add wave -noupdate /turvo32_core_tb/DUT/wb_src
+add wave -noupdate /turvo32_core_tb/DUT/alu_res
+add wave -noupdate /turvo32_core_tb/DUT/shiftout
+add wave -noupdate /turvo32_core_tb/DUT/load_data
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/numerator
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/denominator
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/div_stall_o
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/div_active
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/div_start
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/div_finish
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/div_shifts_remaining
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/signed_quot
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/signed_rem
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/quotient
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/remainder
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/rem_shifted
+add wave -noupdate /turvo32_core_tb/DUT/multdiv_i/skip_subtraction
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {375789849 fs} 0}
 quietly wave cursor active 1

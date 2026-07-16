@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_decoder
-    import pirv32_pkg::*;
+module turvo32_decoder
+    import turvo32_pkg::*;
 (
     input  logic [31:0] instr_i,
 

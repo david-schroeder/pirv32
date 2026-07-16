@@ -1,4 +1,4 @@
-package pirv32_pkg;
+package turvo32_pkg;
 
     typedef enum logic [2:0] {
         ADD,

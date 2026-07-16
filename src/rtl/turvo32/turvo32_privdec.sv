@@ -3,8 +3,8 @@
 
 // Privileged instruction decoder
 
-module pirv32_privdec
-    import pirv32_pkg::*;
+module turvo32_privdec
+    import turvo32_pkg::*;
 (
     input  logic        instr_valid_i,
     input  logic [31:0] instr_i,

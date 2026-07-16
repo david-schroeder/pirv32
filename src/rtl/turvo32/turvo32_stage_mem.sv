@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_stage_mem
-    import pirv32_pkg::*;
+module turvo32_stage_mem
+    import turvo32_pkg::*;
     import tilelink_pkg::*;
 (
     input  logic clk_i,
@@ -204,7 +204,7 @@ module pirv32_stage_mem
     //               //
     ///////////////////
 
-    pirv32_lsu lsu_i (
+    turvo32_lsu lsu_i (
         .clk_i,
         .rst_ni,
 
@@ -223,7 +223,7 @@ module pirv32_stage_mem
         .tl_i(dbus_i)
     );
 
-    pirv32_privileged priv_i (
+    turvo32_privileged priv_i (
         .clk_i,
         .rst_ni,
 

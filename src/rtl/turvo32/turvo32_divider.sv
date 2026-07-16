@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_divider
-    import pirv32_pkg::*;
+module turvo32_divider
+    import turvo32_pkg::*;
 (
     input  logic clk_i,
     input  logic rst_ni,

@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'PIRV32 CPU Core'
+project = 'TURVo32 CPU Core'
 copyright = 'David Schröder 2026'
 author = 'David Schröder'
 

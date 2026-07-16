@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-// PIRV32 Load-Store Unit. Lives entirely in the MEM stage.
+// TURVo32 Load-Store Unit. Lives entirely in the MEM stage.
 
-module pirv32_lsu
-    import pirv32_pkg::*;
+module turvo32_lsu
+    import turvo32_pkg::*;
     import tilelink_pkg::*;
 (
     input  logic clk_i,

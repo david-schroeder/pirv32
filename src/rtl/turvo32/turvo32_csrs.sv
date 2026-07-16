@@ -3,8 +3,8 @@
 
 // RISC-V Control and Status Registers.
 
-module pirv32_csrs
-    import pirv32_pkg::*;
+module turvo32_csrs
+    import turvo32_pkg::*;
 (
     input  logic clk_i,
     input  logic rst_ni,

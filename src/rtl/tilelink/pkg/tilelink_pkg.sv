@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-// Package for TileLink support for the PIRV32 Core.
+// Package for TileLink support for the TURVo32 Core.
 
 package tilelink_pkg;
 

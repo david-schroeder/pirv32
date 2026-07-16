@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_stage_if
-    import pirv32_pkg::*;
+module turvo32_stage_if
+    import turvo32_pkg::*;
     import tilelink_pkg::*;
 #(
     parameter logic [31:0] BOOT_ADDR      = 32'h00000080,

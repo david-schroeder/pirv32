@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-// NanoSoC -- minimal SoC for PIRV32.
+// NanoSoC -- minimal SoC for TURVo32.
 
 module nanosoc_core (
     input  logic clk_i, // 100MHz clock
@@ -17,7 +17,7 @@ module nanosoc_core (
     tl_h2d_t ibus_req, dbus_req;
     tl_d2h_t ibus_rsp, dbus_rsp;
 
-    pirv32_pipelined uproc_i (
+    turvo32_pipelined uproc_i (
         .clk_i,
         .rst_ni,
         .interrupts_i('0),

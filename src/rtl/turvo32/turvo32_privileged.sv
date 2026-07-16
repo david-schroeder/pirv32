@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_privileged
-    import pirv32_pkg::*;
+module turvo32_privileged
+    import turvo32_pkg::*;
 (
     input  logic clk_i,
     input  logic rst_ni,
@@ -49,7 +49,7 @@ module pirv32_privileged
 
     assign mret_o = mret;
 
-    pirv32_trap trap_i (
+    turvo32_trap trap_i (
         .clk_i,
         .rst_ni,
 
@@ -74,7 +74,7 @@ module pirv32_privileged
         .epc_o           (trap_epc)
     );
 
-    pirv32_csrs csrfile_i (
+    turvo32_csrs csrfile_i (
         .clk_i,
         .rst_ni,
 
@@ -101,7 +101,7 @@ module pirv32_privileged
         .commit_i      (commit_i)
     );
 
-    pirv32_privdec privdec_i (
+    turvo32_privdec privdec_i (
         .instr_valid_i,
         .instr_i,
         .rs1_i,

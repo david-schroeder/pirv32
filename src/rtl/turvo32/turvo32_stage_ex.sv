@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SHL-2.1
 // SPDX-FileCopyrightText: David Schröder 2026
 
-module pirv32_stage_ex
-    import pirv32_pkg::*;
+module turvo32_stage_ex
+    import turvo32_pkg::*;
     import tilelink_pkg::*;
 (
     input  logic clk_i,
@@ -278,7 +278,7 @@ module pirv32_stage_ex
     //               //
     ///////////////////
 
-    pirv32_alu alu_i (
+    turvo32_alu alu_i (
         .a_i          (operand_a),
         .b_i          (operand_b),
         .op_i         (alu_op_ex),
@@ -287,14 +287,14 @@ module pirv32_stage_ex
         .take_branch_o
     );
 
-    pirv32_shifter shifter_i (
+    turvo32_shifter shifter_i (
         .data_i (operand_a),
         .shamt_i(operand_b),
         .op_i   (shift_op_ex),
         .data_o (shifter_result)
     );
 
-    pirv32_mult mult_i (
+    turvo32_mult mult_i (
         .clk_i,
         .rst_ni,
 
@@ -306,7 +306,7 @@ module pirv32_stage_ex
         .result_o (mult_res_wb_o)
     );
 
-    pirv32_divider div_i (
+    turvo32_divider div_i (
         .clk_i,
         .rst_ni,
 
